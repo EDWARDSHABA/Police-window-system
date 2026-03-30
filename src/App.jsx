@@ -29,28 +29,27 @@ function App() {
     <Router>
       <Routes>
 
-        {/* Landing Page */}
+        {/* Landing */}
         <Route path="/" element={<HomePage />} />
 
-        {/* Headquarters */}
-        <Route path="/headquarters" element={<HeadquartersPage />} />
-        <Route path="/create-admin" element={<CreatePoliceStationAdminPage />} />
-        <Route path="/police-stations" element={<PoliceStationPage />} />
-        <Route path="/manage-accounts" element={<ManageAccountsPage />} />
-
-        {/* Police Station */}
-        <Route path="/dashboard" element={<PoliceStationDashboardPage />} />
-        <Route path="/manage-officers" element={<ManageOfficersPage />} />
-        <Route path="/assign-duties" element={<AssignDutiesPage />} />
-        <Route path="/track-cases" element={<TrackCasesPage />} />
-        <Route path="/create-officer" element={<CreateOfficer />} />
-        {/* Officer */}
-        <Route path="/officer-dashboard" element={<OfficerDashboardPage />} />
-        <Route path="/register-case" element={<RegisterCasePage />} />
-        <Route path="/update-case" element={<UpdateCasePage />} />
-        <Route path="/create-statement" element={<CreateStatementPage />} />
-        <Route path="/view-cases" element={<ViewCasesPage />} />
-
+        {/* ================= HEADQUARTERS ================= */}
+          <Route path="/headquarters" element={<HeadquartersPage />} />
+          <Route path="/create-admin" element={<CreatePoliceStationAdminPage />} />
+          <Route path="/police-stations" element={<PoliceStationPage />} />
+          <Route path="/manage-accounts" element={<ManageAccountsPage />} />
+        
+          <Route path="/dashboard" element={<PoliceStationDashboardPage />} />
+          <Route path="/manage-officers" element={<ManageOfficersPage />} />
+          <Route path="/assign-duties" element={<AssignDutiesPage />} />
+          <Route path="/track-cases" element={<TrackCasesPage />} />
+          <Route path="/create-officer" element={<CreateOfficer />} />
+        
+          <Route path="/officer-dashboard" element={<OfficerDashboardPage />} />
+          <Route path="/register-case" element={<RegisterCasePage />} />
+          <Route path="/update-case" element={<UpdateCasePage />} />
+          <Route path="/create-statement" element={<CreateStatementPage />} />
+          <Route path="/view-cases" element={<ViewCasesPage />} />
+        
       </Routes>
     </Router>
   );

@@ -5,7 +5,7 @@ export default function HomePage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center m-2 p 10">
       
       {/* Title */}
       <h1 className="text-4xl font-bold mb-10 text-gray-800">
