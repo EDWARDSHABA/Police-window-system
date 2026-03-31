@@ -3,7 +3,7 @@ import HeadquartersDashboard from '../../components/headquaeters/Dashboard/dashB
 
 function HeadquartersPage() {
   return (
-    <div className="h-screen w-screen overflow-hidden m-2 p-10">
+    <div className="h-screen w-screen overflow-hidden m-2 p-0">
         <HeadquartersDashboard />
     </div>
   )
