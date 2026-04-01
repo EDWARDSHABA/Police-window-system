@@ -8,7 +8,7 @@ export default function OfficerHeader() {
     <header className="fixed top-0 left-0 w-full h-16 bg-yellow-600 text-white flex justify-between items-center px-6 z-50 shadow-md">
       
       <div className="flex items-center gap-3">
-        <img src={logo} alt="Logo" className="h-12 w-16 object-contain" />
+        <img src={logo} alt="Logo" className="h-12 w-16 p-0 object-contain" />
         <h2 className="text-lg font-bold">POLICE WINDOW SYSTEM</h2>
       </div>
 

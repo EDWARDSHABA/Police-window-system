@@ -1,5 +1,5 @@
-import React from "react";
-import Header from "../Header/header"; // adjust path if needed
+import Header from "../Header/header";
+import Footer from "../../officer/footer/footer";
 
 export default function ManageAccounts() {
   return (
@@ -19,7 +19,7 @@ export default function ManageAccounts() {
           </p>
         </div>
       </div>
-
+       <Footer/>
     </div>
   );
 }
