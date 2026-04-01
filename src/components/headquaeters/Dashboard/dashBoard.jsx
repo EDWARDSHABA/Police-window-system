@@ -49,7 +49,7 @@ export default function HeadquartersDashboard() {
           </div>
 
           <div className="bg-white shadow rounded p-3 text-center">
-            <p className="text-sm text-gray-500">Filtered Results</p>
+            <p className="text-sm text-gray-500">Statistics</p>
             <h3 className="text-xl font-bold">{filteredStations.length}</h3>
           </div>
 
