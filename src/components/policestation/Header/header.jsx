@@ -4,52 +4,49 @@ import logo from "../../../assets/logo/logo.jpeg";
 import notificationIcon from "../../../assets/icons/notification.png";
 import profileIcon from "../../../assets/icons/profile.png";
 
-export default function OfficerHeader() {
+export default function StationHeader() {
   const navigate = useNavigate();
 
   return (
-    <div className="fixed top-0 left-0 w-full h-15 bg-gray-600 text-white flex justify-between items-center px-6 z-50 shadow-md">
+    <div className="fixed top-0 left-0 w-full h-16 bg-gray-600 text-white flex justify-between items-center px-6 z-50 shadow-md">
 
-      {/* logo*/}
+      {/* logo */}
       <div className="flex items-center gap-3">
         <img
           src={logo}
           alt="Logo"
-          className="h-14 w-30 object-contain"
+          className="h-12 w-24 object-contain"
         />
-        <h2 className="text-lg font-bold">POLICE WINDOW SYSTEM</h2>
+        <h2 className="text-lg font-bold">POLICE STATION SYSTEM</h2>
       </div>
 
-      {/* nav links*/}
-      <div className="space-x-10 text-sm font-medium">
-        <button onClick={() => navigate("/officer-dashboard")} className="hover:underline">
+      {/* nav links */}
+      <div className="flex gap-10">
+        <button onClick={() => navigate("/dashboard")} className="hover:underline">
           Dashboard
         </button>
 
-        <button onClick={() => navigate("/register-case")} className="hover:underline">
-          Register
+        <button onClick={() => navigate("/officers")} className="hover:underline">
+          Officers
         </button>
 
-        <button onClick={() => navigate("/update-case")} className="hover:underline">
-          Update
+        <button onClick={() => navigate("/assign-duties")} className="hover:underline">
+          Duties
         </button>
 
-        <button onClick={() => navigate("/create-statement")} className="hover:underline">
-          Assign
+        <button onClick={() => navigate("/track-cases")} className="hover:underline">
+          Cases
         </button>
 
-        <button onClick={() => navigate("/view-cases")} className="hover:underline">
-          Stats
-        </button>
-
-        
-        <button onClick={() => navigate("/about")} className="hover:underline">
-          About Us
+        <button onClick={() => navigate("/statistics")} className="hover:underline">
+          Statistics
         </button>
       </div>
 
+      {/* RIGHT - ICONS */}
       <div className="flex items-center gap-4">
 
+        {/* Notifications */}
         <img
           src={notificationIcon}
           alt="Notifications"
@@ -57,6 +54,7 @@ export default function OfficerHeader() {
           className="h-8 w-8 cursor-pointer hover:scale-110 transition"
         />
 
+        {/* Profile */}
         <img
           src={profileIcon}
           alt="Profile"

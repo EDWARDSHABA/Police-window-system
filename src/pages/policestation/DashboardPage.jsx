@@ -3,7 +3,7 @@ import PoliceStationDashboard from '../../components/policestation/Dashboard/das
 
 function PoliceStationDashboardPage() {
   return (
-    <div className="h-screen w-screen overflow-hidden m-2 p-10">
+    <div className="h-screen w-screen overflow-hidden m-2 p-0">
         <PoliceStationDashboard />
     </div>
   )

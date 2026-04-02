@@ -1,68 +1,66 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
+import bgImage from "../assets/images/car.jpg";
 
 export default function HomePage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center m-2 p 10">
-      
-      {/* Title */}
-      <h1 className="text-4xl font-bold mb-10 text-gray-800">
-        POLICE WINDOW SYSTEM
-      </h1>
+    <div
+      className="min-h-screen w-full flex items-center justify-center relative bg-cover bg-center"
+      style={{ backgroundImage: `url(${bgImage})` }}
+    >
+      {/* OVERLAY */}
+      <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-black/90"></div>
 
-      {/* Cards / Buttons */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-10/12">
-        
-        {/* Headquarters */}
-        <div className="bg-white shadow-xl rounded-2xl p-8 text-center">
-          <h2 className="text-2xl font-semibold mb-4 text-green-700">
-            Headquarters
-          </h2>
-          <p className="text-gray-600 mb-6">
-            Manage stations, admins, and system-wide operations.
-          </p>
+      {/* content */}
+      <div className="relative z-10 text-center px-6">
+
+        {/* title*/}
+        <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-6">
+          Police Window System
+        </h1>
+
+        <p className="text-gray-400 mb-14 text-lg">
+          Secure • Manage • Monitor Law Enforcement Operations
+        </p>
+
+        {/* text buttons */}
+        <div className="flex flex-col md:flex-row items-center justify-center gap-10">
+
           <button
             onClick={() => navigate("/headquarters")}
-            className="bg-green-600 text-white px-6 py-2 rounded-lg"
+            className="text-2xl md:text-3xl font-semibold 
+            text-white/70 hover:text-white 
+            transition duration-300 relative
+            after:block after:h-[2px] after:w-0 after:bg-white/70 
+            after:transition-all after:duration-300 hover:after:w-full"
           >
-            Go to Dashboard
+            Headquarters
           </button>
-        </div>
 
-        {/* Police Station */}
-        <div className="bg-white shadow-xl rounded-2xl p-8 text-center">
-          <h2 className="text-2xl font-semibold mb-4 text-blue-700">
-            Police Station
-          </h2>
-          <p className="text-gray-600 mb-6">
-            Manage officers, duties, and station operations.
-          </p>
           <button
             onClick={() => navigate("/dashboard")}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg"
+            className="text-2xl md:text-3xl font-semibold 
+            text-white/70 hover:text-white 
+            transition duration-300 relative
+            after:block after:h-[2px] after:w-0 after:bg-white/70 
+            after:transition-all after:duration-300 hover:after:w-full"
           >
-            Go to Dashboard
+            Police Station
           </button>
-        </div>
 
-        {/* Police Officer */}
-        <div className="bg-white shadow-xl rounded-2xl p-8 text-center">
-          <h2 className="text-2xl font-semibold mb-4 text-yellow-700">
-            Police Officer
-          </h2>
-          <p className="text-gray-600 mb-6">
-            Handle cases, statements, and daily assignments.
-          </p>
           <button
             onClick={() => navigate("/officer-dashboard")}
-            className="bg-yellow-600 text-white px-6 py-2 rounded-lg"
+            className="text-2xl md:text-3xl font-semibold 
+            text-white/70 hover:text-white 
+            transition duration-300 relative
+            after:block after:h-[2px] after:w-0 after:bg-white/70 
+            after:transition-all after:duration-300 hover:after:w-full"
           >
-            Go to Dashboard
+            Police Officer
           </button>
-        </div>
 
+        </div>
       </div>
     </div>
   );

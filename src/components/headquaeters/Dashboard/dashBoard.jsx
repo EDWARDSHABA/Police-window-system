@@ -27,11 +27,11 @@ export default function HeadquartersDashboard() {
       <div className="flex-1 pt-20 px-6 pb-4 flex flex-col overflow-hidden">
 
         {/* banner */}
-        <div className="bg-blue-500 text-white p-2 rounded-md mb-4 shadow">
+        <div className="bg-blue-300 text-white p-2 rounded-md mb-4 shadow">
           <h2 className="text-lg font-semibold">
             Welcome Back, Mr Edward Young shaba, this is your home.
           </h2>
-          <p className="text-sm opacity-90">
+          <p className="text-sm opacity-100">
             Here’s what’s happening across all police stations today
           </p>
         </div>
@@ -104,28 +104,28 @@ export default function HeadquartersDashboard() {
           </div>
 
           {/* action buttons */}
-          <div className="bg-white shadow rounded p-4">
+          <div className="bg-white shadow rounded p-8">
             <h3 className="font-semibold mb-4 text-gray-700">
               Quick Actions
             </h3>
 
             <button
               onClick={() => navigate("/police-stations")}
-              className="w-full bg-blue-500 text-white py-2 rounded mb-3 hover:bg-blue-600 transition shadow"
+              className="w-full bg-blue-400 text-white py-2 rounded mb-3 hover:bg-blue-600 transition shadow"
             >
               + Create Police Station
             </button>
 
             <button
               onClick={() => navigate("/create-admin")}
-              className="w-full bg-blue-500 text-white py-2 rounded mb-3 hover:bg-blue-600 transition shadow"
+              className="w-full bg-blue-400 text-white py-2 rounded mb-3 hover:bg-blue-600 transition shadow"
             >
               + Create Police Station Admin
             </button>
 
             <button
               onClick={() => navigate("/manage-accounts")}
-              className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition shadow"
+              className="w-full bg-blue-400 text-white py-2 rounded hover:bg-blue-600 transition shadow"
             >
               Manage Stations
             </button>
