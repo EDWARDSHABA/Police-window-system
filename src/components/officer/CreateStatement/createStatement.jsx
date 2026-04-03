@@ -1,4 +1,4 @@
-import OfficerHeader from "../Header/header";
+import OfficerHeader from "../Header/OfficerHeader";
 import Footer from "../footer/footer";
 
 export default function CreateStatement() {

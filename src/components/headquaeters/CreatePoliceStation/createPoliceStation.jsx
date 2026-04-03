@@ -1,4 +1,4 @@
-import Header from "../Header/header";
+import Header from "../Header/HeadQuartersHeader";
 import Footer from "../../officer/footer/footer";
 
 export default function PoliceStation() {

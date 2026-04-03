@@ -1,137 +1,168 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
-import Header from "../Header/header";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import HeadquartersHeader from "../Header/HeadQuartersHeader";
 import Footer from "../../officer/footer/footer";
-import policeStationsData from "../Data/policeStationData";
+import { fetchHeadquarterDashboard } from "./headQuartersDashboardApi";
 
 export default function HeadquartersDashboard() {
   const [search, setSearch] = useState("");
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const navigate = useNavigate();
 
-  const filteredStations = policeStationsData.filter((station) =>
-    station.name.toLowerCase().includes(search.toLowerCase())
-  );
+  // fetch data
+  useEffect(() => {
+    const loadDashboard = async () => {
+      try {
+        setLoading(true);
+        const res = await fetchHeadquarterDashboard();
+        setDashboardData(res.data);
+        setError(null);
+      } catch (err) {
+        setError("Failed to load dashboard data");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const totalStations = policeStationsData.length;
+    loadDashboard();
+  }, []);
 
-  const totalOfficers = policeStationsData.reduce(
-    (sum, s) => sum + s.officers,
-    0
-  );
+  const totalStations = dashboardData?.totalStations || 0;
+  const totalOfficers = dashboardData?.totalOfficers || 0;
+  const totalCases = dashboardData?.totalCases || 0;
+
+  const filteredStations =
+    dashboardData?.recentStations?.filter((station) =>
+      station.stationName?.toLowerCase().includes(search.toLowerCase())
+    ) || [];
 
   return (
     <div className="h-screen flex flex-col bg-gray-100 overflow-hidden">
 
-      <Header />
+      <HeadquartersHeader/>
 
       <div className="flex-1 pt-20 px-6 pb-4 flex flex-col overflow-hidden">
 
-        {/* banner */}
-        <div className="bg-blue-300 text-white p-2 rounded-md mb-4 shadow">
-          <h2 className="text-lg font-semibold">
-            Welcome Back, Mr Edward Young shaba, this is your home.
-          </h2>
-          <p className="text-sm opacity-100">
-            Here’s what’s happening across all police stations today
-          </p>
-        </div>
-
-        {/* stat */}
-        <div className="grid grid-cols-4 gap-3 mb-3">
-          <div className="bg-white shadow rounded p-3 text-center">
-            <p className="text-sm text-gray-500">Total Stations</p>
-            <h3 className="text-xl font-bold">{totalStations}</h3>
+        {/* Loading */}
+        {loading && (
+          <div className="text-center text-blue-500 font-semibold">
+            Loading dashboard...
           </div>
+        )}
 
-          <div className="bg-white shadow rounded p-3 text-center">
-            <p className="text-sm text-gray-500">Total Officers</p>
-            <h3 className="text-xl font-bold">{totalOfficers}</h3>
+        {error && (
+          <div className="text-center text-red-500 font-semibold">
+            {error}
           </div>
+        )}
 
-          <div className="bg-white shadow rounded p-3 text-center">
-            <p className="text-sm text-gray-500">Statistics</p>
-            <h3 className="text-xl font-bold">{filteredStations.length}</h3>
-          </div>
-
-          <div className="bg-white shadow rounded p-3 text-center">
-            <p className="text-sm text-gray-500">Profile</p>
-            <h3 className="text-xl font-bold">--</h3>
-          </div>
-        </div>
-
-        {/* main */}
-        <div className="grid grid-cols-3 gap-6 flex-1 overflow-hidden">
-
-          {/* table */}
-          <div className="col-span-2 bg-white shadow rounded p-2 flex flex-col">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="font-semibold text-gray-700">
-                Police Stations Overview
-              </h3>
-
-              <input
-                type="text"
-                placeholder="Search police station..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="border px-3 py-1.5 text-sm rounded focus:ring-1 focus:ring-blue-400"
-              />
+        {!loading && !error && (
+          <>
+          
+            <div className="bg-blue-500 text-white p-3 rounded-md mb-4 shadow">
+              <h2 className="text-lg font-semibold">
+                Welcome Back, Mr Edward Young Shaba
+              </h2>
             </div>
 
-            <div className="h-[320px] overflow-y-auto border rounded">
-              <table className="w-full text-sm">
-                <thead className="sticky top-0 bg-white shadow-sm">
-                  <tr className="text-left border-b">
-                    <th className="py-2 px-3">#</th>
-                    <th className="py-2">Police Name</th>
-                    <th className="py-2">Admin Name</th>
-                    <th className="py-2">Officers</th>
-                  </tr>
-                </thead>
+          
+            <div className="grid grid-cols-3 gap-3 mb-3">
+              <div className="bg-white shadow rounded p-3 text-center">
+                <p className="text-sm text-gray-500">Total Stations</p>
+                <h3 className="text-xl font-bold">{totalStations}</h3>
+              </div>
 
-                <tbody>
-                  {filteredStations.map((station, i) => (
-                    <tr key={i} className="border-b hover:bg-gray-50">
-                      <td className="py-2 px-3">{i + 1}</td>
-                      <td className="py-2">{station.name}</td>
-                      <td className="py-2">{station.admin}</td>
-                      <td className="py-2">{station.officers}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div className="bg-white shadow rounded p-3 text-center">
+                <p className="text-sm text-gray-500">Total Officers</p>
+                <h3 className="text-xl font-bold">{totalOfficers}</h3>
+              </div>
+
+              <div className="bg-white shadow rounded p-3 text-center">
+                <p className="text-sm text-gray-500">Total Cases</p>
+                <h3 className="text-xl font-bold">{totalCases}</h3>
+              </div>
             </div>
-          </div>
 
-          {/* action buttons */}
-          <div className="bg-white shadow rounded p-8">
-            <h3 className="font-semibold mb-4 text-gray-700">
-              Quick Actions
-            </h3>
+            <div className="grid grid-cols-3 gap-6 flex-1 overflow-hidden">
+              <div className="col-span-2 bg-white shadow rounded p-2 flex flex-col">
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="font-semibold text-gray-700">
+                    Police Stations Overview
+                  </h3>
 
-            <button
-              onClick={() => navigate("/police-stations")}
-              className="w-full bg-blue-400 text-white py-2 rounded mb-3 hover:bg-blue-600 transition shadow"
-            >
-              + Create Police Station
-            </button>
+                  <input
+                    type="text"
+                    placeholder="Search police station..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="border px-3 py-1.5 text-sm rounded focus:ring-1 focus:ring-blue-400"
+                  />
+                </div>
 
-            <button
-              onClick={() => navigate("/create-admin")}
-              className="w-full bg-blue-400 text-white py-2 rounded mb-3 hover:bg-blue-600 transition shadow"
-            >
-              + Create Police Station Admin
-            </button>
+                <div className="h-[320px] overflow-y-auto border rounded">
+                  <table className="w-full text-sm">
+                    <thead className="sticky top-0 bg-white shadow-sm">
+                      <tr className="text-left border-b">
+                        <th className="py-2 px-3">#</th>
+                        <th className="py-2">Station Name</th>
+                        <th className="py-2">Location</th>
+                      </tr>
+                    </thead>
 
-            <button
-              onClick={() => navigate("/manage-accounts")}
-              className="w-full bg-blue-400 text-white py-2 rounded hover:bg-blue-600 transition shadow"
-            >
-              Manage Stations
-            </button>
-          </div>
+                    <tbody>
+                      {filteredStations.length > 0 ? (
+                        filteredStations.map((station, i) => (
+                          <tr key={station._id || i} className="border-b hover:bg-gray-50">
+                            <td className="py-2 px-3">{i + 1}</td>
+                            <td className="py-2">{station.stationName}</td>
+                            <td className="py-2">{station.location}</td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="3" className="text-center py-4 text-gray-500">
+                            No stations found
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
 
-        </div>
+              <div className="bg-white shadow rounded p-8">
+                <h3 className="font-semibold mb-4 text-gray-700">
+                  Quick Actions
+                </h3>
+
+                <button
+                  onClick={() => navigate("/police-stations")}
+                  className="w-full bg-blue-500 text-white py-2 rounded mb-3 hover:bg-blue-700 transition shadow"
+                >
+                  + Create Police Station
+                </button>
+
+                <button
+                  onClick={() => navigate("/create-admin")}
+                  className="w-full bg-blue-500 text-white py-2 rounded mb-3 hover:bg-blue-700 transition shadow"
+                >
+                  + Create Admin
+                </button>
+
+                <button
+                  onClick={() => navigate("/manage-accounts")}
+                  className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-700 transition shadow"
+                >
+                  Manage Stations
+                </button>
+              </div>
+
+            </div>
+          </>
+        )}
       </div>
 
       <Footer />

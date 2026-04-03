@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import StationHeader from "../Header/header";
+import StationHeader from "../Header/PoliceStationHeader";
 import officersData from "../Data/data";
 import Footer from "../../officer/footer/footer";
 
