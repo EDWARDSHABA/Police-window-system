@@ -1,4 +1,4 @@
-// src/components/PoliceStationManage.js - Table and Audit Log Side by Side
+// src/components/PoliceStationManage.js - "Manage Police Stations" at Top Left of Table
 import React, { useState, useEffect } from 'react';
 
 const PoliceStationManage = () => {
@@ -143,7 +143,7 @@ const PoliceStationManage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-gray-100">
+    <div className="min-h-screen bg-gray-100">
       {/* Notification */}
       {notification && (
         <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg animate-slide-in ${
@@ -226,63 +226,80 @@ const PoliceStationManage = () => {
           </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="bg-white rounded-lg shadow-md mb-6 p-4">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="🔍 Search by station name, ID, or admin..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
-        </div>
-
-        {/* Two Column Layout: Table (70%) and Audit Log (30%) - SIDE BY SIDE */}
+        {/* Two Column Layout: Table and Audit Log - SIDE BY SIDE */}
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* Police Stations Table - Left side (70% width) */}
+          {/* Police Stations Table - Left side */}
           <div className="w-full lg:w-8/12">
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              {/* Header with "Manage Police Stations" text at top left and Search at top right */}
+              <div className="p-3 border-b border-gray-200 bg-gray-50">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h2 className="text-md font-semibold text-gray-700 flex items-center gap-2">
+                      <span>🏢</span> Manage Police Stations
+                    </h2>
+                  </div>
+                  <div className="relative w-64">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <span className="text-gray-400 text-sm">🔍</span>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Search..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-8 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                    />
+                  </div>
+                </div>
+              </div>
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full table-auto">
                   <thead className="bg-gradient-to-r from-blue-900 to-blue-800">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Police ID</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-32">Police ID</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Station Name</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Admin</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Last Login</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Actions</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-36">Admin</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-28">Last Login</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-20">Status</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-28">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {filteredStations.map((station) => (
-                      <tr key={station.id} className="hover:bg-blue-50 transition-colors">
-                        <td className="px-4 py-3 font-mono text-xs text-gray-700">{station.id}</td>
-                        <td className="px-4 py-3 text-sm font-medium text-gray-900">{station.name}</td>
-                        <td className="px-4 py-3 text-sm text-gray-600">{station.admin}</td>
-                        <td className="px-4 py-3 text-xs text-gray-500">
+                      <tr key={station.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-4 py-3 font-mono text-xs text-gray-700 align-middle whitespace-nowrap">
+                          {station.id}
+                        </td>
+                        <td className="px-4 py-3 text-sm font-medium text-gray-900 align-middle">
+                          {station.name}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-600 align-middle whitespace-nowrap">
+                          {station.admin}
+                        </td>
+                        <td className="px-4 py-3 text-xs text-gray-500 align-middle whitespace-nowrap">
                           {formatLastLogin(station.lastLogin)}
                         </td>
-                        <td className="px-4 py-3">
-                          <span className="px-2 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700">
+                        <td className="px-4 py-3 align-middle">
+                          <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700 whitespace-nowrap">
                             ✓ Active
                           </span>
                         </td>
-                        <td className="px-4 py-3">
-                          <button
-                            onClick={() => handleEditStation(station)}
-                            className="text-blue-600 hover:text-blue-800 mr-2 text-sm"
-                          >
-                            ✏️ Edit
-                          </button>
-                          <button
-                            onClick={() => handleDeleteStation(station.id, station.name)}
-                            className="text-red-600 hover:text-red-800 text-sm"
-                          >
-                            🗑️ Delete
-                          </button>
+                        <td className="px-4 py-3 align-middle">
+                          <div className="flex items-center gap-2 whitespace-nowrap">
+                            <button
+                              onClick={() => handleEditStation(station)}
+                              className="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium"
+                            >
+                              ✏️ Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteStation(station.id, station.name)}
+                              className="inline-flex items-center text-red-600 hover:text-red-800 text-sm font-medium"
+                            >
+                              🗑️ Delete
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -297,26 +314,26 @@ const PoliceStationManage = () => {
             </div>
           </div>
 
-          {/* Audit Log Section - Right side (30% width) */}
+          {/* Audit Log Section - Right side */}
           <div className="w-full lg:w-4/12">
-            <div className="bg-white rounded-lg shadow-md overflow-hidden h-full">
-              <div className="px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden h-full flex flex-col">
+              <div className="px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 flex-shrink-0">
                 <h2 className="font-semibold text-gray-800 flex items-center gap-2 text-sm">
                   <span>📋</span> Audit Log
                 </h2>
               </div>
-              <div className="divide-y divide-gray-100 max-h-[500px] overflow-y-auto">
+              <div className="divide-y divide-gray-100 overflow-y-auto flex-1 max-h-[600px]">
                 {auditLogs.map((log) => (
-                  <div key={log.id} className="px-4 py-3 hover:bg-blue-50 transition-colors">
+                  <div key={log.id} className="px-4 py-3 hover:bg-gray-50 transition-colors">
                     <div className="flex items-start gap-2">
-                      <div className="text-blue-600 text-lg">📄</div>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-800">{log.action}</p>
-                        <p className="text-xs text-gray-500 mt-1">{log.details}</p>
+                      <div className="text-blue-600 text-lg flex-shrink-0">📄</div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-800 break-words">{log.action}</p>
+                        <p className="text-xs text-gray-500 mt-1 break-words">{log.details}</p>
                         <div className="flex flex-wrap gap-2 mt-2 text-xs text-gray-400">
-                          <span>🕐 {new Date(log.timestamp).toLocaleString()}</span>
-                          <span>📍 {log.location}</span>
-                          <span>👤 {log.admin}</span>
+                          <span className="whitespace-nowrap">🕐 {new Date(log.timestamp).toLocaleString()}</span>
+                          <span className="whitespace-nowrap">📍 {log.location}</span>
+                          <span className="whitespace-nowrap">👤 {log.admin}</span>
                         </div>
                       </div>
                     </div>
