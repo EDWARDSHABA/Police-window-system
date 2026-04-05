@@ -62,7 +62,7 @@ export default function HeadquartersDashboard() {
         {!loading && !error && (
           <>
           
-            <div className="bg-blue-500 text-white p-3 rounded-md mb-4 shadow">
+            <div className="bg-blue-400 text-white p-3 rounded-md mb-4 shadow">
               <h2 className="text-lg font-semibold">
                 Welcome Back, Mr Edward Young Shaba
               </h2>
@@ -143,13 +143,6 @@ export default function HeadquartersDashboard() {
                   className="w-full bg-blue-500 text-white py-2 rounded mb-3 hover:bg-blue-700 transition shadow"
                 >
                   + Create Police Station
-                </button>
-
-                <button
-                  onClick={() => navigate("/create-admin")}
-                  className="w-full bg-blue-500 text-white py-2 rounded mb-3 hover:bg-blue-700 transition shadow"
-                >
-                  + Create Admin
                 </button>
 
                 <button
