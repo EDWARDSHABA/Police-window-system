@@ -44,11 +44,11 @@ const ManageAccounts = () => {
     } else {
       const mockData = [
         { id: "MW-ZA-23-898-24", name: "Chinamwali Police Station", admin: "Sgt. Victor Max", lastLogin: new Date().toISOString(), status: "active", createdAt: "2024-01-15" },
-        { id: "MW-ZA-23-768-24", name: "6 miles Police Station", admin: "Sgt. Shalom Hilo", lastLogin: new Date().toISOString(), status: "active", createdAt: "2024-02-20" },
+        { id: "MW-ZA-23-768-24", name: "6 miles Police Station", admin: "Sgt. Martha Sawasawa", lastLogin: new Date().toISOString(), status: "active", createdAt: "2024-02-20" },
         { id: "MW-ZA-23-895-25", name: "Chikanda Police Station", admin: "Sgt. Victor Max", lastLogin: new Date().toISOString(), status: "active", createdAt: "2024-03-10" },
         { id: "MW-ZA-23-112-25", name: "Matawale Police Station", admin: "Sgt. Edward Shawa", lastLogin: new Date().toISOString(), status: "active", createdAt: "2024-01-28" },
         { id: "MW-ZA-23-898-25", name: "Domasi Police Station", admin: "Sgt. Victor Max", lastLogin: new Date().toISOString(), status: "active", createdAt: "2024-04-05" },
-        { id: "MW-ZA-23-221-26", name: "Namadzi Police Station", admin: "Sgt. Samuel Chisale", lastLogin: new Date().toISOString(), status: "active", createdAt: "2024-05-12" },
+        { id: "MW-ZA-23-221-26", name: "Namadzi Police Station", admin: "Sgt. Samuel Ken Chisale", lastLogin: new Date().toISOString(), status: "active", createdAt: "2024-05-12" },
       ];
       setStations(mockData);
       localStorage.setItem('policeStations', JSON.stringify(mockData));
