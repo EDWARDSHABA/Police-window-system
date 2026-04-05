@@ -23,22 +23,18 @@ export default function HeadquartersHeader() {
         </div>
 
         {/* NAV */}
-        <nav className="flex gap-8 text-sm font-medium">
+        <nav className="flex gap-20 text-sm font-medium">
 
           <button onClick={() => navigate("/headquarters")} className="hover:underline">
             Dashboard
           </button>
 
           <button onClick={() => navigate("/police-stations")} className="hover:underline">
-            Stations
+            Manage Stations
           </button>
 
           <button onClick={() => navigate("/manage-accounts")} className="hover:underline">
             Accounts
-          </button>
-
-          <button onClick={() => navigate("/create-admin")} className="hover:underline">
-            Create Admin
           </button>
 
           <button onClick={() => navigate("/about")} className="hover:underline">
