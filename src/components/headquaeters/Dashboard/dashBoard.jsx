@@ -12,7 +12,6 @@ export default function HeadquartersDashboard() {
 
   const navigate = useNavigate();
 
-  // fetch data
   useEffect(() => {
     const loadDashboard = async () => {
       try {
@@ -40,11 +39,12 @@ export default function HeadquartersDashboard() {
     ) || [];
 
   return (
-    <div className="h-screen flex flex-col bg-gray-100 overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-gray-100">
 
-      <HeadquartersHeader/>
+      <HeadquartersHeader />
 
-      <div className="flex-1 pt-20 px-6 pb-4 flex flex-col overflow-hidden">
+      {/* MAIN CONTENT */}
+      <div className="flex-1 pt-20 px-6 pb-10 flex flex-col">
 
         {/* Loading */}
         {loading && (
@@ -53,6 +53,7 @@ export default function HeadquartersDashboard() {
           </div>
         )}
 
+        {/* Error */}
         {error && (
           <div className="text-center text-red-500 font-semibold">
             {error}
@@ -61,15 +62,15 @@ export default function HeadquartersDashboard() {
 
         {!loading && !error && (
           <>
-          
+            {/* Welcome Banner */}
             <div className="bg-blue-400 text-white p-3 rounded-md mb-4 shadow">
               <h2 className="text-lg font-semibold">
                 Welcome Back, Mr Edward Young Shaba
               </h2>
             </div>
 
-          
-            <div className="grid grid-cols-3 gap-3 mb-3">
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-3 mb-4">
               <div className="bg-white shadow rounded p-3 text-center">
                 <p className="text-sm text-gray-500">Total Stations</p>
                 <h3 className="text-xl font-bold">{totalStations}</h3>
@@ -86,8 +87,12 @@ export default function HeadquartersDashboard() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-6 flex-1 overflow-hidden">
-              <div className="col-span-2 bg-white shadow rounded p-2 flex flex-col">
+            {/* CONTENT GRID */}
+            <div className="grid grid-cols-3 gap-6 flex-1">
+
+              {/* TABLE SECTION */}
+              <div className="col-span-2 bg-white shadow rounded p-3 flex flex-col">
+
                 <div className="flex justify-between items-center mb-3">
                   <h3 className="font-semibold text-gray-700">
                     Police Stations Overview
@@ -102,7 +107,8 @@ export default function HeadquartersDashboard() {
                   />
                 </div>
 
-                <div className="h-[320px] overflow-y-auto border rounded">
+                {/* SCROLLABLE TABLE */}
+                <div className="h-[350px] overflow-y-auto border rounded">
                   <table className="w-full text-sm">
                     <thead className="sticky top-0 bg-white shadow-sm">
                       <tr className="text-left border-b">
@@ -115,7 +121,10 @@ export default function HeadquartersDashboard() {
                     <tbody>
                       {filteredStations.length > 0 ? (
                         filteredStations.map((station, i) => (
-                          <tr key={station._id || i} className="border-b hover:bg-gray-50">
+                          <tr
+                            key={station._id || i}
+                            className="border-b hover:bg-gray-50"
+                          >
                             <td className="py-2 px-3">{i + 1}</td>
                             <td className="py-2">{station.stationName}</td>
                             <td className="py-2">{station.location}</td>
@@ -133,7 +142,8 @@ export default function HeadquartersDashboard() {
                 </div>
               </div>
 
-              <div className="bg-white shadow rounded p-8">
+              {/* QUICK ACTIONS */}
+              <div className="bg-white shadow rounded p-6">
                 <h3 className="font-semibold mb-4 text-gray-700">
                   Quick Actions
                 </h3>
@@ -158,6 +168,7 @@ export default function HeadquartersDashboard() {
         )}
       </div>
 
+      {/* FOOTER */}
       <Footer />
     </div>
   );
