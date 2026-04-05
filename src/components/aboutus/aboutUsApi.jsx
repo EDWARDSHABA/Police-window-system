@@ -5,4 +5,4 @@ const API = axios.create({
 });
 
 export const sendEmail = (data) =>
-  API.post("/send-email", data);
+  API.post("/email/send", data);
