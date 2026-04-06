@@ -34,7 +34,7 @@ export default function HeadquartersHeader() {
           </button>
 
           <button onClick={() => navigate("/manage-accounts")} className="hover:underline">
-            Accounts
+            Manage Accounts
           </button>
 
           <button onClick={() => navigate("/about")} className="hover:underline">
