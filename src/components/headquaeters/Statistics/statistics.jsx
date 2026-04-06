@@ -103,9 +103,9 @@ export default function Statistics() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
+    <div className="h-screen flex flex-col bg-gray-100">
       <HeadquartersHeader />
-      <main className="pt-24 px-6 pb-10">
+      <main className="flex-1 overflow-y-auto pt-24 px-6 pb-10">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col gap-3 mb-6">
             <h1 className="text-3xl font-semibold text-gray-900">Statistics Overview</h1>
