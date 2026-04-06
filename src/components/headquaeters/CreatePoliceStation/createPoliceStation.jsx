@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Header from "../Header/HeadQuartersHeader";
 import Footer from "../Footer/footer";
+import { sendEmail } from "../../aboutus/aboutUsApi";
 
 const CreatePoliceStationPage = () => {
   // District to shortcut mapping
@@ -47,6 +48,34 @@ const CreatePoliceStationPage = () => {
     email: "",
     address: "",
   });
+
+  const BATCH_NUMBER = "MW-FQ-33-222";
+
+  const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
+
+  const createOtpEmailMessage = ({ adminName, stationName, adminId, stationId, otp, expiresAt }) => {
+    const expiresTime = expiresAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    return `Dear ${adminName},
+
+Your police station admin account has been created for ${stationName}.
+
+Use the following one-time login OTP for your first login:
+
+OTP: ${otp}
+
+Batch Number: ${BATCH_NUMBER}
+Station ID: ${stationId}
+Admin ID: ${adminId}
+
+This OTP expires in 2 minutes, at ${expiresTime}.
+
+After logging in, please change your password immediately from your profile settings.
+
+If you did not request this account, contact the system administrator immediately.
+
+Thank you,
+Police Window System Team`;
+  };
 
   // generate ID function
   const generateId = (district) => {
@@ -110,7 +139,12 @@ const CreatePoliceStationPage = () => {
     }
 
     // Email validation
-    if (formData.email && !validateEmail(formData.email)) {
+    if (!formData.email) {
+      alert("Please enter the admin email address.");
+      return;
+    }
+
+    if (!validateEmail(formData.email)) {
       alert("Please enter a valid email address (e.g., admin@example.com).");
       return;
     }
@@ -125,13 +159,53 @@ const CreatePoliceStationPage = () => {
       });
 
       if (response.ok) {
-        alert("✅ Police Station Created Successfully!");
+        const otp = generateOTP();
+        const expiresAt = new Date(Date.now() + 2 * 60 * 1000);
+
+        const emailBody = createOtpEmailMessage({
+          adminName: formData.adminName,
+          stationName: formData.stationName,
+          adminId: formData.adminId,
+          stationId: formData.policeStationId,
+          otp,
+          expiresAt,
+        });
+
+        try {
+          await sendEmail({
+            email: formData.email,
+            name: formData.adminName,
+            subject: "Police Window System first login OTP",
+            message: emailBody,
+          });
+
+          localStorage.setItem(
+            "latestStationAdminOtp",
+            JSON.stringify({
+              email: formData.email,
+              otp,
+              expiresAt: expiresAt.toISOString(),
+              stationName: formData.stationName,
+              adminId: formData.adminId,
+            })
+          );
+
+          alert(
+            `✅ Police Station Created Successfully! OTP has been sent to ${formData.email} and expires in 2 minutes.`
+          );
+        } catch (emailError) {
+          console.error(emailError);
+          alert(
+            "✅ Police Station Created Successfully! But the OTP email could not be sent. Please retry or check email service."
+          );
+        }
 
         // reset form
         setFormData({
           stationName: "",
           district: "",
           region: "",
+          policeStationId: "",
           adminName: "",
           adminId: "",
           stationAssigned: "",
@@ -153,7 +227,7 @@ const CreatePoliceStationPage = () => {
       <Header />
 
       {/* banner */}
-      <div className="bg-blue-300 text-white p-2 rounded-md mb-4 shadow">
+      <div className="bg-blue-600 text-white p-2 rounded-md mb-4 shadow">
         <h2 className="text-lg font-regula">
           You can Create Police station and assign admin to manage the police station <br/>.
           <br/>
