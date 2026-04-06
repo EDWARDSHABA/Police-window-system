@@ -2,31 +2,22 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import HeadquartersHeader from "../Header/HeadQuartersHeader";
 import Footer from "../../officer/footer/footer";
-import { fetchHeadquarterDashboard } from "./headQuartersDashboardApi";
+import headquartersData from "../Data/heardQuartersData";
 
 export default function HeadquartersDashboard() {
   const [search, setSearch] = useState("");
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loadDashboard = async () => {
-      try {
-        setLoading(true);
-        const res = await fetchHeadquarterDashboard();
-        setDashboardData(res.data);
-        setError(null);
-      } catch (err) {
-        setError("Failed to load dashboard data");
-      } finally {
-        setLoading(false);
-      }
-    };
+    setLoading(true);
 
-    loadDashboard();
+    setTimeout(() => {
+      setDashboardData(headquartersData);
+      setLoading(false);
+    }, 500);
   }, []);
 
   const totalStations = dashboardData?.totalStations || 0;
@@ -35,35 +26,21 @@ export default function HeadquartersDashboard() {
 
   const filteredStations =
     dashboardData?.recentStations?.filter((station) =>
-      station.stationName?.toLowerCase().includes(search.toLowerCase())
+      station.stationName.toLowerCase().includes(search.toLowerCase())
     ) || [];
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
-
       <HeadquartersHeader />
 
-      {/* MAIN CONTENT */}
       <div className="flex-1 pt-20 px-6 pb-10 flex flex-col">
-
-        {/* Loading */}
-        {loading && (
+        {loading ? (
           <div className="text-center text-blue-500 font-semibold">
             Loading dashboard...
           </div>
-        )}
-
-        {/* Error */}
-        {error && (
-          <div className="text-center text-red-500 font-semibold">
-            {error}
-          </div>
-        )}
-
-        {!loading && !error && (
+        ) : (
           <>
-            {/* Welcome Banner */}
-            <div className="bg-blue-400 text-white p-3 rounded-md mb-4 shadow">
+            <div className="bg-blue-500 text-white p-3 rounded-md mb-4 shadow">
               <h2 className="text-lg font-semibold">
                 Welcome Back, Mr Edward Young Shaba
               </h2>
@@ -87,12 +64,11 @@ export default function HeadquartersDashboard() {
               </div>
             </div>
 
-            {/* CONTENT GRID */}
+            {/* content */}
             <div className="grid grid-cols-3 gap-6 flex-1">
-
-              {/* TABLE SECTION */}
+              
+              {/* table */}
               <div className="col-span-2 bg-white shadow rounded p-3 flex flex-col">
-
                 <div className="flex justify-between items-center mb-3">
                   <h3 className="font-semibold text-gray-700">
                     Police Stations Overview
@@ -107,8 +83,7 @@ export default function HeadquartersDashboard() {
                   />
                 </div>
 
-                {/* SCROLLABLE TABLE */}
-                <div className="h-[350px] overflow-y-auto border rounded">
+                <div className="h-[400px] overflow-y-auto border rounded">
                   <table className="w-full text-sm">
                     <thead className="sticky top-0 bg-white shadow-sm">
                       <tr className="text-left border-b">
@@ -119,30 +94,22 @@ export default function HeadquartersDashboard() {
                     </thead>
 
                     <tbody>
-                      {filteredStations.length > 0 ? (
-                        filteredStations.map((station, i) => (
-                          <tr
-                            key={station._id || i}
-                            className="border-b hover:bg-gray-50"
-                          >
-                            <td className="py-2 px-3">{i + 1}</td>
-                            <td className="py-2">{station.stationName}</td>
-                            <td className="py-2">{station.location}</td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan="3" className="text-center py-4 text-gray-500">
-                            No stations found
-                          </td>
+                      {filteredStations.map((station, i) => (
+                        <tr
+                          key={station._id}
+                          className="border-b hover:bg-gray-50"
+                        >
+                          <td className="py-2 px-3">{i + 1}</td>
+                          <td className="py-2">{station.stationName}</td>
+                          <td className="py-2">{station.location}</td>
                         </tr>
-                      )}
+                      ))}
                     </tbody>
                   </table>
                 </div>
               </div>
 
-              {/* QUICK ACTIONS */}
+              {/* buttons */}
               <div className="bg-white shadow rounded p-6">
                 <h3 className="font-semibold mb-4 text-gray-700">
                   Quick Actions
@@ -162,13 +129,11 @@ export default function HeadquartersDashboard() {
                   Manage Stations
                 </button>
               </div>
-
             </div>
           </>
         )}
       </div>
 
-      {/* FOOTER */}
       <Footer />
     </div>
   );
