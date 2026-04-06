@@ -3,7 +3,7 @@ import AssignDuties from '../../components/policestation/AssignDuty/assignDuties
 
 function AssignDutiesPage() {
   return (
-    <div className="h-screen w-full">
+    <div className="h-screen w-screen overflow-hidden m-2 p-10">
         <AssignDuties />
     </div>
   )
