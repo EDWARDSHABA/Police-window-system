@@ -1,105 +1,163 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import StationHeader from "../Header/PoliceStationHeader";
+import officersData from "../Data/data";
+import Footer from "../../officer/footer/footer";
 
 export default function PoliceStationDashboard() {
   const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+
+  
+  const filteredOfficers = officersData.filter((officer) =>
+    officer.name.toLowerCase().includes(search.toLowerCase()) ||
+    officer.badge.includes(search) ||
+    officer.rank.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <div className="bg-yellow-700 text-white p-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold">Police Window System</h1>
-        <div className="space-x-4">
-          <button onClick={() => navigate("/dashboard")} className="hover:underline">Dashboard</button>
-          <button onClick={() => navigate("/officers")} className="hover:underline">Officers</button>
-          <button onClick={() => navigate("/assign-duties")} className="hover:underline">Duties</button>
-          <button onClick={() => navigate("/track-cases")} className="hover:underline">Registered Cases</button>
-          <button onClick={() => navigate("/statistics")} className="hover:underline">Statistics</button>
+    <div className="h-screen flex flex-col bg-gray-100 overflow-hidden">
+
+      <StationHeader />
+
+      {/* main content */}
+      <div className="flex-1 pt-20 px-6 pb-4 flex flex-col overflow-hidden">
+
+        {/* banner */}
+        <div className="bg-blue-300 text-white p-2 rounded-md mb-4 shadow">
+          <h2 className="text-lg font-semibold">
+            Welcome back Officer, manage your station efficiently.
+          </h2>
+          <p className="text-sm opacity-90">
+            Overview of officers and station activity
+          </p>
+        </div>
+
+        {/* statistics */}
+        <div className="grid grid-cols-4 gap-3 mb-3">
+          <div className="bg-white shadow rounded p-3 text-center">
+            <p className="text-sm text-gray-500">Total Officers</p>
+            <h3 className="text-xl font-bold">{officersData.length}</h3>
+          </div>
+
+          <div className="bg-white shadow rounded p-3 text-center">
+            <p className="text-sm text-gray-500">Filtered Officers</p>
+            <h3 className="text-xl font-bold">{filteredOfficers.length}</h3>
+          </div>
+
+          <div className="bg-white shadow rounded p-3 text-center">
+            <p className="text-sm text-gray-500">Cases</p>
+            <h3 className="text-xl font-bold">--</h3>
+          </div>
+
+          <div className="bg-white shadow rounded p-3 text-center">
+            <p className="text-sm text-gray-500">Reports</p>
+            <h3 className="text-xl font-bold">--</h3>
+          </div>
+        </div>
+
+        {/* main*/}
+        <div className="grid grid-cols-3 gap-6 flex-1 overflow-hidden">
+
+          {/* table */}
+          <div className="col-span-2 bg-white shadow rounded p-3 flex flex-col">
+
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="font-semibold text-gray-700">
+                Officers Overview
+              </h3>
+
+              <input
+                type="text"
+                placeholder="Search officers..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="border px-3 py-1.5 text-sm rounded focus:ring-1 focus:ring-blue-400"
+              />
+            </div>
+
+            {/* table */}
+            <div className="h-[320px] overflow-y-auto border rounded">
+              <table className="w-full text-sm">
+
+                <thead className="sticky top-0 bg-white shadow-sm">
+                  <tr className="text-left border-b">
+                    <th className="py-2 px-3">#</th>
+                    <th className="py-2">Name</th>
+                    <th className="py-2">Badge</th>
+                    <th className="py-2">Rank</th>
+                    <th className="py-2">Status</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {filteredOfficers.length > 0 ? (
+                    filteredOfficers.map((officer, i) => (
+                      <tr key={i} className="border-b hover:bg-gray-50">
+                        <td className="py-2 px-3">{i + 1}</td>
+                        <td className="py-2">{officer.name}</td>
+                        <td className="py-2">{officer.badge}</td>
+                        <td className="py-2">{officer.rank}</td>
+                        <td className="py-2 text-green-600 font-medium">
+                          Active
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" className="text-center py-4 text-gray-500">
+                        No results found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+
+              </table>
+            </div>
+          </div>
+
+          {/* action buttons*/}
+          <div className="bg-white shadow rounded p-4">
+
+            <h3 className="font-semibold mb-4 text-gray-700">
+              Quick Actions
+            </h3>
+
+            <button
+              onClick={() => navigate("/create-officer")}
+              className="w-full bg-blue-400 text-white py-2 rounded mb-3 hover:bg-blue-600 transition shadow"
+            >
+              + Add Officer
+            </button>
+
+            <button
+              onClick={() => navigate("/assign-duties")}
+              className="w-full bg-green-400 text-white py-2 rounded mb-3 hover:bg-green-600 transition shadow"
+            >
+              Assign Duties
+            </button>
+
+            <button
+              onClick={() => navigate("/manage-officers")}
+              className="w-full bg-purple-400 text-white py-2 rounded mb-3 hover:bg-purple-600 transition shadow"
+            >
+              Manage Officers
+            </button>
+
+            <button
+              onClick={() => navigate("/track-cases")}
+              className="w-full bg-indigo-400 text-white py-2 rounded hover:bg-indigo-600 transition shadow"
+            >
+              Track Cases
+            </button>
+
+          </div>
+
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold">Officers</h2>
-          <button
-            onClick={() => navigate("/create-officer")}
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg"
-          >
-            Add new officers
-          </button>
-        </div>
+      <Footer />
 
-        {/* Search */}
-        <div className="flex justify-end mb-4">
-          <input
-            type="text"
-            placeholder="Search"
-            className="border p-2 rounded-lg"
-          />
-        </div>
-
-        {/* Table */}
-        <div className="bg-white shadow rounded-lg overflow-hidden">
-          <table className="w-full text-left">
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="p-3">Name</th>
-                <th className="p-3">Badge</th>
-                <th className="p-3">Rank</th>
-                <th className="p-3">Status</th>
-                <th className="p-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                { name: "James Mwila", badge: "1234", rank: "Inspector" },
-                { name: "Michael Kadza", badge: "1754", rank: "Inspector" },
-                { name: "Mariam Soko", badge: "1334", rank: "Constable" },
-                { name: "Frank Phiri", badge: "1554", rank: "Sergeant" },
-                { name: "Sarah Tembo", badge: "1550", rank: "Inspector" },
-                { name: "John Banda", badge: "1879", rank: "Constable" },
-              ].map((officer, index) => (
-                <tr key={index} className="border-t">
-                  <td className="p-3">{officer.name}</td>
-                  <td className="p-3">{officer.badge}</td>
-                  <td className="p-3">{officer.rank}</td>
-                  <td className="p-3 text-green-600">Active</td>
-                  <td className="p-3">
-                    <button className="text-blue-500 hover:underline">
-                      Edit
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Quick Navigation Buttons */}
-        <div className="mt-6 flex gap-4">
-          <button
-            onClick={() => navigate("/assign-duties")}
-            className="bg-green-500 text-white px-4 py-2 rounded-lg"
-          >
-            Assign Duties
-          </button>
-
-          <button
-            onClick={() => navigate("/manage-officers")}
-            className="bg-purple-500 text-white px-4 py-2 rounded-lg"
-          >
-            Manage Officers
-          </button>
-
-          <button
-            onClick={() => navigate("/track-cases")}
-            className="bg-indigo-500 text-white px-4 py-2 rounded-lg"
-          >
-            Track Cases
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

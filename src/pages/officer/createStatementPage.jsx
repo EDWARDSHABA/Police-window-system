@@ -3,7 +3,7 @@ import CreateStatement from '../../components/officer/CreateStatement/createStat
 
 function CreateStatementPage() {
   return (
-    <div className="h-screen w-full">
+    <div className="min-h-screen w-screen m-0 p-0">
         <CreateStatement />
     </div>
   )
