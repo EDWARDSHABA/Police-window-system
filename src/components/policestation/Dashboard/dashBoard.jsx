@@ -1,26 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import PoliceStationManage from "./profile";
+
+const profileIcon = new URL("../../../assets/profile.png", import.meta.url).href;
 
 export default function PoliceStationDashboard() {
   const navigate = useNavigate();
+  const [showProfile, setShowProfile] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
       <div className="bg-yellow-700 text-white p-4 flex justify-between items-center">
         <h1 className="text-xl font-bold">Police Window System</h1>
-        <div className="space-x-4">
+        <div className="space-x-4 flex items-center">
           <button onClick={() => navigate("/dashboard")} className="hover:underline">Dashboard</button>
           <button onClick={() => navigate("/officers")} className="hover:underline">Officers</button>
           <button onClick={() => navigate("/assign-duties")} className="hover:underline">Duties</button>
           <button onClick={() => navigate("/track-cases")} className="hover:underline">Registered Cases</button>
           <button onClick={() => navigate("/statistics")} className="hover:underline">Statistics</button>
+          <button
+            onClick={() => setShowProfile(!showProfile)}
+            className="ml-auto hover:opacity-80 transition"
+          >
+            <img src={profileIcon} alt="" className="h-12 w-12 rounded-full object-cover border-2 border-white" />
+          </button>
         </div>
       </div>
 
       {/* Content */}
       <div className="p-6">
-        <div className="flex justify-between items-center mb-4">
+        {showProfile && (
+          <button
+            onClick={() => setShowProfile(false)}
+            className="fixed top-20 left-6 inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-300 transition z-50"
+          >
+            ←
+          </button>
+        )}
+        {showProfile ? (
+          <div>
+            <PoliceStationManage />
+          </div>
+        ) : (
+          <>
+            <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Officers</h2>
           <button
             onClick={() => navigate("/create-officer")}
@@ -99,6 +123,8 @@ export default function PoliceStationDashboard() {
             Track Cases
           </button>
         </div>
+          </>
+        )}
       </div>
     </div>
   );
