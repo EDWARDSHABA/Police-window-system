@@ -44,7 +44,7 @@ export default function HeadquartersHeader() {
           </button>
 
           <button onClick={() => navigate("/headquarters/police-stations")} className="hover:underline">
-            Manage Stations
+            Stations
           </button>
 
           <button onClick={() => navigate("/statistics")} className="hover:underline">

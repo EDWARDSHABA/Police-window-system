@@ -236,7 +236,7 @@ const ManageAccounts = () => {
 
       <div className="flex-1 flex flex-col px-6 py-4">
         <div className="mb-4 flex-shrink-0">
-          <div className="bg-gradient-to-r from-blue-300 to-blue-300 rounded-lg shadow-md p-4 border-l-4 border-yellow-400">
+          <div className="bg-gradient-to-r from-blue-300 to-blue-300 mt-7 rounded-lg shadow-md p-4 border-l-4 border-yellow-400">
             <p className="text-white text-md font-medium">
               Manage Police Stations responsibly, failing to comply by the law.
             </p>
