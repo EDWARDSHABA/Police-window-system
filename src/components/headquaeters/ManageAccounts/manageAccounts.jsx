@@ -226,7 +226,7 @@ const ManageAccounts = () => {
       <div className="flex-1 flex flex-col px-6 py-4">
         {/* Blue Compliance Card */}
         <div className="mb-4 flex-shrink-0">
-          <div className="bg-gradient-to-r from-blue-500 to-blue-500 rounded-lg shadow-md p-4 border-l-4 border-yellow-400">
+          <div className="bg-gradient-to-r from-blue-300 to-blue-300 rounded-lg shadow-md p-4 border-l-4 border-yellow-400">
             <p className="text-white text-md font-medium">
               Manage Police Stations responsibly, failing to comply by the law.
             </p>
@@ -242,8 +242,8 @@ const ManageAccounts = () => {
               <div className="p-4 border-b border-gray-200 bg-gray-50 flex-shrink-0">
                 <div className="flex justify-between items-center">
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-700 flex items-center gap-2">
-                      <span className="text-xl">🏢</span> Manage Police Stations
+                    <h2 className="text-lg font-bold text-gray-700 flex items-center gap-2">
+                       Manage Police Stations
                     </h2>
                   </div>
                   <div className="relative w-72">
@@ -326,7 +326,7 @@ const ManageAccounts = () => {
             <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full">
               <div className="px-5 py-3.5 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 flex-shrink-0">
                 <h2 className="font-semibold text-gray-800 flex items-center gap-2 text-base">
-                  <span className="text-lg">📋</span> Audit Log
+                  Audit Log
                   <span className="text-xs text-gray-500 ml-2">(Auto-deletes after 48 hours)</span>
                 </h2>
               </div>
