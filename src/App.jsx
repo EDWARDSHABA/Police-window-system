@@ -5,6 +5,7 @@ import CreatePoliceStationAdminPage from "./pages/headquarters/createPoliceStati
 import PoliceStationPage from "./pages/headquarters/createPoliceStationPage";
 import PolicestationsPage from "./pages/headquarters/policestationsPage";
 import ManageAccountsPage from "./pages/headquarters/manageAccountsPage";
+import StatisticsPage from "./pages/headquarters/statisticsPage";
 
 import PoliceStationDashboardPage from "./pages/policestation/DashboardPage";
 import ManageOfficersPage from "./pages/policestation/manageOfficersPage";
@@ -36,12 +37,8 @@ function App() {
         <Route path="/headquarters/police-stations" element={<PolicestationsPage />} />
         <Route path="/headquarters/create-police-station" element={<PoliceStationPage />} />
         <Route path="/manage-accounts" element={<ManageAccountsPage />} />
-<<<<<<< HEAD
         <Route path="/statistics" element={<StatisticsPage />} />
         <Route path="/police-stations" element={<PoliceStationPage />} />
-=======
-      
->>>>>>> 043a3c7422a43d5dbabc304d479a3da27c976f7e
 
         {/* police station */}
         <Route path="/dashboard" element={<PoliceStationDashboardPage />} />
