@@ -3,7 +3,7 @@ import PoliceStation from '../../components/headquaeters/CreatePoliceStation/cre
 
 function PoliceStationPage() {
   return (
-    <div className="min-h-screen w-full overflow-auto m-0 p-0">
+    <div className="min-h-screen w-full overflow-auto m-0 p-0 bg-white">
         <PoliceStation />
     </div>
   )
