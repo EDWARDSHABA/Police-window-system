@@ -1,11 +1,9 @@
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
-import HomePage from "./pages/HomePage";
 
 import HeadquartersPage from "./pages/headquarters/dashboardPage";
 import CreatePoliceStationAdminPage from "./pages/headquarters/createPoliceStationAdminPage";
 import PoliceStationPage from "./pages/headquarters/createPoliceStationPage";
+import PolicestationsPage from "./pages/headquarters/policestationsPage";
 import ManageAccountsPage from "./pages/headquarters/manageAccountsPage";
 import StatisticsPage from "./pages/headquarters/statisticsPage";
 
@@ -30,29 +28,33 @@ function App() {
     <Router>
       <Routes>
 
-      
-        <Route path="/" element={<HomePage />} />
+        {/* landing page */}
+        <Route path="/" element={<HeadquartersPage />} />
 
-  
+        {/* headquarters */}
         <Route path="/headquarters" element={<HeadquartersPage />} />
-        <Route path="/create-admin" element={<CreatePoliceStationAdminPage />} />
-        <Route path="/police-stations" element={<PoliceStationPage />} />
+        <Route path="/headquarters/create-admin" element={<CreatePoliceStationAdminPage />} />
+        <Route path="/headquarters/police-stations" element={<PolicestationsPage />} />
+        <Route path="/headquarters/create-police-station" element={<PoliceStationPage />} />
         <Route path="/manage-accounts" element={<ManageAccountsPage />} />
         <Route path="/statistics" element={<StatisticsPage />} />
+        <Route path="/police-stations" element={<PoliceStationPage />} />
 
-  
+        {/* police station */}
         <Route path="/dashboard" element={<PoliceStationDashboardPage />} />
         <Route path="/manage-officers" element={<ManageOfficersPage />} />
         <Route path="/assign-duties" element={<AssignDutiesPage />} />
         <Route path="/track-cases" element={<TrackCasesPage />} />
         <Route path="/create-officer" element={<CreateOfficer />} />
 
+        {/* officer pages */}
         <Route path="/officer-dashboard" element={<OfficerDashboardPage />} />
         <Route path="/register-case" element={<RegisterCasePage />} />
         <Route path="/update-case" element={<UpdateCasePage />} />
         <Route path="/create-statement" element={<CreateStatementPage />} />
         <Route path="/view-cases" element={<ViewCasesPage />} />
 
+        {/*general pages*/}
         <Route path="/notifications" element={<NotificationPage />} />
         <Route path="/about" element={<AboutUsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
