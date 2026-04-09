@@ -226,6 +226,8 @@ Police Window System Team`;
     <div className="bg-gray-100 h-screen overflow-y-auto p-6 pt-15">
       <Header />
 
+      <div className="flex-1 overflow-y-auto">
+
       {/* banner */}
       <div className="bg-blue-600 text-white p-2 rounded-md mb-4 shadow">
         <h2 className="text-lg font-regula">
@@ -238,8 +240,7 @@ Police Window System Team`;
       </div>
 
       <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow">
-
-        <h2 className="text-xl font-bold mb-4 text-blue-900">
+        <h2 className="text-2xl font-extrabold mb-4 text-blue-600">
           Police Station Information
         </h2>
 
@@ -401,6 +402,7 @@ Police Window System Team`;
             </button>
           </div>
         </form>
+      </div>
       </div>
 
       <Footer />
