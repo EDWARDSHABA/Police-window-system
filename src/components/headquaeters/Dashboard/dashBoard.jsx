@@ -40,7 +40,7 @@ export default function HeadquartersDashboard() {
           </div>
         ) : (
           <>
-            <div className="bg-blue-500 text-white p-3 rounded-md mb-4 shadow">
+            <div className="bg-blue-300 text-white p-3 rounded-md mb-4 shadow">
               <h2 className="text-lg font-semibold">
                 Welcome Back, Mr Edward Young Shaba
               </h2>
