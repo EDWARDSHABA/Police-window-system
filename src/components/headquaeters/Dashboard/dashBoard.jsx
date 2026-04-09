@@ -123,7 +123,7 @@ export default function HeadquartersDashboard() {
                 </button>
 
                 <button
-                  onClick={() => navigate("/manage-accounts")}
+                  onClick={() => navigate("/headquarters/police-stations")}
                   className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-700 transition shadow"
                 >
                   Manage Stations

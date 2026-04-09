@@ -19,7 +19,7 @@ export default function HeadquartersHeader() {
             alt="Logo"
             className="h-12 w-auto object-contain"
           />
-          <h2 className="text-lg font-bold">HEADQUARTERS SYSTEM</h2>
+          <h2 className="text-lg font-bold">POLICE WINDOW - HEADQUARTERS SYSTEM</h2>
         </div>
 
         {/* NAV */}
@@ -29,7 +29,7 @@ export default function HeadquartersHeader() {
             Dashboard
           </button>
 
-          <button onClick={() => navigate("/police-stations")} className="hover:underline">
+          <button onClick={() => navigate("/headquarters/police-stations")} className="hover:underline">
             Manage Stations
           </button>
 
