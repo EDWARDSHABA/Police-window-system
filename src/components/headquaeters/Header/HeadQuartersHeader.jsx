@@ -7,7 +7,7 @@ export default function HeadquartersHeader() {
   const navigate = useNavigate();
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-[#574726] text-white shadow-md z-50">
+    <header className="fixed top-0 left-0 w-full bg-yellow-700 text-white shadow-md z-50">
 
       {/* MAIN HEADER */}
       <div className="h-16 flex justify-between items-center px-6">
@@ -31,6 +31,10 @@ export default function HeadquartersHeader() {
 
           <button onClick={() => navigate("/police-stations")} className="hover:underline">
             Manage Stations
+          </button>
+
+          <button onClick={() => navigate("/statistics")} className="hover:underline">
+            Statistics
           </button>
 
           <button onClick={() => navigate("/manage-accounts")} className="hover:underline">
