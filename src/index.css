@@ -38,14 +38,24 @@
 
 /* 🔥 CRITICAL FIX (FULL SCREEN + NO SCROLL) */
 html, body, #root {
-  height: 100%;
+  min-height: 100%;
   width: 100%;
-  margin: 10;
-  padding: 10;
-  overflow: hidden; /* 🚨 THIS STOPS PAGE MOVEMENT */
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
-/* ❌ REMOVE CENTERED BOX (THIS WAS BREAKING FULL SCREEN) */
+/* Hide native scrollbars while preserving scroll behavior */
+.scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
 #root {
   display: flex;
   flex-direction: column;

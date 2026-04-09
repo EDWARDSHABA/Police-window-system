@@ -223,11 +223,11 @@ Police Window System Team`;
   };
 
   return (
-    <div className="bg-gray-100 h-screen overflow-y-auto p-6 pt-15">
+    <div className="bg-gray-100 min-h-screen overflow-y-auto p-6 pt-15 scrollbar-hidden">
       <Header />
 
       {/* banner */}
-      <div className="bg-blue-600 text-white p-2 rounded-md mb-4 shadow">
+      <div className="bg-blue-300 text-white p-2 rounded-md mb-4 shadow">
         <h2 className="text-lg font-regula">
           You can Create Police station and assign admin to manage the police station <br/>.
           <br/>
