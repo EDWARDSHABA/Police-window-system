@@ -2,7 +2,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="relative left-1/2 -translate-x-1/2 w-screen">
+    <footer className="w-full">
 
       {/* Top Blue Bar */}
       <div className="bg-blue-900 text-white text-center text-sm py-1">

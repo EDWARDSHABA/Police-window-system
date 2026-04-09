@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../Header/HeadQuartersHeader";
 import Footer from "../Footer/footer";
 import { sendEmail } from "../../aboutus/aboutUsApi";
@@ -48,6 +49,10 @@ const CreatePoliceStationPage = () => {
     email: "",
     address: "",
   });
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successModalMessage, setSuccessModalMessage] = useState("");
+  const [isEmailSent, setIsEmailSent] = useState(true);
+  const navigate = useNavigate();
 
   const BATCH_NUMBER = "MW-FQ-33-222";
 
@@ -171,6 +176,8 @@ Police Window System Team`;
           expiresAt,
         });
 
+        let emailMessage = `✅ Police Station "${formData.stationName}" created successfully.`;
+
         try {
           await sendEmail({
             email: formData.email,
@@ -189,30 +196,15 @@ Police Window System Team`;
               adminId: formData.adminId,
             })
           );
-
-          alert(
-            `✅ Police Station Created Successfully! OTP has been sent to ${formData.email} and expires in 2 minutes.`
-          );
+          setIsEmailSent(true);
         } catch (emailError) {
           console.error(emailError);
-          alert(
-            "✅ Police Station Created Successfully! But the OTP email could not be sent. Please retry or check email service."
-          );
+          emailMessage += " OTP email could not be sent.";
+          setIsEmailSent(false);
         }
 
-        // reset form
-        setFormData({
-          stationName: "",
-          district: "",
-          region: "",
-          policeStationId: "",
-          adminName: "",
-          adminId: "",
-          stationAssigned: "",
-          phone: "",
-          email: "",
-          address: "",
-        });
+        setSuccessModalMessage(emailMessage);
+        setShowSuccessModal(true);
       } else {
         alert("❌ Failed to create station");
       }
@@ -223,10 +215,10 @@ Police Window System Team`;
   };
 
   return (
-    <div className="bg-gray-100 h-screen overflow-y-auto p-6 pt-15">
+    <div className="flex flex-col min-h-screen bg-gray-100">
       <Header />
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto p-6 mt-16">
 
       {/* banner */}
       <div className="bg-blue-600 text-white p-2 rounded-md mb-4 shadow">
@@ -240,7 +232,7 @@ Police Window System Team`;
       </div>
 
       <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow">
-        <h2 className="text-2xl font-extrabold mb-4 text-blue-600">
+        <h2 className="text-3xl font-extrabold mb-4 text-blue-800 tracking-tight">
           Police Station Information
         </h2>
 
@@ -405,6 +397,43 @@ Police Window System Team`;
       </div>
       </div>
 
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <h3 className="text-xl font-bold text-gray-900 mb-3">Station Created</h3>
+            <p className="text-gray-700 mb-6">{successModalMessage}</p>
+            <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+              <button
+                onClick={() => {
+                  setShowSuccessModal(false);
+                  setFormData({
+                    stationName: "",
+                    district: "",
+                    region: "",
+                    policeStationId: "",
+                    adminName: "",
+                    adminId: "",
+                    stationAssigned: "",
+                    phone: "",
+                    email: "",
+                    address: "",
+                  });
+                  navigate("/headquarters/police-stations");
+                }}
+                className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+              >
+                Ok
+              </button>
+              <button
+                onClick={() => setShowSuccessModal(false)}
+                className="rounded border border-gray-300 bg-white px-4 py-2 text-gray-700 hover:bg-gray-100"
+              >
+                Edit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <Footer />
     </div>
   );
