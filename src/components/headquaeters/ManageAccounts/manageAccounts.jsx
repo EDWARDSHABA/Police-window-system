@@ -2,40 +2,33 @@
 import React, { useState, useEffect } from 'react';
 import HeadquartersHeader from '../Header/HeadQuartersHeader';
 import Footer from '../../officer/footer/footer';
+import EditPoliceStation from '../ManageAccounts/editAccount';
+
 const ManageAccounts = () => {
   const [stations, setStations] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingStation, setEditingStation] = useState(null);
+  const [editingStation, setEditingStation] = useState(null); // null = list view, object = edit view
   const [formData, setFormData] = useState({ id: '', name: '', admin: '' });
   const [notification, setNotification] = useState(null);
   const [auditLogs, setAuditLogs] = useState([]);
-  
 
-  // 48 hours in milliseconds
   const FORTY_EIGHT_HOURS = 48 * 60 * 60 * 1000;
 
   useEffect(() => {
     loadData();
-    // Clean up old audit logs every hour
     const interval = setInterval(() => {
       cleanupOldAuditLogs();
-    }, 60 * 60 * 1000); // Check every hour
-    
+    }, 60 * 60 * 1000);
     return () => clearInterval(interval);
-    
   }, []);
-  
 
   const cleanupOldAuditLogs = () => {
     const now = new Date();
     const filteredLogs = auditLogs.filter(log => {
       const logDate = new Date(log.timestamp);
-      const timeDiff = now - logDate;
-      return timeDiff < FORTY_EIGHT_HOURS;
-      
+      return (now - logDate) < FORTY_EIGHT_HOURS;
     });
-    
     if (filteredLogs.length !== auditLogs.length) {
       setAuditLogs(filteredLogs);
       localStorage.setItem('auditLogs', JSON.stringify(filteredLogs));
@@ -61,12 +54,10 @@ const ManageAccounts = () => {
     const storedLogs = localStorage.getItem('auditLogs');
     if (storedLogs) {
       const parsedLogs = JSON.parse(storedLogs);
-      // Filter out logs older than 48 hours on load
       const now = new Date();
       const freshLogs = parsedLogs.filter(log => {
         const logDate = new Date(log.timestamp);
-        const timeDiff = now - logDate;
-        return timeDiff < FORTY_EIGHT_HOURS;
+        return (now - logDate) < FORTY_EIGHT_HOURS;
       });
       setAuditLogs(freshLogs);
       localStorage.setItem('auditLogs', JSON.stringify(freshLogs));
@@ -80,26 +71,17 @@ const ManageAccounts = () => {
     }
   };
 
-  // Function to generate auto Police ID
   const generatePoliceId = () => {
-    const year = new Date().getFullYear().toString().slice(-2);
-    const randomNum = Math.floor(Math.random() * 900) + 100;
-    const lastTwoDigits = Math.floor(Math.random() * 90) + 10;
-    
-    // Get the last used sequence number
     const existingIds = stations.map(s => s.id);
     let sequence = 1;
-    
     if (existingIds.length > 0) {
-      // Extract sequence numbers from existing IDs
       const sequences = existingIds.map(id => {
         const match = id.match(/MW-ZA-23-(\d+)-/);
         return match ? parseInt(match[1]) : 0;
       });
-      const maxSequence = Math.max(...sequences, 0);
-      sequence = maxSequence + 1;
+      sequence = Math.max(...sequences, 0) + 1;
     }
-    
+    const randomNum = Math.floor(Math.random() * 900) + 100;
     return `MW-ZA-23-${sequence.toString().padStart(3, '0')}-${randomNum}`;
   };
 
@@ -134,10 +116,25 @@ const ManageAccounts = () => {
     setIsModalOpen(true);
   };
 
+  // ── Clicking Edit switches to the EditPoliceStation full-page view ──
   const handleEditStation = (station) => {
     setEditingStation(station);
-    setFormData({ id: station.id, name: station.name, admin: station.admin });
-    setIsModalOpen(true);
+  };
+
+  // ── Called by <EditPoliceStation /> when Save Changes is clicked ──
+  const handleSaveEdit = (updatedStation) => {
+    const updated = stations.map(s =>
+      s.id === updatedStation.id ? { ...s, ...updatedStation } : s
+    );
+    saveStations(updated);
+    addAuditLog(
+      `Updated police station: ${updatedStation.name}`,
+      "Current User",
+      `Station ${updatedStation.id} information updated`,
+      "Management Console"
+    );
+    showNotification(`${updatedStation.name} has been updated`);
+    setEditingStation(null); // go back to list
   };
 
   const handleDeleteStation = (id, name) => {
@@ -155,35 +152,23 @@ const ManageAccounts = () => {
       showNotification('Please fill all fields', 'error');
       return;
     }
-
-    if (editingStation) {
-      const updated = stations.map(s => 
-        s.id === editingStation.id ? { ...s, name: formData.name, admin: formData.admin } : s
-      );
-      saveStations(updated);
-      addAuditLog(`Updated police station: ${formData.name}`, "Current User", `Station ${formData.id} information updated`, "Management Console");
-      showNotification(`${formData.name} has been updated`);
-    } else {
-      // Check if ID already exists (should not happen with auto-generation, but just in case)
-      if (stations.some(s => s.id === formData.id)) {
-        // Regenerate a new ID if collision occurs
-        const newId = generatePoliceId();
-        setFormData({ ...formData, id: newId });
-        showNotification('ID collision detected, new ID generated', 'error');
-        return;
-      }
-      const newStation = { 
-        id: formData.id,
-        name: formData.name, 
-        admin: formData.admin,
-        status: 'active', 
-        lastLogin: new Date().toISOString(),
-        createdAt: new Date().toISOString().split('T')[0]
-      };
-      saveStations([...stations, newStation]);
-      addAuditLog(`Registered new police station: ${formData.name}`, "Current User", `Station ${formData.id} added to registry with admin ${formData.admin}`, "Management Console");
-      showNotification(`${formData.name} has been registered`);
+    if (stations.some(s => s.id === formData.id)) {
+      const newId = generatePoliceId();
+      setFormData({ ...formData, id: newId });
+      showNotification('ID collision detected, new ID generated', 'error');
+      return;
     }
+    const newStation = {
+      id: formData.id,
+      name: formData.name,
+      admin: formData.admin,
+      status: 'active',
+      lastLogin: new Date().toISOString(),
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+    saveStations([...stations, newStation]);
+    addAuditLog(`Registered new police station: ${formData.name}`, "Current User", `Station ${formData.id} added to registry with admin ${formData.admin}`, "Management Console");
+    showNotification(`${formData.name} has been registered`);
     setIsModalOpen(false);
   };
 
@@ -195,7 +180,6 @@ const ManageAccounts = () => {
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMins / 60);
     const diffDays = Math.floor(diffHours / 24);
-
     if (diffMins < 1) return 'Just now';
     if (diffMins < 60) return `${diffMins} min ago`;
     if (diffHours < 24) return `${diffHours} hrs ago`;
@@ -208,9 +192,38 @@ const ManageAccounts = () => {
     station.admin.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // ── If a station is selected for editing, render EditPoliceStation full-screen ──
+  if (editingStation) {
+    return (
+      <>
+        {notification && (
+          <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg animate-slide-in ${
+            notification.type === 'error' ? 'bg-red-600' : 'bg-emerald-600'
+          } text-white`}>
+            {notification.message}
+          </div>
+        )}
+        <HeadquartersHeader />
+        <EditPoliceStation
+          station={editingStation}
+          onClose={() => setEditingStation(null)}
+          onSave={handleSaveEdit}
+        />
+        <Footer />
+        <style>{`
+          @keyframes slide-in {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+          }
+          .animate-slide-in { animation: slide-in 0.3s ease-out; }
+        `}</style>
+      </>
+    );
+  }
+
+  // ── Default: list/manage view ──
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      {/* Notification */}
       {notification && (
         <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg animate-slide-in ${
           notification.type === 'error' ? 'bg-red-600' : 'bg-emerald-600'
@@ -218,34 +231,27 @@ const ManageAccounts = () => {
           {notification.message}
         </div>
       )}
-       <HeadquartersHeader />
 
-      {/* Header has been removed - Add your custom header above this component */}
+      <HeadquartersHeader />
 
-      {/* Main Content - Full width */}
       <div className="flex-1 flex flex-col px-6 py-4">
-        {/* Blue Compliance Card */}
         <div className="mb-4 flex-shrink-0">
-          <div className="bg-gradient-to-r from-blue-500 to-blue-500 rounded-lg shadow-md p-4 border-l-4 border-yellow-400">
+          <div className="bg-gradient-to-r from-blue-300 to-blue-300 rounded-lg shadow-md p-4 border-l-4 border-yellow-400">
             <p className="text-white text-md font-medium">
               Manage Police Stations responsibly, failing to comply by the law.
             </p>
           </div>
         </div>
 
-        {/* Two Column Layout: Table and Audit Log - Full height */}
         <div className="flex flex-1 flex-col lg:flex-row gap-6 min-h-0">
-          {/* Police Stations Table - Left side */}
+          {/* Police Stations Table */}
           <div className="w-full lg:w-8/12 flex flex-col min-h-0">
             <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full">
-              {/* Header with "Manage Police Stations" text at top left and Search at top right */}
               <div className="p-4 border-b border-gray-200 bg-gray-50 flex-shrink-0">
                 <div className="flex justify-between items-center">
-                  <div>
-                    <h2 className="text-lg font-semibold text-gray-700 flex items-center gap-2">
-                      <span className="text-xl">🏢</span> Manage Police Stations
-                    </h2>
-                  </div>
+                  <h2 className="text-lg font-bold text-gray-700 flex items-center gap-2">
+                    Manage Police Stations
+                  </h2>
                   <div className="relative w-72">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <span className="text-gray-400 text-sm">🔍</span>
@@ -275,18 +281,10 @@ const ManageAccounts = () => {
                   <tbody className="divide-y divide-gray-200">
                     {filteredStations.map((station) => (
                       <tr key={station.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-5 py-3.5 font-mono text-sm text-gray-700 align-middle whitespace-nowrap">
-                          {station.id}
-                        </td>
-                        <td className="px-5 py-3.5 text-sm font-medium text-gray-900 align-middle">
-                          {station.name}
-                        </td>
-                        <td className="px-5 py-3.5 text-sm text-gray-600 align-middle whitespace-nowrap">
-                          {station.admin}
-                        </td>
-                        <td className="px-5 py-3.5 text-sm text-gray-500 align-middle whitespace-nowrap">
-                          {formatLastLogin(station.lastLogin)}
-                        </td>
+                        <td className="px-5 py-3.5 font-mono text-sm text-gray-700 align-middle whitespace-nowrap">{station.id}</td>
+                        <td className="px-5 py-3.5 text-sm font-medium text-gray-900 align-middle">{station.name}</td>
+                        <td className="px-5 py-3.5 text-sm text-gray-600 align-middle whitespace-nowrap">{station.admin}</td>
+                        <td className="px-5 py-3.5 text-sm text-gray-500 align-middle whitespace-nowrap">{formatLastLogin(station.lastLogin)}</td>
                         <td className="px-5 py-3.5 align-middle">
                           <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700 whitespace-nowrap">
                             ✓ Active
@@ -298,13 +296,13 @@ const ManageAccounts = () => {
                               onClick={() => handleEditStation(station)}
                               className="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
                             >
-                               Edit
+                              Edit
                             </button>
                             <button
                               onClick={() => handleDeleteStation(station.id, station.name)}
-                              className="inline-flex items-center text-green-600 hover:text-gree-800 text-sm font-medium transition-colors"
+                              className="inline-flex items-center text-green-600 hover:text-green-800 text-sm font-medium transition-colors"
                             >
-                               Deactivate
+                              Deactivate
                             </button>
                           </div>
                         </td>
@@ -321,12 +319,12 @@ const ManageAccounts = () => {
             </div>
           </div>
 
-          {/* Audit Log Section - Right side */}
+          {/* Audit Log */}
           <div className="w-full lg:w-4/12 flex flex-col min-h-0">
             <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full">
               <div className="px-5 py-3.5 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 flex-shrink-0">
                 <h2 className="font-semibold text-gray-800 flex items-center gap-2 text-base">
-                  <span className="text-lg">📋</span> Audit Log
+                  Audit Log
                   <span className="text-xs text-gray-500 ml-2">(Auto-deletes after 48 hours)</span>
                 </h2>
               </div>
@@ -345,9 +343,9 @@ const ManageAccounts = () => {
                           <p className="text-sm font-medium text-gray-800 break-words">{log.action}</p>
                           <p className="text-xs text-gray-500 mt-1 break-words">{log.details}</p>
                           <div className="flex flex-wrap gap-3 mt-2 text-xs text-gray-400">
-                            <span className="whitespace-nowrap"> {new Date(log.timestamp).toLocaleString()}</span>
-                            <span className="whitespace-nowrap"> {log.location}</span>
-                            <span className="whitespace-nowrap"> {log.admin}</span>
+                            <span className="whitespace-nowrap">{new Date(log.timestamp).toLocaleString()}</span>
+                            <span className="whitespace-nowrap">{log.location}</span>
+                            <span className="whitespace-nowrap">{log.admin}</span>
                           </div>
                         </div>
                       </div>
@@ -360,12 +358,12 @@ const ManageAccounts = () => {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Add New Station Modal (unchanged) */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-md w-full p-6 shadow-xl">
             <h3 className="text-lg font-semibold mb-4 text-blue-900">
-              {editingStation ? '✏️ Edit Police Station' : '➕ Register New Police Station'}
+              ➕ Register New Police Station
             </h3>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
@@ -412,7 +410,7 @@ const ManageAccounts = () => {
                   type="submit"
                   className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                 >
-                  {editingStation ? 'Update Station' : 'Register Station'}
+                  Register Station
                 </button>
               </div>
             </form>
@@ -422,19 +420,12 @@ const ManageAccounts = () => {
 
       <style>{`
         @keyframes slide-in {
-          from {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
         }
-        .animate-slide-in {
-          animation: slide-in 0.3s ease-out;
-        }
+        .animate-slide-in { animation: slide-in 0.3s ease-out; }
       `}</style>
+
       <Footer />
     </div>
   );

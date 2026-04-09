@@ -24,12 +24,17 @@ export default function HeadquartersHeader() {
     <header className="fixed top-0 left-0 w-full bg-yellow-700 text-white shadow-md z-50">
       <div className="h-16 flex items-center w-full px-0">
 
-        {/* Logo */}
-        <div className="flex items-center gap-3 pl-0">
-          <div className="bg-white px-4 py-2 shadow-sm ml-0">
-            <img src={logo} alt="Logo" className="h-12 w-auto object-contain" />
-          </div>
-          <h2 className="text-lg font-bold">HEADQUARTERS SYSTEM</h2>
+      {/* MAIN HEADER */}
+      <div className="h-16 flex justify-between items-center px-6">
+
+        {/* LOGO */}
+        <div className="flex items-center gap-3">
+          <img
+            src={logo}
+            alt="Logo"
+            className="h-12 w-auto object-contain"
+          />
+          <h2 className="text-lg font-bold">POLICE WINDOW - HEADQUARTERS SYSTEM</h2>
         </div>
 
         {/* Nav */}
@@ -38,8 +43,12 @@ export default function HeadquartersHeader() {
             Dashboard
           </button>
 
-          <button onClick={() => navigate("/police-stations")} className="hover:underline">
-            Police Stations
+          <button onClick={() => navigate("/headquarters/police-stations")} className="hover:underline">
+            Manage Stations
+          </button>
+
+          <button onClick={() => navigate("/statistics")} className="hover:underline">
+            Statistics
           </button>
 
           <button onClick={() => navigate("/manage-accounts")} className="hover:underline">
@@ -97,6 +106,7 @@ export default function HeadquartersHeader() {
             </div>
           )}
         </div>
+      </div>
       </div>
 
       <div className="h-1 w-full bg-blue-500"></div>

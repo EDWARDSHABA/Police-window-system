@@ -37,6 +37,37 @@ const CreatePoliceStationPage = () => {
     Zomba: "ZO",
   };
 
+  const districtRegionMap = {
+    Balaka: "Southern",
+    Blantyre: "Southern",
+    Chikwawa: "Southern",
+    Chiradzulu: "Southern",
+    Chitipa: "Northern",
+    Dedza: "Central",
+    Dowa: "Central",
+    Karonga: "Northern",
+    Kasungu: "Central",
+    Likoma: "Northern",
+    Lilongwe: "Central",
+    Machinga: "Southern",
+    Mangochi: "Southern",
+    Mchinji: "Central",
+    Mulanje: "Southern",
+    Mwanza: "Southern",
+    Mzimba: "Northern",
+    Neno: "Southern",
+    "Nkhata Bay": "Northern",
+    Nkhotakota: "Central",
+    Nsanje: "Southern",
+    Ntcheu: "Central",
+    Ntchisi: "Central",
+    Phalombe: "Southern",
+    Rumphi: "Northern",
+    Salima: "Central",
+    Thyolo: "Southern",
+    Zomba: "Southern",
+  };
+
   const [formData, setFormData] = useState({
     stationName: "",
     district: "",
@@ -113,9 +144,11 @@ Police Window System Team`;
     const { name, value } = e.target;
     if (name === 'district') {
       const generatedId = generateId(value);
+      const region = districtRegionMap[value] || "";
       setFormData({
         ...formData,
         district: value,
+        region,
         policeStationId: generatedId,
       });
     } else if (name === 'adminName') {
@@ -221,7 +254,7 @@ Police Window System Team`;
       <div className="flex-1 overflow-y-auto p-6 mt-16">
 
       {/* banner */}
-      <div className="bg-blue-600 text-white p-2 rounded-md mb-4 shadow">
+      <div className="bg-blue-300 text-white p-2 rounded-md mb-4 shadow">
         <h2 className="text-lg font-regula">
           You can Create Police station and assign admin to manage the police station <br/>.
           <br/>
@@ -294,8 +327,11 @@ Police Window System Team`;
               onChange={handleChange}
               className="w-full p-2 border rounded"
               required
+              disabled={!formData.district}
             >
-              <option value="">Select Region</option>
+              <option value="">
+                {formData.district ? "Select Region" : "Select district first"}
+              </option>
               <option>Southern</option>
               <option>Central</option>
               <option>Northern</option>
@@ -381,6 +417,18 @@ Police Window System Team`;
           <div className="flex justify-end mt-6 gap-4">
             <button
               type="button"
+              onClick={() => setFormData({
+                stationName: "",
+                district: "",
+                region: "",
+                policeStationId: "",
+                adminName: "",
+                adminId: "",
+                stationAssigned: "",
+                phone: "",
+                email: "",
+                address: "",
+              })}
               className="px-4 py-2 bg-gray-300 rounded"
             >
               Cancel
@@ -390,7 +438,7 @@ Police Window System Team`;
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
-              Create Station
+              Save Station
             </button>
           </div>
         </form>

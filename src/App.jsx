@@ -3,7 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HeadquartersPage from "./pages/headquarters/dashboardPage";
 import CreatePoliceStationAdminPage from "./pages/headquarters/createPoliceStationAdminPage";
 import PoliceStationPage from "./pages/headquarters/createPoliceStationPage";
+import PolicestationsPage from "./pages/headquarters/policestationsPage";
 import ManageAccountsPage from "./pages/headquarters/manageAccountsPage";
+import StatisticsPage from "./pages/headquarters/statisticsPage";
 
 import PoliceStationDashboardPage from "./pages/policestation/DashboardPage";
 import ManageOfficersPage from "./pages/policestation/manageOfficersPage";
@@ -31,10 +33,12 @@ function App() {
 
         {/* headquarters */}
         <Route path="/headquarters" element={<HeadquartersPage />} />
-        <Route path="/create-admin" element={<CreatePoliceStationAdminPage />} />
-        <Route path="/police-stations" element={<PoliceStationPage />} />
+        <Route path="/headquarters/create-admin" element={<CreatePoliceStationAdminPage />} />
+        <Route path="/headquarters/police-stations" element={<PolicestationsPage />} />
+        <Route path="/headquarters/create-police-station" element={<PoliceStationPage />} />
         <Route path="/manage-accounts" element={<ManageAccountsPage />} />
-      
+        <Route path="/statistics" element={<StatisticsPage />} />
+        <Route path="/police-stations" element={<PoliceStationPage />} />
 
         {/* police station */}
         <Route path="/dashboard" element={<PoliceStationDashboardPage />} />

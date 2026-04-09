@@ -193,190 +193,12 @@ export default function HeadquartersDashboard() {
                       </div>
                     </div>
 
-                    <div className="overflow-x-auto">
-                      <svg viewBox="0 0 700 320" className="w-full h-[320px]">
-                        <defs>
-                          <linearGradient
-                            id="lineGradient"
-                            x1="0"
-                            x2="0"
-                            y1="0"
-                            y2="1"
-                          >
-                            <stop
-                              offset="0%"
-                              stopColor="#0f172a"
-                              stopOpacity="0.9"
-                            />
-                            <stop
-                              offset="100%"
-                              stopColor="#0f172a"
-                              stopOpacity="0.2"
-                            />
-                          </linearGradient>
-                        </defs>
-
-                        <rect
-                          x="0"
-                          y="0"
-                          width="700"
-                          height="320"
-                          fill="transparent"
-                        />
-
-                        {Array.from({ length: 6 }).map((_, index) => {
-                          const y = 40 + index * 44;
-                          return (
-                            <g key={index}>
-                              <line
-                                x1="50"
-                                y1={y}
-                                x2="680"
-                                y2={y}
-                                stroke="#e2e8f0"
-                                strokeWidth="1"
-                              />
-                              <text
-                                x="24"
-                                y={y + 4}
-                                fontSize="12"
-                                fill="#475569"
-                              >
-                                {Math.round(
-                                  maxChartValue -
-                                    (maxChartValue / 5) * index
-                                )}
-                              </text>
-                            </g>
-                          );
-                        })}
-
-                        <polyline
-                          fill="none"
-                          stroke="#0f172a"
-                          strokeWidth="3"
-                          points={totalPath}
-                          strokeLinecap="round"
-                        />
-                        <polyline
-                          fill="none"
-                          stroke="#f97316"
-                          strokeWidth="3"
-                          points={solvedPath}
-                          strokeLinecap="round"
-                        />
-
-                        {currentStationData.total.map((value, index) => {
-                          const x = 50 + index * 52;
-                          const yTotal =
-                            260 - (value / maxChartValue) * 220;
-                          const ySolved =
-                            260 -
-                            (currentStationData.solved[index] /
-                              maxChartValue) *
-                              220;
-                          return (
-                            <g key={index}>
-                              <circle
-                                cx={x}
-                                cy={yTotal}
-                                r="4"
-                                fill="#0f172a"
-                              />
-                              <circle
-                                cx={x}
-                                cy={ySolved}
-                                r="4"
-                                fill="#f97316"
-                              />
-                            </g>
-                          );
-                        })}
-
-                        {monthLabels.map((month, index) => {
-                          const x = 50 + index * 52;
-                          return (
-                            <text
-                              key={month}
-                              x={x}
-                              y="295"
-                              textAnchor="middle"
-                              fontSize="11"
-                              fill="#475569"
-                            >
-                              {month}
-                            </text>
-                          );
-                        })}
-                      </svg>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 mt-5">
-                      <div className="rounded-2xl bg-white p-4 border border-slate-200">
-                        <p className="text-sm text-gray-500">
-                          Total Cases This Year
-                        </p>
-                        <p className="text-2xl font-semibold text-slate-900">
-                          {totalSum}
-                        </p>
-                      </div>
-                      <div className="rounded-2xl bg-white p-4 border border-slate-200">
-                        <p className="text-sm text-gray-500">
-                          Solved Cases This Year
-                        </p>
-                        <p className="text-2xl font-semibold text-orange-500">
-                          {solvedSum}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Donut Chart */}
-                  <div className="bg-slate-50 rounded-3xl p-5 border border-slate-200">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                      Case Types Distribution
-                    </h3>
-                    <div className="flex flex-col items-center gap-6">
-                      <div
-                        className="relative h-72 w-72 rounded-full"
-                        style={{
-                          background: `conic-gradient(${caseTypes
-                            .map(
-                              (type) =>
-                                `${type.color} ${type.value * 3.6}deg`
-                            )
-                            .join(", ")})`,
-                        }}
-                      >
-                        <div className="absolute inset-0 m-12 rounded-full bg-white"></div>
-                        <div className="absolute inset-0 m-20 rounded-full bg-gray-100 flex items-center justify-center text-center text-sm font-semibold text-slate-800">
-                          Case Types
-                        </div>
-                      </div>
-                      <div className="w-full">
-                        {caseTypes.map((type) => (
-                          <div
-                            key={type.label}
-                            className="flex items-center justify-between gap-3 mb-3"
-                          >
-                            <div className="flex items-center gap-3">
-                              <span
-                                className="h-3 w-3 rounded-full"
-                                style={{ background: type.color }}
-                              />
-                              <span className="text-sm text-gray-700">
-                                {type.label}
-                              </span>
-                            </div>
-                            <span className="text-sm font-semibold text-gray-800">
-                              {type.value}%
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <button
+                  onClick={() => navigate("/headquarters/police-stations")}
+                  className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-700 transition shadow"
+                >
+                  Manage Stations
+                </button>
               </div>
 
               {/* Rates Across Stations */}
@@ -437,6 +259,8 @@ export default function HeadquartersDashboard() {
                   ))}
                 </div>
               </section>
+            </div>
+          </div>
             </>
           )}
         </div>
