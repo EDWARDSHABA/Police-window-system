@@ -265,9 +265,9 @@ Police Window System Team`;
       </div>
 
       <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow">
-        <h2 className="text-3xl font-extrabold mb-4 text-blue-800 tracking-tight">
-          Police Station Information
-        </h2>
+         <h3 className="text-lg font-semibold mt-6 mb-3 text-blue-900">
+            Police Station Information.
+          </h3>
 
         <form onSubmit={handleSubmit}>
 
