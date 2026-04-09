@@ -226,7 +226,7 @@ const ManageAccounts = () => {
       <div className="flex-1 flex flex-col px-6 py-4">
         {/* Blue Compliance Card */}
         <div className="mb-4 flex-shrink-0">
-          <div className="bg-gradient-to-r from-blue-300 to-blue-300 rounded-lg shadow-md p-4 border-l-4 border-yellow-400">
+          <div className="bg-gradient-to-r from-blue-500 to-blue-500 rounded-lg shadow-md p-4 border-l-4 border-yellow-400">
             <p className="text-white text-md font-medium">
               Manage Police Stations responsibly, failing to comply by the law.
             </p>
@@ -345,9 +345,9 @@ const ManageAccounts = () => {
                           <p className="text-sm font-medium text-gray-800 break-words">{log.action}</p>
                           <p className="text-xs text-gray-500 mt-1 break-words">{log.details}</p>
                           <div className="flex flex-wrap gap-3 mt-2 text-xs text-gray-400">
-                            <span className="whitespace-nowrap">🕐 {new Date(log.timestamp).toLocaleString()}</span>
-                            <span className="whitespace-nowrap">📍 {log.location}</span>
-                            <span className="whitespace-nowrap">👤 {log.admin}</span>
+                            <span className="whitespace-nowrap"> {new Date(log.timestamp).toLocaleString()}</span>
+                            <span className="whitespace-nowrap"> {log.location}</span>
+                            <span className="whitespace-nowrap"> {log.admin}</span>
                           </div>
                         </div>
                       </div>
