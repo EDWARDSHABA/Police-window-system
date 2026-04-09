@@ -1,6 +1,7 @@
 // src/components/PoliceStationManage.js - Audit Logs Auto-delete after 48 Hours
 import React, { useState, useEffect } from 'react';
-
+import HeadquartersHeader from '../Header/HeadQuartersHeader';
+import Footer from '../../officer/footer/footer';
 const ManageAccounts = () => {
   const [stations, setStations] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -9,6 +10,7 @@ const ManageAccounts = () => {
   const [formData, setFormData] = useState({ id: '', name: '', admin: '' });
   const [notification, setNotification] = useState(null);
   const [auditLogs, setAuditLogs] = useState([]);
+  
 
   // 48 hours in milliseconds
   const FORTY_EIGHT_HOURS = 48 * 60 * 60 * 1000;
@@ -21,7 +23,9 @@ const ManageAccounts = () => {
     }, 60 * 60 * 1000); // Check every hour
     
     return () => clearInterval(interval);
+    
   }, []);
+  
 
   const cleanupOldAuditLogs = () => {
     const now = new Date();
@@ -29,6 +33,7 @@ const ManageAccounts = () => {
       const logDate = new Date(log.timestamp);
       const timeDiff = now - logDate;
       return timeDiff < FORTY_EIGHT_HOURS;
+      
     });
     
     if (filteredLogs.length !== auditLogs.length) {
@@ -43,7 +48,6 @@ const ManageAccounts = () => {
       setStations(JSON.parse(storedStations));
     } else {
       const mockData = [
-        { id: "MW-ZA-23-898-24", name: "", admin: "Sgt. Victor Max", lastLogin: new Date().toISOString(), status: "active", createdAt: "2024-01-15" },
         { id: "MW-ZA-23-768-24", name: "7 miles Police Station", admin: "Sgt. Martha Sawasawa", lastLogin: new Date().toISOString(), status: "active", createdAt: "2024-02-20" },
         { id: "MW-ZA-23-895-25", name: "Chikanda Police Station", admin: "Sgt. Victor Max", lastLogin: new Date().toISOString(), status: "active", createdAt: "2024-03-10" },
         { id: "MW-ZA-23-112-25", name: "Matawale Police Station", admin: "Sgt. Edward Shawa", lastLogin: new Date().toISOString(), status: "active", createdAt: "2024-01-28" },
@@ -214,6 +218,7 @@ const ManageAccounts = () => {
           {notification.message}
         </div>
       )}
+       <HeadquartersHeader />
 
       {/* Header has been removed - Add your custom header above this component */}
 
@@ -221,7 +226,7 @@ const ManageAccounts = () => {
       <div className="flex-1 flex flex-col px-6 py-4">
         {/* Blue Compliance Card */}
         <div className="mb-4 flex-shrink-0">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-md p-4 border-l-4 border-yellow-400">
+          <div className="bg-gradient-to-r from-blue-300 to-blue-300 rounded-lg shadow-md p-4 border-l-4 border-yellow-400">
             <p className="text-white text-md font-medium">
               Manage Police Stations responsibly, failing to comply by the law.
             </p>
@@ -293,13 +298,13 @@ const ManageAccounts = () => {
                               onClick={() => handleEditStation(station)}
                               className="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
                             >
-                              ✏️ Edit
+                               Edit
                             </button>
                             <button
                               onClick={() => handleDeleteStation(station.id, station.name)}
-                              className="inline-flex items-center text-red-600 hover:text-red-800 text-sm font-medium transition-colors"
+                              className="inline-flex items-center text-green-600 hover:text-gree-800 text-sm font-medium transition-colors"
                             >
-                              🗑️ Delete
+                               Deactivate
                             </button>
                           </div>
                         </td>
@@ -430,6 +435,7 @@ const ManageAccounts = () => {
           animation: slide-in 0.3s ease-out;
         }
       `}</style>
+      <Footer />
     </div>
   );
 };
