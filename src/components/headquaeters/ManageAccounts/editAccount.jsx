@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import HeadquartersHeader from '../Header/HeadQuartersHeader';
+import Footer from '../../officer/footer/footer';
 
 const DISTRICTS = ["Blantyre", "Zomba", "Lilongwe", "Mzuzu", "Kasungu", "Mangochi"];
 const REGIONS = ["Southern", "Central", "Northern"];
@@ -30,12 +32,17 @@ export default function EditPoliceStation() {
   };
 
   return (
-    <div className="h-screen bg-gray-100 overflow-hidden p-4">
-            {/* Full Width Warning Card - removed top spacing */}
-      <div className="w-full bg-gradient-to-r from-blue-300 to-blue-300 shadow-md border-l-4 border-yellow-400">
-        <div className="max-w-3xl mx-auto px-4 py-2">
-          <p className="text-white text-xs font-medium text-left">
-            Make sure every edit you do here are accepted by the Malawi Police Policies, Rules and regulations and are supported from the above.
+    <div className="min-h-screen bg-gray-100 flex flex-col overflow-hidden">
+       <HeadquartersHeader />
+     <div className="flex-1 p-4">
+        {/* Full Width Warning Card - removed top spacing */}
+        <div className="w-full bg-gradient-to-r from-blue-300 to-blue-300 shadow-md border-l-4 mb-4 border-yellow-400">
+        {/* Banner */}
+        <div className="bg-blue-300 text-white p-4 mt-7 rounded-md mb-4 shadow">
+          <p className="text-sm">
+            You can View The List Of Police stations and  Create New Police Station
+            <br/>
+            .
           </p>
         </div>
       </div>
@@ -176,6 +183,8 @@ export default function EditPoliceStation() {
           )}
         </div>
       </div>
+    </div>
+      <Footer />
     </div>
   );
 }
