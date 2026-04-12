@@ -236,11 +236,11 @@ const ManageAccounts = () => {
 
       <div className="flex-1 flex flex-col px-6 py-4">
         {/* Welcome Banner */}
-              <div className="bg-blue-300 text-white p-4 mt-7 rounded-md mb-4 shadow">
-          <p className="text-sm">
-            You can View The List Of Police stations and Create New Police Station
-          </p>
-        </div>
+              <div className="bg-blue-300 text-white p-3 rounded-md mb-6 shadow">
+                <h2 className="text-lg font-semibold">
+                  Manage Police Stations and Accounts
+                </h2>
+              </div>
 
         <div className="flex flex-1 flex-col lg:flex-row gap-6 min-h-0">
           {/* Police Stations Table */}
