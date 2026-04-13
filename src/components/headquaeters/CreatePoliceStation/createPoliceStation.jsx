@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../Header/HeadQuartersHeader";
-import Footer from "../Footer/footer";
+import Footer from "../../officer/footer/footer";
 import { sendEmail } from "../../aboutus/aboutUsApi";
 
 const CreatePoliceStationPage = () => {
@@ -209,7 +209,7 @@ Police Window System Team`;
           expiresAt,
         });
 
-        let emailMessage = `✅ Police Station "${formData.stationName}" created successfully.`;
+        let emailMessage = ` Police Station "${formData.stationName}" created successfully.`;
 
         try {
           await sendEmail({
@@ -256,9 +256,8 @@ Police Window System Team`;
       {/* banner */}
       <div className="bg-blue-300 text-white p-2 rounded-md mb-4 shadow">
         <h2 className="text-lg font-regula">
-          You can Create Police station and assign admin to manage the police station <br/>.
-          <br/>
-        </h2>
+          You can Create Police station and assign admin to manage the police station
+          </h2>
         <p className="text-sm opacity-100">
           
         </p>
