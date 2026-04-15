@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Footer from "../../officer/footer/footer";
 
 export default function CreateOfficer() {
   const [step, setStep] = useState(1);
@@ -232,6 +233,7 @@ export default function CreateOfficer() {
           </>
         )}
       </div>
+      <Footer />
     </div>
   );
 }
