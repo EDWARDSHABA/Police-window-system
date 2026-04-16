@@ -1,5 +1,6 @@
 import React from "react";
-import HeadquartersHeader from "../../headquaeters/Header/HeadQuartersHeader";
+import { useNavigate } from "react-router-dom";
+import StationHeader from "../Header/PoliceStationHeader";
 import Footer from "../../officer/footer/footer";
 
 
@@ -20,6 +21,7 @@ import {
 } from "recharts";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
 
   // 📊 Line Data
   const lineData = [
@@ -65,10 +67,10 @@ export default function Dashboard() {
 
   return (
     <div className="h-screen overflow-y-auto bg-gray-100 p-6">
-      // HEADER
+      <StationHeader />
 
       {/* WELCOME */}
-      <div className="bg-blue-500 text-white p-4 rounded mb-6">
+      <div className="mt-20 bg-blue-500 text-white p-4 rounded mb-6">
         Welcome Back, Officer Admin
       </div>
 
@@ -84,7 +86,7 @@ export default function Dashboard() {
 
           <div className="flex flex-col gap-3">
             <button
-              onClick={() => navigate("/create-officer")}
+              onClick={() => navigate("/manage-officers")}
               className="w-full bg-blue-400 text-white py-2 rounded mb-3 hover:bg-blue-600 transition shadow"
             >
               Officers
@@ -97,8 +99,6 @@ export default function Dashboard() {
               Assign Duties
             </button>
             
-            
-
           </div>
         </div>
       </div>

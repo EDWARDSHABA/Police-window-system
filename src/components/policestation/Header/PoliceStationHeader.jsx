@@ -40,10 +40,6 @@ export default function StationHeader() {
           <button onClick={() => navigate("/track-cases")} className="hover:underline">
             Cases
           </button>
-
-          <button onClick={() => navigate("/statistics")} className="hover:underline">
-            Statistics
-          </button>
            
 
           <button onClick={() => navigate("/about")} className="hover:underline">
@@ -71,7 +67,7 @@ export default function StationHeader() {
         </div>
 
       </div>
-
+      
       <div className="h-1 w-full bg-blue-500"></div>
 
     </header>

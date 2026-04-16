@@ -11,7 +11,7 @@ import PoliceStationDashboardPage from "./pages/policestation/DashboardPage";
 import ManageOfficersPage from "./pages/policestation/manageOfficersPage";
 import AssignDutiesPage from "./pages/policestation/assignDutiesPage";
 import TrackCasesPage from "./pages/policestation/trackCasesPage";
-import CreateOfficer from "./components/policestation/CreateOfficer/createOfficer";
+import CreateOfficerPage from "./pages/policestation/createOfficerPage";
 
 import OfficerDashboardPage from "./pages/officer/dashboardPage";
 import RegisterCasePage from "./pages/officer/registerCasePage";
@@ -40,7 +40,7 @@ function App() {
         <Route path="/manage-officers" element={<ManageOfficersPage />} />
         <Route path="/assign-duties" element={<AssignDutiesPage />} />
         <Route path="/track-cases" element={<TrackCasesPage />} />
-        <Route path="/create-officer" element={<CreateOfficer />} />
+        <Route path="/create-officer" element={<CreateOfficerPage />} />
         <Route path="/officer-dashboard" element={<OfficerDashboardPage />} />
         <Route path="/register-case" element={<RegisterCasePage />} />
         <Route path="/update-case" element={<UpdateCasePage />} />
