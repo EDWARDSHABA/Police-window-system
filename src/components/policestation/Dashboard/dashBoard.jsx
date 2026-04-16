@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StationHeader from "../Header/PoliceStationHeader";
 import Footer from "../../officer/footer/footer";
@@ -23,6 +23,7 @@ import {
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [totalOfficers, setTotalOfficers] = useState(0);
 
   // 📊 Line Data
   const lineData = [

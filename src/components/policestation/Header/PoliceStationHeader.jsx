@@ -42,9 +42,10 @@ export default function StationHeader() {
           </button>
            
 
-          <button onClick={() => navigate("/about")} className="hover:underline">
+          {/*<button onClick={() => navigate("/about")} className="hover:underline">
             About Us
           </button>
+          */}
 
         </nav>
 
