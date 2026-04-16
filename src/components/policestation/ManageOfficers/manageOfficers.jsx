@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import StationHeader from "../Header/PoliceStationHeader";
 import Footer from "../../officer/footer/footer";
+import { getStoredOfficers, saveOfficers } from "../officersStorage";
 
 
 export default function ManageOfficers() {
@@ -19,6 +20,17 @@ export default function ManageOfficers() {
     officers[index].active = !officers[index].active;
   };
 
+  const handleDeleteOfficer = (id) => {
+    setOfficers((currentOfficers) =>
+      currentOfficers.filter((officer) => officer.id !== id)
+    );
+    setNotification("Officer deleted successfully.");
+  };
+
+  const filteredOfficers = officers.filter((officer) =>
+    officer.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <StationHeader />
@@ -35,7 +47,6 @@ export default function ManageOfficers() {
           </button>
         </div>
 
-        {/* Search */}
         <div className="flex items-center gap-2 mb-6">
           <div className="flex items-center border rounded px-2 bg-white">
             <input
@@ -49,14 +60,12 @@ export default function ManageOfficers() {
           </div>
         </div>
 
-        {/* Filters */}
         <div className="bg-gray-200 p-4 rounded mb-6 grid grid-cols-3 gap-4">
           <input className="p-2 rounded border" placeholder="Filter by ID" />
           <input className="p-2 rounded border" placeholder="Filter by Name" />
           <input className="p-2 rounded border" placeholder="Filter by Rank" />
         </div>
 
-        {/* Table */}
         <div className="bg-white rounded shadow p-4">
           <table className="w-full text-sm">
             <thead className="bg-gray-200">

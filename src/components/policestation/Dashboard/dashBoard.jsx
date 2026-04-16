@@ -1,6 +1,7 @@
 import React from "react";
 import HeadquartersHeader from "../../headquaeters/Header/HeadQuartersHeader";
 import Footer from "../../officer/footer/footer";
+import { getStoredOfficers } from "../officersStorage";
 
 
 import {
@@ -63,6 +64,17 @@ export default function Dashboard() {
     { month: "Dec", solved: 92, unsolved: 8 },
   ];
 
+  useEffect(() => {
+    const syncOfficerCount = () => {
+      setTotalOfficers(getStoredOfficers().length);
+    };
+
+    syncOfficerCount();
+    window.addEventListener("storage", syncOfficerCount);
+
+    return () => window.removeEventListener("storage", syncOfficerCount);
+  }, []);
+
   return (
     <div className="h-screen overflow-y-auto bg-gray-100 p-6">
       // HEADER
@@ -74,7 +86,9 @@ export default function Dashboard() {
 
       {/* STATS */}
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <div className="bg-blue-300 text-white p-4 rounded shadow">Total Officers: 74</div>
+        <div className="bg-blue-300 text-white p-4 rounded shadow">
+          Total Officers: {totalOfficers}
+        </div>
         <div className="bg-white p-4 rounded shadow">Today's Cases: 22</div>
         <div className="bg-yellow-500 text-white p-4 rounded shadow">All Cases: 107</div>
 
