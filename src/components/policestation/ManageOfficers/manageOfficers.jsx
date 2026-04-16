@@ -3,7 +3,6 @@ import StationHeader from "../Header/PoliceStationHeader";
 import Footer from "../../officer/footer/footer";
 import { getStoredOfficers, saveOfficers } from "../officersStorage";
 
-
 export default function ManageOfficers() {
   const [search, setSearch] = useState("");
 
