@@ -1,8 +1,7 @@
-import React from "react";
-import HeadquartersHeader from "../../headquaeters/Header/HeadQuartersHeader";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Footer from "../../officer/footer/footer";
 import { getStoredOfficers } from "../officersStorage";
-
 
 import {
   LineChart,
@@ -21,8 +20,13 @@ import {
 } from "recharts";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
 
-  // 📊 Line Data
+  const [totalOfficers, setTotalOfficers] = useState(0);
+  const [displayCount, setDisplayCount] = useState(1000);
+  const [rotation, setRotation] = useState(0);
+
+  // 📊 DATA
   const lineData = [
     { month: "Jan", theft: 20, assault: 10, fraud: 5 },
     { month: "Feb", theft: 30, assault: 15, fraud: 10 },
@@ -38,7 +42,6 @@ export default function Dashboard() {
     { month: "Dec", theft: 70, assault: 45, fraud: 40 },
   ];
 
-  // 🥧 Pie Data
   const pieData = [
     { name: "Theft", value: 40 },
     { name: "Assault", value: 25 },
@@ -48,7 +51,6 @@ export default function Dashboard() {
 
   const COLORS = ["#1E3A8A", "#F59E0B", "#10B981", "#EF4444"];
 
-  // 📊 Bar Data (FULL MONTHS)
   const barData = [
     { month: "Jan", solved: 60, unsolved: 40 },
     { month: "Feb", solved: 70, unsolved: 30 },
@@ -64,81 +66,117 @@ export default function Dashboard() {
     { month: "Dec", solved: 92, unsolved: 8 },
   ];
 
+  // ✅ Sync officers
   useEffect(() => {
-    const syncOfficerCount = () => {
-      setTotalOfficers(getStoredOfficers().length);
-    };
+    const count = getStoredOfficers().length;
+    setTotalOfficers(count);
+  }, []);
 
-    syncOfficerCount();
-    window.addEventListener("storage", syncOfficerCount);
+  // ✅ Animated Counter
+  useEffect(() => {
+    let start = 1000;
+    const end = totalOfficers;
 
-    return () => window.removeEventListener("storage", syncOfficerCount);
+    if (end === 0) return;
+
+    const interval = setInterval(() => {
+      start -= Math.ceil((start - end) / 10);
+
+      if (start <= end) {
+        start = end;
+        clearInterval(interval);
+      }
+
+      setDisplayCount(start);
+    }, 30);
+
+    return () => clearInterval(interval);
+  }, [totalOfficers]);
+
+  // ✅ Pie Rotation Logic (every 30s)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRotation((prev) => prev + 360);
+    }, 30000);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="h-screen overflow-y-auto bg-gray-100 p-6">
-      // HEADER
-
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-blue-100 p-6">
+      
       {/* WELCOME */}
-      <div className="bg-blue-500 text-white p-4 rounded mb-6">
-        Welcome Back, Officer Admin
+      <div className="bg-gradient-to-r from-blue-500 to-blue-700 text-white p-5 rounded-xl shadow mb-6 text-lg font-semibold">
+        Welcome Back, Officer Admin 👮‍♂️
       </div>
 
       {/* STATS */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
-        <div className="bg-blue-300 text-white p-4 rounded shadow">
-          Total Officers: {totalOfficers}
+      <div className="grid grid-cols-4 gap-6 mb-6">
+
+        <div className="bg-gradient-to-r from-blue-400 to-blue-600 text-white p-5 rounded-xl shadow hover:scale-105 transition">
+          <p className="text-sm opacity-80">Total Officers</p>
+          <h2 className="text-2xl font-bold">{displayCount}</h2>
         </div>
-        <div className="bg-white p-4 rounded shadow">Today's Cases: 22</div>
-        <div className="bg-yellow-500 text-white p-4 rounded shadow">All Cases: 107</div>
+
+        <div className="bg-white p-5 rounded-xl shadow hover:scale-105 transition">
+          <p className="text-sm text-gray-500">Today's Cases</p>
+          <h2 className="text-2xl font-bold">22</h2>
+        </div>
+
+        <div className="bg-yellow-500 text-white p-5 rounded-xl shadow hover:scale-105 transition">
+          <p className="text-sm opacity-80">All Cases</p>
+          <h2 className="text-2xl font-bold">107</h2>
+        </div>
 
         {/* QUICK ACTIONS */}
-        <div className="bg-white p-4 rounded shadow">
+        <div className="bg-white p-5 rounded-xl shadow">
           <h3 className="font-semibold mb-3">Quick Actions</h3>
 
-          <div className="flex flex-col gap-3">
-            <button
-              onClick={() => navigate("/create-officer")}
-              className="w-full bg-blue-400 text-white py-2 rounded mb-3 hover:bg-blue-600 transition shadow"
-            >
-              Officers
-            </button>
-            
-            <button
-              onClick={() => navigate("/assign-duties")}
-              className="w-full bg-green-400 text-white py-2 rounded mb-3 hover:bg-green-600 transition shadow"
-            >
-              Assign Duties
-            </button>
-            
-            
+          <button
+            onClick={() => navigate("/create-officer")}
+            className="w-full bg-blue-500 text-white py-2 rounded mb-3 hover:bg-blue-700 transition"
+          >
+            Officers
+          </button>
 
-          </div>
+          <button
+            onClick={() => navigate("/assign-duties")}
+            className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-700 transition"
+          >
+            Assign Duties
+          </button>
         </div>
       </div>
 
-      {/* CHARTS ROW */}
+      {/* CHARTS */}
       <div className="grid grid-cols-3 gap-6 mb-6">
 
         {/* PIE */}
-        <div className="bg-white p-4 rounded shadow">
-          <h3 className="mb-2 font-semibold">Case Types Distribution</h3>
+        <div className="bg-white p-5 rounded-xl shadow">
+          <h3 className="mb-3 font-semibold">Case Types Distribution</h3>
 
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie data={pieData} dataKey="value" outerRadius={80} label>
-                {pieData.map((entry, index) => (
-                  <Cell key={index} fill={COLORS[index]} />
-                ))}
-              </Pie>
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
+          <div
+            style={{
+              transform: `rotate(${rotation}deg)`,
+              transition: "transform 2s ease-in-out",
+            }}
+          >
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie data={pieData} dataKey="value" outerRadius={80} label>
+                  {pieData.map((entry, index) => (
+                    <Cell key={index} fill={COLORS[index]} />
+                  ))}
+                </Pie>
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
         {/* LINE */}
-        <div className="col-span-2 bg-white p-4 rounded shadow">
-          <h3 className="mb-2 font-semibold">Monthly Case Trends</h3>
+        <div className="col-span-2 bg-white p-5 rounded-xl shadow">
+          <h3 className="mb-3 font-semibold">Monthly Case Trends</h3>
 
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={lineData}>
@@ -148,17 +186,17 @@ export default function Dashboard() {
               <Tooltip />
               <Legend />
 
-              <Line type="monotone" dataKey="theft" stroke="#1E3A8A" name="Theft" />
-              <Line type="monotone" dataKey="assault" stroke="#F59E0B" name="Assault" />
-              <Line type="monotone" dataKey="fraud" stroke="#10B981" name="Fraud" />
+              <Line type="monotone" dataKey="theft" stroke="#1E3A8A" />
+              <Line type="monotone" dataKey="assault" stroke="#F59E0B" />
+              <Line type="monotone" dataKey="fraud" stroke="#10B981" />
             </LineChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      {/* BAR CHART */}
-      <div className="bg-white p-4 rounded shadow mb-10">
-        <h3 className="mb-2 font-semibold">Monthly Case Resolution</h3>
+      {/* BAR */}
+      <div className="bg-white p-5 rounded-xl shadow mb-10">
+        <h3 className="mb-3 font-semibold">Monthly Case Resolution</h3>
 
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={barData}>
@@ -168,11 +206,12 @@ export default function Dashboard() {
             <Tooltip />
             <Legend />
 
-            <Bar dataKey="solved" fill="#1E3A8A" name="Solved" />
-            <Bar dataKey="unsolved" fill="#F59E0B" name="Unsolved" />
+            <Bar dataKey="solved" fill="#1E3A8A" />
+            <Bar dataKey="unsolved" fill="#F59E0B" />
           </BarChart>
         </ResponsiveContainer>
       </div>
+
       <Footer />
     </div>
   );
