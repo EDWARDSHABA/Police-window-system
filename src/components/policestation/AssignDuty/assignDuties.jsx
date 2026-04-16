@@ -1,23 +1,23 @@
 import { useState, useMemo } from "react";
 
 const OFFICERS = [
-  { id: "1. MW-ZA-22-090-24", name: "Sgt. Victor Max" },
-  { id: "2. MW-ZA-22-088-24", name: "Sgt. Umi Sri Nko" },
-  { id: "3. MW-ZA-23-085-24", name: "Sgt. Camara Shaney" },
-  { id: "4. MW-ZA-23-089-25", name: "Sgt. Victor Max" },
-  { id: "5. MW-ZA-23-327-26", name: "Sgt. Daniel Choate" },
-  { id: "6. MW-ZA-23-688-54", name: "Sgt. Martha Sawa" },
-  { id: "7. MW-ZA-23-048-04", name: "Sgt. Rahimi Mao" },
-  { id: "8. MW-ZA-23-107-26", name: "Sgt. Tebid Nkunu" },
-  { id: "9. MW-ZA-23-880-23", name: "Sgt. Victor Max" },
-  { id: "10. MW-KW-23-448-23", name: "Sgt. Sharon Milo" },
-  { id: "11. MW-ZA-23-100-24", name: "Sgt. Victor Max" },
-  { id: "12. MW-ZA-23-184-04", name: "Sgt. Edmund Blowers" },
-  { id: "13. MW-ZA-23-284-24", name: "Sgt. Victor Max" },
-  { id: "14. MW-ZA-23-184-04", name: "Sgt. Edmund Blowers" },
-  { id: "15. MW-ZA-23-284-15", name: "Sgt. Victor Max" },
-  { id: "16. MW-ZA-23-688-22", name: "Sgt. Samuel Choate" },
-  { id: "17. MW-ZA-22-088-16", name: "Sgt. Martha Sawa" },
+  { id: "1. MW-ZA-22-090-24", name: "Sgt. Victor Max", email: "victor.max@police.gov", phone: "+265123456789" },
+  { id: "2. MW-ZA-22-088-24", name: "Sgt. Umi Sri Nko", email: "umi.sri@police.gov", phone: "+265123456790" },
+  { id: "3. MW-ZA-23-085-24", name: "Sgt. Camara Shaney", email: "camara.shaney@police.gov", phone: "+265123456791" },
+  { id: "4. MW-ZA-23-089-25", name: "Sgt. Victor Max", email: "victor.max2@police.gov", phone: "+265123456792" },
+  { id: "5. MW-ZA-23-327-26", name: "Sgt. Daniel Choate", email: "daniel.choate@police.gov", phone: "+265123456793" },
+  { id: "6. MW-ZA-23-688-54", name: "Sgt. Martha Sawa", email: "martha.sawa@police.gov", phone: "+265123456794" },
+  { id: "7. MW-ZA-23-048-04", name: "Sgt. Rahimi Mao", email: "rahimi.mao@police.gov", phone: "+265123456795" },
+  { id: "8. MW-ZA-23-107-26", name: "Sgt. Tebid Nkunu", email: "tebid.nkunu@police.gov", phone: "+265123456796" },
+  { id: "9. MW-ZA-23-880-23", name: "Sgt. Victor Max", email: "victor.max3@police.gov", phone: "+265123456797" },
+  { id: "10. MW-KW-23-448-23", name: "Sgt. Sharon Milo", email: "sharon.milo@police.gov", phone: "+265123456798" },
+  { id: "11. MW-ZA-23-100-24", name: "Sgt. Victor Max", email: "victor.max4@police.gov", phone: "+265123456799" },
+  { id: "12. MW-ZA-23-184-04", name: "Sgt. Edmund Blowers", email: "edmund.blowers@police.gov", phone: "+265123456800" },
+  { id: "13. MW-ZA-23-284-24", name: "Sgt. Victor Max", email: "victor.max5@police.gov", phone: "+265123456801" },
+  { id: "14. MW-ZA-23-184-04", name: "Sgt. Edmund Blowers", email: "edmund.blowers2@police.gov", phone: "+265123456802" },
+  { id: "15. MW-ZA-23-284-15", name: "Sgt. Victor Max", email: "victor.max6@police.gov", phone: "+265123456803" },
+  { id: "16. MW-ZA-23-688-22", name: "Sgt. Samuel Choate", email: "samuel.choate@police.gov", phone: "+265123456804" },
+  { id: "17. MW-ZA-22-088-16", name: "Sgt. Martha Sawa", email: "martha.sawa2@police.gov", phone: "+265123456805" },
 ];
 
 const LOCATIONS = [
@@ -44,6 +44,101 @@ const DUTY_TYPES = [
 
 const SHIFTS = ["All Shifts", "Day", "Evening", "Night"];
 
+const NOTIFICATION_METHODS = ["Email", "SMS", "Both"];
+
+// Email sending function - Replace with your actual email API
+const sendActualEmail = async (to, subject, body) => {
+  // Option 1: Using EmailJS (free tier available)
+  // First, sign up at https://www.emailjs.com/ and get your service ID, template ID, and user ID
+  
+  const emailData = {
+    service_id: 'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
+    template_id: 'YOUR_TEMPLATE_ID', // Replace with your EmailJS template ID
+    user_id: 'YOUR_USER_ID', // Replace with your EmailJS user ID
+    template_params: {
+      to_email: to,
+      subject: subject,
+      message: body,
+    }
+  };
+  
+  try {
+    const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(emailData)
+    });
+    return response.ok;
+  } catch (error) {
+    console.error('Email sending failed:', error);
+    return false;
+  }
+  
+  // Option 2: Using your own backend API
+  /*
+  try {
+    const response = await fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ to, subject, body })
+    });
+    return response.ok;
+  } catch (error) {
+    console.error('Email sending failed:', error);
+    return false;
+  }
+  */
+};
+
+// SMS sending function - Replace with your actual SMS API
+const sendActualSMS = async (phoneNumber, message) => {
+  // Option 1: Using Twilio
+  // First, set up Twilio account and get your credentials
+  
+  const smsData = {
+    to: phoneNumber,
+    message: message,
+    // Add your Twilio credentials
+    accountSid: 'YOUR_TWILIO_ACCOUNT_SID',
+    authToken: 'YOUR_TWILIO_AUTH_TOKEN',
+    fromNumber: 'YOUR_TWILIO_PHONE_NUMBER'
+  };
+  
+  try {
+    const response = await fetch('/api/send-sms', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(smsData)
+    });
+    return response.ok;
+  } catch (error) {
+    console.error('SMS sending failed:', error);
+    return false;
+  }
+  
+  // Option 2: Using Africa's Talking (great for African countries)
+  /*
+  try {
+    const response = await fetch('/api/send-sms-africastalking', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: phoneNumber,
+        message: message,
+        username: 'YOUR_USERNAME',
+        apiKey: 'YOUR_API_KEY'
+      })
+    });
+    return response.ok;
+  } catch (error) {
+    console.error('SMS sending failed:', error);
+    return false;
+  }
+  */
+};
+
 export default function AssignDuties() {
   const [week] = useState("April 10 - April 17, 2026");
   const [specifyTime, setSpecifyTime] = useState("");
@@ -55,6 +150,11 @@ export default function AssignDuties() {
   const [taskDescription, setTaskDescription] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const [notificationMethod, setNotificationMethod] = useState("Email");
+  const [adminEmail, setAdminEmail] = useState("");
+  const [adminPhone, setAdminPhone] = useState("");
+  const [notifyAdmin, setNotifyAdmin] = useState(false);
+  const [notificationStatus, setNotificationStatus] = useState({ show: false, message: "", type: "" });
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -72,6 +172,7 @@ export default function AssignDuties() {
     });
     setSubmitted(false);
     setError("");
+    setNotificationStatus({ show: false, message: "", type: "" });
   };
 
   const toggleAll = (e) => {
@@ -85,7 +186,120 @@ export default function AssignDuties() {
   const allChecked =
     filtered.length > 0 && filtered.every((o) => selected.has(o.id));
 
-  const handleSubmit = () => {
+  // Function to send notifications to officers
+  const sendOfficerNotifications = async (selectedOfficers, dutyDetails) => {
+    const notifications = [];
+    
+    for (const officer of selectedOfficers) {
+      if (notificationMethod === "Email" || notificationMethod === "Both") {
+        const emailSubject = `Duty Assignment - ${dutyDetails.dutyType}`;
+        const emailBody = `
+Dear ${officer.name},
+
+You have been assigned to the following duty:
+
+Duty Type: ${dutyDetails.dutyType}
+Location: ${dutyDetails.location}
+Date: ${dutyDetails.week}
+Time: ${dutyDetails.specifyTime || "Regular shift"}
+Shift: ${dutyDetails.shift}
+Task: ${dutyDetails.taskDescription || "No additional details"}
+
+Please report to your assigned location on time.
+
+Regards,
+Police Administration
+        `;
+        
+        const emailResult = await sendActualEmail(officer.email, emailSubject, emailBody);
+        notifications.push({ 
+          recipient: officer.name, 
+          method: "Email", 
+          address: officer.email,
+          success: emailResult 
+        });
+        
+        console.log(`Email ${emailResult ? 'sent' : 'failed'} to ${officer.email}`);
+      }
+      
+      if (notificationMethod === "SMS" || notificationMethod === "Both") {
+        const smsMessage = `DUTY ALERT: ${officer.name}, you are assigned to ${dutyDetails.dutyType} at ${dutyDetails.location} on ${dutyDetails.week}. Report as directed.`;
+        
+        const smsResult = await sendActualSMS(officer.phone, smsMessage);
+        notifications.push({ 
+          recipient: officer.name, 
+          method: "SMS", 
+          address: officer.phone,
+          success: smsResult 
+        });
+        
+        console.log(`SMS ${smsResult ? 'sent' : 'failed'} to ${officer.phone}`);
+      }
+    }
+    
+    return notifications;
+  };
+
+  // Function to send notifications to admin
+  const sendAdminNotifications = async (dutyDetails, selectedOfficers) => {
+    const adminNotifications = [];
+    
+    if (notifyAdmin) {
+      const officerList = selectedOfficers.map(o => `${o.name} (${o.id})`).join('\n');
+      
+      // Send email to admin if provided
+      if (adminEmail && (notificationMethod === "Email" || notificationMethod === "Both")) {
+        const adminEmailSubject = `Duty Assignment Summary - ${dutyDetails.week}`;
+        const adminEmailBody = `
+Duty Assignment Summary:
+
+Date: ${dutyDetails.week}
+Time: ${dutyDetails.specifyTime || "Regular shift"}
+Shift: ${dutyDetails.shift}
+Duty Type: ${dutyDetails.dutyType}
+Location: ${dutyDetails.location}
+Task Description: ${dutyDetails.taskDescription || "No additional details"}
+
+Assigned Officers:
+${officerList}
+
+Total Officers Assigned: ${selectedOfficers.length}
+
+This is an automated notification from the Police Duty Assignment System.
+        `;
+        
+        const emailResult = await sendActualEmail(adminEmail, adminEmailSubject, adminEmailBody);
+        adminNotifications.push({
+          recipient: "Admin",
+          method: "Email",
+          address: adminEmail,
+          success: emailResult
+        });
+        
+        console.log(`Admin email ${emailResult ? 'sent' : 'failed'} to ${adminEmail}`);
+      }
+      
+      // Send SMS to admin if provided
+      if (adminPhone && (notificationMethod === "SMS" || notificationMethod === "Both")) {
+        const adminSMSMessage = `DUTY SUMMARY: ${selectedOfficers.length} officers assigned to ${dutyDetails.dutyType} at ${dutyDetails.location} on ${dutyDetails.week}. Check email for details.`;
+        
+        const smsResult = await sendActualSMS(adminPhone, adminSMSMessage);
+        adminNotifications.push({
+          recipient: "Admin",
+          method: "SMS",
+          address: adminPhone,
+          success: smsResult
+        });
+        
+        console.log(`Admin SMS ${smsResult ? 'sent' : 'failed'} to ${adminPhone}`);
+      }
+    }
+    
+    return adminNotifications;
+  };
+
+  const handleSubmit = async () => {
+    // Validation
     if (selected.size === 0) {
       setError("Please select at least one officer.");
       return;
@@ -98,12 +312,97 @@ export default function AssignDuties() {
       setError("Please select a duty type.");
       return;
     }
+    
+    // Validate admin contact info if notify admin is checked
+    if (notifyAdmin) {
+      if ((notificationMethod === "Email" || notificationMethod === "Both") && !adminEmail) {
+        setError("Please enter admin email address for email notifications.");
+        return;
+      }
+      if ((notificationMethod === "SMS" || notificationMethod === "Both") && !adminPhone) {
+        setError("Please enter admin phone number for SMS notifications.");
+        return;
+      }
+    }
+    
     setError("");
+    
+    // Get selected officers' details
+    const selectedOfficers = OFFICERS.filter(o => selected.has(o.id));
+    
+    // Prepare duty details for notification
+    const dutyDetails = {
+      dutyType,
+      location,
+      week,
+      specifyTime: specifyTime || "Regular shift",
+      shift: shift === "All Shifts" ? "Regular shift" : shift,
+      taskDescription: taskDescription || "No additional details"
+    };
+    
+    // Send notifications
+    setNotificationStatus({ show: true, message: "Sending notifications to officers...", type: "info" });
+    
+    try {
+      // Send notifications to officers
+      const officerNotifications = await sendOfficerNotifications(selectedOfficers, dutyDetails);
+      
+      setNotificationStatus({ show: true, message: "Sending admin notifications...", type: "info" });
+      
+      // Send notifications to admin
+      const adminNotifications = await sendAdminNotifications(dutyDetails, selectedOfficers);
+      
+      const allNotifications = [...officerNotifications, ...adminNotifications];
+      const successful = allNotifications.filter(n => n.success).length;
+      const total = allNotifications.length;
+      
+      // Prepare detailed message
+      let statusMessage = "";
+      if (successful === total) {
+        statusMessage = `✅ All notifications sent successfully! (${total} notifications sent)`;
+      } else if (successful > 0) {
+        statusMessage = `⚠️ ${successful} out of ${total} notifications sent successfully. Check console for details.`;
+      } else {
+        statusMessage = `❌ Failed to send notifications. Please check your API configuration and try again.`;
+      }
+      
+      // Add summary of sent notifications
+      const officerEmailCount = officerNotifications.filter(n => n.method === "Email" && n.success).length;
+      const officerSMSCount = officerNotifications.filter(n => n.method === "SMS" && n.success).length;
+      const adminEmailCount = adminNotifications.filter(n => n.method === "Email" && n.success).length;
+      const adminSMSCount = adminNotifications.filter(n => n.method === "SMS" && n.success).length;
+      
+      if (successful > 0) {
+        statusMessage += `\n\nSummary:\n- Officer Emails: ${officerEmailCount}\n- Officer SMS: ${officerSMSCount}\n- Admin Emails: ${adminEmailCount}\n- Admin SMS: ${adminSMSCount}`;
+      }
+      
+      setNotificationStatus({ 
+        show: true, 
+        message: statusMessage, 
+        type: successful === total ? "success" : successful > 0 ? "warning" : "error" 
+      });
+    } catch (error) {
+      console.error("Notification error:", error);
+      setNotificationStatus({ 
+        show: true, 
+        message: "❌ Failed to send notifications. Please check your internet connection and API configuration.", 
+        type: "error" 
+      });
+    }
+    
     setSubmitted(true);
     setSelected(new Set());
     setLocation("");
     setDutyType("");
     setTaskDescription("");
+    setAdminEmail("");
+    setAdminPhone("");
+    setNotifyAdmin(false);
+    
+    // Auto-hide notification after 8 seconds
+    setTimeout(() => {
+      setNotificationStatus({ show: false, message: "", type: "" });
+    }, 8000);
   };
 
   return (
@@ -141,8 +440,8 @@ export default function AssignDuties() {
                   type="text"
                   value={specifyTime}
                   onChange={(e) => setSpecifyTime(e.target.value)}
-                  placeholder="Off"
-                  className="border border-gray-300 rounded px-2 py-1 text-xs w-24 outline-none focus:border-blue-400"
+                  placeholder="e.g., 08:00 - 17:00"
+                  className="border border-gray-300 rounded px-2 py-1 text-xs w-32 outline-none focus:border-blue-400"
                 />
               </div>
 
@@ -181,6 +480,18 @@ export default function AssignDuties() {
               </div>
             </div>
           </div>
+
+          {/* Notification Status Banner */}
+          {notificationStatus.show && (
+            <div className={`rounded p-3 text-sm whitespace-pre-line ${
+              notificationStatus.type === "success" ? "bg-green-100 text-green-800 border border-green-200" :
+              notificationStatus.type === "warning" ? "bg-yellow-100 text-yellow-800 border border-yellow-200" :
+              notificationStatus.type === "error" ? "bg-red-100 text-red-800 border border-red-200" :
+              "bg-blue-100 text-blue-800 border border-blue-200"
+            }`}>
+              {notificationStatus.message}
+            </div>
+          )}
 
           {/* Officer Table */}
           <div className="bg-white border border-gray-200 rounded overflow-hidden">
@@ -259,6 +570,7 @@ export default function AssignDuties() {
                 onChange={(e) => setTaskDescription(e.target.value)}
                 rows={3}
                 className="w-full border border-gray-300 rounded px-2 py-1 text-xs outline-none focus:border-blue-400 resize-none"
+                placeholder="Enter specific task details..."
               />
             </div>
             {error && (
@@ -281,7 +593,7 @@ export default function AssignDuties() {
         </div>
 
         {/* RIGHT SIDEBAR */}
-        <div className="w-52 flex flex-col gap-3 shrink-0">
+        <div className="w-64 flex flex-col gap-3 shrink-0">
 
           {/* View Assigned Duties */}
           <button className="w-full bg-blue-500 hover:bg-blue-600 text-white text-xs py-2 px-3 rounded transition-colors text-center">
@@ -325,9 +637,69 @@ export default function AssignDuties() {
               </select>
             </div>
 
+            {/* Notification Method Selection */}
+            <div className="mb-3">
+              <label className="block text-xs text-gray-500 mb-1">Notify Officers Via</label>
+              <select
+                value={notificationMethod}
+                onChange={(e) => setNotificationMethod(e.target.value)}
+                className="w-full border border-gray-300 rounded px-2 py-1 text-xs outline-none focus:border-blue-400 bg-white text-gray-600"
+              >
+                {NOTIFICATION_METHODS.map((m) => (
+                  <option key={m}>{m}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Notify Admin Toggle */}
+            <div className="mb-3">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={notifyAdmin}
+                  onChange={(e) => setNotifyAdmin(e.target.checked)}
+                  className="accent-blue-600"
+                />
+                <span className="text-xs text-gray-700">Notify Admin</span>
+              </label>
+            </div>
+
+            {/* Admin Contact Fields - Show only if notify admin is checked */}
+            {notifyAdmin && (
+              <div className="space-y-2 mb-3 border-t border-gray-100 pt-3">
+                {(notificationMethod === "Email" || notificationMethod === "Both") && (
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Admin Email</label>
+                    <input
+                      type="email"
+                      value={adminEmail}
+                      onChange={(e) => setAdminEmail(e.target.value)}
+                      placeholder="admin@police.gov"
+                      className="w-full border border-gray-300 rounded px-2 py-1 text-xs outline-none focus:border-blue-400"
+                    />
+                  </div>
+                )}
+                
+                {(notificationMethod === "SMS" || notificationMethod === "Both") && (
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Admin Phone</label>
+                    <input
+                      type="tel"
+                      value={adminPhone}
+                      onChange={(e) => setAdminPhone(e.target.value)}
+                      placeholder="+265123456789"
+                      className="w-full border border-gray-300 rounded px-2 py-1 text-xs outline-none focus:border-blue-400"
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Hint text */}
             <p className="text-xs text-gray-400 leading-relaxed">
-              You can only select units below the required duty or location.
+              {notifyAdmin 
+                ? "Officers and admin will be notified immediately upon assignment via your selected method."
+                : "Officers will be notified immediately upon assignment via your selected method."}
             </p>
           </div>
         </div>
