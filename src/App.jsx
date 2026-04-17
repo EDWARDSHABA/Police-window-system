@@ -17,6 +17,7 @@ import ManageOfficersPage from "./pages/policestation/manageOfficersPage";
 import AssignDutiesPage from "./pages/policestation/assignDutiesPage";
 import TrackCasesPage from "./pages/policestation/trackCasesPage";
 import CreateOfficer from "./components/policestation/CreateOfficer/createOfficer";
+import EditOfficer from "./components/policestation/editOfficer/editOfficer";
 
 // officer
 import OfficerDashboardPage from "./pages/officer/dashboardPage";
@@ -54,6 +55,7 @@ function App() {
         <Route path="/assign-duties" element={<AssignDutiesPage />} />
         <Route path="/track-cases" element={<TrackCasesPage />} />
         <Route path="/create-officer" element={<CreateOfficer />} />
+        <Route path="/edit-officer/:id" element={<EditOfficer />} />
 
         {/* officer */}
         <Route path="/officer-dashboard" element={<OfficerDashboardPage />} />
