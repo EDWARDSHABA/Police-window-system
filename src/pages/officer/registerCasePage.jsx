@@ -3,7 +3,7 @@ import RegisterCase from '../../components/officer/RegisterCase/registerCase'
 
 function RegisterCasePage() {
   return (
-    <div className="h-screen w-full">
+    <div className="min-h-screen w-screen m-2 p-0">
         <RegisterCase />
     </div>
   )

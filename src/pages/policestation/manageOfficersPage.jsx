@@ -3,8 +3,8 @@ import ManageOfficers from '../../components/policestation/ManageOfficers/manage
 
 function ManageOfficersPage() {
   return (
-    <div className="h-screen w-full">
-        <ManageOfficers />
+    <div className="min-h-screen">
+      <ManageOfficers />
     </div>
   )
 }

@@ -3,8 +3,8 @@ import CreateOfficer from '../../components/policestation/CreateOfficer/createOf
 
 function CreateOfficerPage() {
   return (
-    <div className="h-screen w-full">
-        <CreateOfficer />
+    <div className="min-h-screen">
+      <CreateOfficer />
     </div>
   )
 }
