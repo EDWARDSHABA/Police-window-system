@@ -9,7 +9,7 @@ import CreatePoliceStationAdminPage from "./pages/headquarters/createPoliceStati
 import PoliceStationPage from "./pages/headquarters/createPoliceStationPage";
 import PolicestationsPage from "./pages/headquarters/policestationsPage";
 import ManageAccountsPage from "./pages/headquarters/manageAccountsPage";
-import EditAccountPage from "./pages/headquarters/";
+import EditAccountPage from "./pages/headquarters/editAccountPage";
 
 // police station/
 import PoliceStationDashboardPage from "./pages/policestation/DashboardPage";

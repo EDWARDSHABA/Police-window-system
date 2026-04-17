@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StationHeader from "../Header/PoliceStationHeader";
 import Footer from "../../officer/footer/footer";
 import { getStoredOfficers } from "../officersStorage";
-
 
 import {
   LineChart,
@@ -23,6 +22,9 @@ import {
 
 export default function Dashboard() {
   const navigate = useNavigate();
+
+  // ✅ FIXED: state added
+  const [totalOfficers, setTotalOfficers] = useState(0);
 
   // 📊 Line Data
   const lineData = [
@@ -50,7 +52,7 @@ export default function Dashboard() {
 
   const COLORS = ["#1E3A8A", "#F59E0B", "#10B981", "#EF4444"];
 
-  // 📊 Bar Data (FULL MONTHS)
+  // 📊 Bar Data
   const barData = [
     { month: "Jan", solved: 60, unsolved: 40 },
     { month: "Feb", solved: 70, unsolved: 30 },
@@ -66,9 +68,11 @@ export default function Dashboard() {
     { month: "Dec", solved: 92, unsolved: 8 },
   ];
 
+  // ✅ FIXED: safe + working effect
   useEffect(() => {
     const syncOfficerCount = () => {
-      setTotalOfficers(getStoredOfficers().length);
+      const officers = getStoredOfficers();
+      setTotalOfficers(officers ? officers.length : 0);
     };
 
     syncOfficerCount();
@@ -91,8 +95,14 @@ export default function Dashboard() {
         <div className="bg-blue-300 text-white p-4 rounded shadow">
           Total Officers: {totalOfficers}
         </div>
-        <div className="bg-white p-4 rounded shadow">Today's Cases: 22</div>
-        <div className="bg-yellow-500 text-white p-4 rounded shadow">All Cases: 107</div>
+
+        <div className="bg-white p-4 rounded shadow">
+          Today's Cases: 22
+        </div>
+
+        <div className="bg-yellow-500 text-white p-4 rounded shadow">
+          All Cases: 107
+        </div>
 
         {/* QUICK ACTIONS */}
         <div className="bg-white p-4 rounded shadow">
@@ -101,28 +111,28 @@ export default function Dashboard() {
           <div className="flex flex-col gap-3">
             <button
               onClick={() => navigate("/manage-officers")}
-              className="w-full bg-blue-400 text-white py-2 rounded mb-3 hover:bg-blue-600 transition shadow"
+              className="w-full bg-blue-400 text-white py-2 rounded hover:bg-blue-600 transition shadow"
             >
               Officers
             </button>
-            
+
             <button
               onClick={() => navigate("/assign-duties")}
-              className="w-full bg-green-400 text-white py-2 rounded mb-3 hover:bg-green-600 transition shadow"
+              className="w-full bg-green-400 text-white py-2 rounded hover:bg-green-600 transition shadow"
             >
               Assign Duties
             </button>
-            
           </div>
         </div>
       </div>
 
-      {/* CHARTS ROW */}
+      {/* CHARTS */}
       <div className="grid grid-cols-3 gap-6 mb-6">
-
         {/* PIE */}
         <div className="bg-white p-4 rounded shadow">
-          <h3 className="mb-2 font-semibold">Case Types Distribution</h3>
+          <h3 className="mb-2 font-semibold">
+            Case Types Distribution
+          </h3>
 
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
@@ -138,7 +148,9 @@ export default function Dashboard() {
 
         {/* LINE */}
         <div className="col-span-2 bg-white p-4 rounded shadow">
-          <h3 className="mb-2 font-semibold">Monthly Case Trends</h3>
+          <h3 className="mb-2 font-semibold">
+            Monthly Case Trends
+          </h3>
 
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={lineData}>
@@ -148,17 +160,19 @@ export default function Dashboard() {
               <Tooltip />
               <Legend />
 
-              <Line type="monotone" dataKey="theft" stroke="#1E3A8A" name="Theft" />
-              <Line type="monotone" dataKey="assault" stroke="#F59E0B" name="Assault" />
-              <Line type="monotone" dataKey="fraud" stroke="#10B981" name="Fraud" />
+              <Line type="monotone" dataKey="theft" stroke="#1E3A8A" />
+              <Line type="monotone" dataKey="assault" stroke="#F59E0B" />
+              <Line type="monotone" dataKey="fraud" stroke="#10B981" />
             </LineChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      {/* BAR CHART */}
+      {/* BAR */}
       <div className="bg-white p-4 rounded shadow mb-10">
-        <h3 className="mb-2 font-semibold">Monthly Case Resolution</h3>
+        <h3 className="mb-2 font-semibold">
+          Monthly Case Resolution
+        </h3>
 
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={barData}>
@@ -168,11 +182,12 @@ export default function Dashboard() {
             <Tooltip />
             <Legend />
 
-            <Bar dataKey="solved" fill="#1E3A8A" name="Solved" />
-            <Bar dataKey="unsolved" fill="#F59E0B" name="Unsolved" />
+            <Bar dataKey="solved" fill="#1E3A8A" />
+            <Bar dataKey="unsolved" fill="#F59E0B" />
           </BarChart>
         </ResponsiveContainer>
       </div>
+
       <Footer />
     </div>
   );
