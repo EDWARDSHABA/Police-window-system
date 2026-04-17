@@ -22,10 +22,6 @@ import {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [totalOfficers, setTotalOfficers] = useState(0);
-
-  const [displayCount, setDisplayCount] = useState(1000);
-  const [rotation, setRotation] = useState(0);
 
   // 📊 DATA
   const lineData = [
@@ -52,6 +48,7 @@ export default function Dashboard() {
 
   const COLORS = ["#1E3A8A", "#F59E0B", "#10B981", "#EF4444"];
 
+  // 📊 Bar Data (FULL MONTHS)
   const barData = [
     { month: "Jan", solved: 60, unsolved: 40 },
     { month: "Feb", solved: 70, unsolved: 30 },
@@ -67,40 +64,15 @@ export default function Dashboard() {
     { month: "Dec", solved: 92, unsolved: 8 },
   ];
 
-  // ✅ Sync officers
   useEffect(() => {
-    const count = getStoredOfficers().length;
-    setTotalOfficers(count);
-  }, []);
+    const syncOfficerCount = () => {
+      setTotalOfficers(getStoredOfficers().length);
+    };
 
-  // ✅ Animated Counter
-  useEffect(() => {
-    let start = 1000;
-    const end = totalOfficers;
+    syncOfficerCount();
+    window.addEventListener("storage", syncOfficerCount);
 
-    if (end === 0) return;
-
-    const interval = setInterval(() => {
-      start -= Math.ceil((start - end) / 10);
-
-      if (start <= end) {
-        start = end;
-        clearInterval(interval);
-      }
-
-      setDisplayCount(start);
-    }, 30);
-
-    return () => clearInterval(interval);
-  }, [totalOfficers]);
-
-  // ✅ Pie Rotation Logic (every 30s)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRotation((prev) => prev + 360);
-    }, 30000);
-
-    return () => clearInterval(interval);
+    return () => window.removeEventListener("storage", syncOfficerCount);
   }, []);
 
   return (
@@ -129,6 +101,8 @@ export default function Dashboard() {
           <p className="text-sm opacity-80">All Cases</p>
           <h2 className="text-2xl font-bold">107</h2>
         </div>
+        <div className="bg-white p-4 rounded shadow">Today's Cases: 22</div>
+        <div className="bg-yellow-500 text-white p-4 rounded shadow">All Cases: 107</div>
 
         {/* QUICK ACTIONS */}
         <div className="bg-white p-5 rounded-xl shadow">
@@ -137,28 +111,26 @@ export default function Dashboard() {
           <div className="flex flex-col gap-3">
             <button
               onClick={() => navigate("/manage-officers")}
-              className="w-full bg-blue-400 text-white py-2 rounded mb-3 hover:bg-blue-600 transition shadow"
+              className="w-full bg-blue-400 text-white py-2 rounded hover:bg-blue-600 transition shadow"
             >
               Officers
             </button>
-            
+
             <button
               onClick={() => navigate("/assign-duties")}
-              className="w-full bg-green-400 text-white py-2 rounded mb-3 hover:bg-green-600 transition shadow"
+              className="w-full bg-green-400 text-white py-2 rounded hover:bg-green-600 transition shadow"
             >
               Assign Duties
             </button>
-            
           </div>
         </div>
       </div>
 
       {/* CHARTS */}
       <div className="grid grid-cols-3 gap-6 mb-6">
-
         {/* PIE */}
-        <div className="bg-white p-5 rounded-xl shadow">
-          <h3 className="mb-3 font-semibold">Case Types Distribution</h3>
+        <div className="bg-white p-4 rounded shadow">
+          <h3 className="mb-2 font-semibold">Case Types Distribution</h3>
 
           <div
             style={{
@@ -180,8 +152,8 @@ export default function Dashboard() {
         </div>
 
         {/* LINE */}
-        <div className="col-span-2 bg-white p-5 rounded-xl shadow">
-          <h3 className="mb-3 font-semibold">Monthly Case Trends</h3>
+        <div className="col-span-2 bg-white p-4 rounded shadow">
+          <h3 className="mb-2 font-semibold">Monthly Case Trends</h3>
 
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={lineData}>
@@ -199,9 +171,9 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* BAR */}
-      <div className="bg-white p-5 rounded-xl shadow mb-10">
-        <h3 className="mb-3 font-semibold">Monthly Case Resolution</h3>
+      {/* BAR CHART */}
+      <div className="bg-white p-4 rounded shadow mb-10">
+        <h3 className="mb-2 font-semibold">Monthly Case Resolution</h3>
 
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={barData}>
