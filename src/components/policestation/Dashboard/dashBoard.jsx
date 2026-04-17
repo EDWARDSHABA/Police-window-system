@@ -1,8 +1,10 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StationHeader from "../Header/PoliceStationHeader";
 import Footer from "../../officer/footer/footer";
 import { getStoredOfficers } from "../officersStorage";
+
 
 import {
   LineChart,
@@ -22,6 +24,7 @@ import {
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [showProfile, setShowProfile] = useState(false);
 
   // 📊 DATA
   const lineData = [
@@ -76,6 +79,7 @@ export default function Dashboard() {
   }, []);
 
   return (
+
     <div className="h-screen overflow-y-auto bg-gray-100 p-6">
       <StationHeader />
 
@@ -90,6 +94,7 @@ export default function Dashboard() {
         <div className="bg-gradient-to-r from-blue-400 to-blue-600 text-white p-5 rounded-xl shadow hover:scale-105 transition">
           <p className="text-sm opacity-80">Total Officers</p>
           <h2 className="text-2xl font-bold">{displayCount}</h2>
+
         </div>
 
         <div className="bg-white p-5 rounded-xl shadow hover:scale-105 transition">
@@ -151,6 +156,7 @@ export default function Dashboard() {
           </div>
         </div>
 
+
         {/* LINE */}
         <div className="col-span-2 bg-white p-4 rounded shadow">
           <h3 className="mb-2 font-semibold">Monthly Case Trends</h3>
@@ -187,6 +193,7 @@ export default function Dashboard() {
             <Bar dataKey="unsolved" fill="#F59E0B" />
           </BarChart>
         </ResponsiveContainer>
+
       </div>
 
       <Footer />
