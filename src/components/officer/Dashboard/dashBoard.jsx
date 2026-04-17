@@ -9,7 +9,6 @@ export default function Dashboard() {
 
       <main className="p-2 pt-24">
 
-
         {/* STATS */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-4">
           <StatCard title="Today Cases" value="38" color="bg-blue-500" />

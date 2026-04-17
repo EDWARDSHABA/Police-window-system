@@ -248,7 +248,7 @@ const ManageAccounts = () => {
                   </div>
                   <div className="relative w-72">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                   
+                      <span className="text-gray-400 text-sm"></span>
                     </div>
                     <input
                       type="text"
@@ -262,7 +262,7 @@ const ManageAccounts = () => {
               </div>
               <div className="overflow-auto flex-1">
                 <table className="w-full table-auto">
-                  <thead className="bg-gradient-to-r from-blue-900 to-blue-800 sticky top-0">
+                  <thead className="bg-blue-300 text-white p-4 mt-7 rounded-md mb-4 shadow sticky top-0">
                     <tr>
                       <th className="px-5 py-3.5 text-left text-xs font-medium text-white uppercase tracking-wider">Police ID</th>
                       <th className="px-5 py-3.5 text-left text-xs font-medium text-white uppercase tracking-wider">Station Name</th>
@@ -289,7 +289,7 @@ const ManageAccounts = () => {
                         </td>
                         <td className="px-5 py-3.5 align-middle">
                           <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700 whitespace-nowrap">
-                            ✓ Active
+                             Active
                           </span>
                         </td>
                         <td className="px-5 py-3.5 align-middle">

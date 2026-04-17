@@ -9,7 +9,6 @@ export default function HeadquartersHeader() {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef();
 
-  // Close menu when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -22,46 +21,43 @@ export default function HeadquartersHeader() {
 
   return (
     <header className="fixed top-0 left-0 w-full bg-yellow-700 text-white shadow-md z-50">
-      <div className="h-16 flex items-center w-full px-0">
-
+      
       {/* MAIN HEADER */}
-      <div className="h-16 flex justify-between items-center px-6">
+      <div className="h-16 flex items-center justify-between px-6 w-full">
 
-        {/* LOGO */}
+        {/* LEFT: LOGO */}
         <div className="flex items-center gap-3">
           <img
             src={logo}
             alt="Logo"
             className="h-12 w-auto object-contain"
           />
-          <h2 className="text-lg font-bold">POLICE WINDOW - HEADQUARTERS SYSTEM</h2>
+          <h2 className="text-lg font-bold whitespace-nowrap">
+            POLICE WINDOW - HEADQUARTERS SYSTEM
+          </h2>
         </div>
 
-        {/* Nav */}
-        <nav className="flex gap-20 text-sm font-medium ml-20">
+        {/* CENTER: NAV */}
+        <nav className="flex gap-10 text-sm font-medium mx-10 flex-1 justify-center">
           <button onClick={() => navigate("/headquarters")} className="hover:underline">
             Dashboard
           </button>
 
           <button onClick={() => navigate("/headquarters/police-stations")} className="hover:underline">
-            Manage Stations
+            Stations
           </button>
 
-          <button onClick={() => navigate("/statistics")} className="hover:underline">
-            Statistics
-          </button>
-
-          <button onClick={() => navigate("/manage-accounts")} className="hover:underline">
+           <button onClick={() => navigate("/manage-accounts")} className="hover:underline">
             Manage Accounts
           </button>
-          
+
           <button onClick={() => navigate("/about")} className="hover:underline">
             About Us
           </button>
         </nav>
 
-        {/* Icons */}
-        <div className="flex items-center gap-4 ml-auto pr-6 relative" ref={menuRef}>
+        {/* RIGHT: ICONS */}
+        <div className="flex items-center gap-6 relative" ref={menuRef}>
 
           {/* Notifications */}
           <img
@@ -71,15 +67,17 @@ export default function HeadquartersHeader() {
             className="h-7 w-7 cursor-pointer hover:scale-110 transition"
           />
 
-          {/* Profile Icon */}
+          {/* Profile */}
           <img
             src={profileIcon}
             alt="Profile"
             onClick={() => setShowMenu(!showMenu)}
             className="h-9 w-9 cursor-pointer hover:scale-110 transition"
           />
+
+          {/* Dropdown */}
           {showMenu && (
-            <div className="absolute right-0 top-12 w-40 bg-white text-gray-800 rounded-md shadow-lg py-2 z-50">
+            <div className="absolute right-0 top-14 w-44 bg-white text-gray-800 rounded-md shadow-lg py-2 z-50">
               
               <button
                 onClick={() => {
@@ -94,7 +92,6 @@ export default function HeadquartersHeader() {
               <button
                 onClick={() => {
                   setShowMenu(false);
-                  
                   localStorage.removeItem("authToken");
                   navigate("/signin");
                 }}
@@ -106,9 +103,10 @@ export default function HeadquartersHeader() {
             </div>
           )}
         </div>
-      </div>
+
       </div>
 
+      {/* Bottom line */}
       <div className="h-1 w-full bg-blue-500"></div>
     </header>
   );

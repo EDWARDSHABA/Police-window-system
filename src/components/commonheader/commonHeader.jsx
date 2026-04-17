@@ -1,6 +1,6 @@
 import HeadquartersHeader from "../headquaeters/Header/HeadQuartersHeader";
 import StationHeader from "../policestation/Header/PoliceStationHeader";
-import Header from "../officer/Header/OfficerHeader";
+import OfficerHeader from "../officer/Header/OfficerHeader";
 
 export default function CommonHeader() {
   const role = localStorage.getItem("role");

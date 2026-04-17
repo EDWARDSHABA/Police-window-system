@@ -1,12 +1,12 @@
-import React from 'react';
-import EditPoliceStation from '../../components/headquaeters/ManageAccounts/editAccount';
+import React from 'react'
+import EditPoliceStation from '../../components/headquaeters/ManageAccounts/editAccount'
 
 function EditAccountPage() {
   return (
-    <div className="h-screen w-screen overflow-hidden m-2 p-10">
-      <EditPoliceStation />
+    <div className="h-screen w-screen overflow-hidden m-2 p-0">
+        <EditPoliceStation />
     </div>
-  );
+  )
 }
 
-export default EditAccountPage;
+export default EditAccountPage

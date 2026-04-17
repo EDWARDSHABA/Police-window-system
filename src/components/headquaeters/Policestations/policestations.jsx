@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../Header/HeadQuartersHeader";
-import Footer from "../Footer/footer";
+import Footer from "../../officer/footer/footer";
 
 const Policestations = () => {
   const [stations, setStations] = useState([
@@ -78,22 +78,15 @@ const Policestations = () => {
       lastLogin: "Active",
     },
   ]);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const navigate = useNavigate();
 
-  // Fetch police stations (optional - using sample data for now)
   const fetchStations = async () => {
     try {
-      // Uncomment below to fetch from API
-      // const response = await fetch("http://localhost:5000/api/stations");
-      // if (response.ok) {
-      //   const data = await response.json();
-      //   setStations(data);
-      // } else {
-      //   setError("Failed to fetch police stations");
-      // }
+      // API later
     } catch (err) {
       setError("Error fetching police stations: " + err.message);
     } finally {
@@ -105,10 +98,10 @@ const Policestations = () => {
     fetchStations();
   }, []);
 
-  // Filter stations based on search input
-  const filteredStations = stations.filter((station) =>
-    station.stationName.toLowerCase().includes(searchInput.toLowerCase()) ||
-    station.adminName.toLowerCase().includes(searchInput.toLowerCase())
+  const filteredStations = stations.filter(
+    (station) =>
+      station.stationName.toLowerCase().includes(searchInput.toLowerCase()) ||
+      station.adminName.toLowerCase().includes(searchInput.toLowerCase())
   );
 
   const handleSearchChange = (e) => {
@@ -119,45 +112,28 @@ const Policestations = () => {
     navigate("/headquarters/create-police-station");
   };
 
-  const handleEdit = (stationId) => {
-    console.log("Edit station:", stationId);
-    // Add edit functionality later
-  };
-
-  const handleDelete = (stationId) => {
-    if (window.confirm("Are you sure you want to delete this police station?")) {
-      console.log("Delete station:", stationId);
-      // Add delete functionality later
-    }
-  };
-
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Header />
 
       <div className="flex-1 overflow-y-auto p-6 mt-16">
-        {/* Banner */}
         <div className="bg-blue-300 text-white p-4 rounded-md mb-4 shadow">
           <p className="text-sm">
-            You can View The List Of Police stations and  Create New Police Station
-            <br/>
-            .
+            You can View The List Of Police stations and Create New Police Station
           </p>
         </div>
 
-        {/* Main Content */}
         <div className="max-w-7xl mx-auto bg-white p-6 rounded-lg shadow">
-          {/* Header with Search and Create Button */}
+          {/* Search + Button */}
           <div className="flex justify-between items-center mb-6">
-            <div className="flex-1">
-              <input
-                type="text"
-                placeholder="Search by police, admin"
-                value={searchInput}
-                onChange={handleSearchChange}
-                className="w-full md:w-64 p-2 border border-gray-300 rounded"
-              />
-            </div>
+            <input
+              type="text"
+              placeholder="Search by police, admin"
+              value={searchInput}
+              onChange={handleSearchChange}
+              className="w-full md:w-64 p-2 border border-gray-300 rounded"
+            />
+
             <button
               onClick={handleCreateNewStation}
               className="ml-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-semibold"
@@ -166,72 +142,46 @@ const Policestations = () => {
             </button>
           </div>
 
-          {/* Loading State */}
-          {loading && (
-            <div className="text-center py-8">
-              <p className="text-gray-600">Loading police stations...</p>
-            </div>
-          )}
-
-          {/* Error State */}
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-              <p>{error}</p>
-            </div>
-          )}
-
           {/* Table */}
-          {!loading && !error && (
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-gray-100 border-b-2 border-gray-300">
-                    <th className="px-4 py-3 text-left font-semibold text-gray-700">Police ID</th>
-                    <th className="px-4 py-3 text-left font-semibold text-gray-700">Police Name</th>
-                    <th className="px-4 py-3 text-left font-semibold text-gray-700">Police Admin</th>
-                    <th className="px-4 py-3 text-left font-semibold text-gray-700">Last Login</th>
-                    <th className="px-4 py-3 text-left font-semibold text-gray-700">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredStations.length > 0 ? (
-                    filteredStations.map((station, index) => (
-                      <tr key={index} className="border-b border-gray-300 hover:bg-gray-50">
-                        <td className="px-4 py-3 text-gray-700 text-sm">{station.policeStationId}</td>
-                        <td className="px-4 py-3 text-gray-700 text-sm">{station.stationName}</td>
-                        <td className="px-4 py-3 text-gray-700 text-sm">{station.adminName}</td>
-                        <td className="px-4 py-3 text-gray-700 text-sm">{station.lastLogin}</td>
-                        <td className="px-4 py-3">
-                          <div className="flex gap-3">
-                            <button
-                              onClick={() => handleEdit(station.policeStationId)}
-                              className="text-blue-600 hover:text-blue-800 font-bold"
-                              title="Edit"
-                            >
-                              ✎
-                            </button>
-                            <button
-                              onClick={() => handleDelete(station.policeStationId)}
-                              className="text-red-600 hover:text-red-800 font-bold"
-                              title="Delete"
-                            >
-                              ⊘
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="5" className="px-4 py-3 text-center text-red-600 font-semibold">
-                        Not Available
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-gray-100 border-b-2 border-gray-300">
+                  <th className="px-4 py-3 text-left">Police ID</th>
+                  <th className="px-4 py-3 text-left">Police Name</th>
+                  <th className="px-4 py-3 text-left">Police Admin</th>
+                  <th className="px-4 py-3 text-left">Last Login</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {filteredStations.length > 0 ? (
+                  filteredStations.map((station, index) => (
+                    <tr key={index} className="border-b hover:bg-gray-50">
+                      <td className="px-4 py-3 text-sm">
+                        {station.policeStationId}
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        {station.stationName}
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        {station.adminName}
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        {station.lastLogin}
                       </td>
                     </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="4" className="text-center py-4 text-red-600">
+                      Not Available
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
