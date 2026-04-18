@@ -1,16 +1,433 @@
-import React from "react";
+// src/components/PoliceStationManage.js - Audit Logs Auto-delete after 48 Hours
+import React, { useState, useEffect } from 'react';
+import HeadquartersHeader from '../Header/HeadQuartersHeader';
+import Footer from '../../officer/footer/footer';
+import EditPoliceStation from '../ManageAccounts/editAccount';
 
-export default function ManageAccounts() {
+const ManageAccounts = () => {
+  const [stations, setStations] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingStation, setEditingStation] = useState(null); // null = list view, object = edit view
+  const [formData, setFormData] = useState({ id: '', name: '', admin: '' });
+  const [notification, setNotification] = useState(null);
+  const [auditLogs, setAuditLogs] = useState([]);
+
+  const FORTY_EIGHT_HOURS = 48 * 60 * 60 * 1000;
+
+  useEffect(() => {
+    loadData();
+    const interval = setInterval(() => {
+      cleanupOldAuditLogs();
+    }, 60 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const cleanupOldAuditLogs = () => {
+    const now = new Date();
+    const filteredLogs = auditLogs.filter(log => {
+      const logDate = new Date(log.timestamp);
+      return (now - logDate) < FORTY_EIGHT_HOURS;
+    });
+    if (filteredLogs.length !== auditLogs.length) {
+      setAuditLogs(filteredLogs);
+      localStorage.setItem('auditLogs', JSON.stringify(filteredLogs));
+    }
+  };
+
+  const loadData = () => {
+    const storedStations = localStorage.getItem('policeStations');
+    if (storedStations) {
+      setStations(JSON.parse(storedStations));
+    } else {
+      const mockData = [
+        { id: "MW-ZA-23-768-24", name: "7 miles Police Station", admin: "Sgt. Martha Sawasawa", lastLogin: new Date().toISOString(), status: "active", createdAt: "2024-02-20" },
+        { id: "MW-ZA-23-895-25", name: "Chikanda Police Station", admin: "Sgt. Victor Max", lastLogin: new Date().toISOString(), status: "active", createdAt: "2024-03-10" },
+        { id: "MW-ZA-23-112-25", name: "Matawale Police Station", admin: "Sgt. Edward Shawa", lastLogin: new Date().toISOString(), status: "active", createdAt: "2024-01-28" },
+        { id: "MW-ZA-23-898-25", name: "Domasi Police Station", admin: "Sgt. Victor Max", lastLogin: new Date().toISOString(), status: "active", createdAt: "2024-04-05" },
+        { id: "MW-ZA-23-221-26", name: "Namadzi Police Station", admin: "Sgt. Samuel Ken Chisale", lastLogin: new Date().toISOString(), status: "active", createdAt: "2024-05-12" },
+      ];
+      setStations(mockData);
+      localStorage.setItem('policeStations', JSON.stringify(mockData));
+    }
+
+    const storedLogs = localStorage.getItem('auditLogs');
+    if (storedLogs) {
+      const parsedLogs = JSON.parse(storedLogs);
+      const now = new Date();
+      const freshLogs = parsedLogs.filter(log => {
+        const logDate = new Date(log.timestamp);
+        return (now - logDate) < FORTY_EIGHT_HOURS;
+      });
+      setAuditLogs(freshLogs);
+      localStorage.setItem('auditLogs', JSON.stringify(freshLogs));
+    } else {
+      const mockLogs = [
+        { id: 1, action: "3 admins created 8 police officers accounts", admin: "System", details: "Bulk account creation approved", timestamp: new Date().toISOString(), location: "Zonal HQ" },
+        { id: 2, action: "Admin Banda for Zomba police deleted officers account", admin: "Admin Banda", details: "Officer account deactivation due to transfer", timestamp: new Date(Date.now() - 86400000).toISOString(), location: "Zomba District" },
+      ];
+      setAuditLogs(mockLogs);
+      localStorage.setItem('auditLogs', JSON.stringify(mockLogs));
+    }
+  };
+
+  const generatePoliceId = () => {
+    const existingIds = stations.map(s => s.id);
+    let sequence = 1;
+    if (existingIds.length > 0) {
+      const sequences = existingIds.map(id => {
+        const match = id.match(/MW-ZA-23-(\d+)-/);
+        return match ? parseInt(match[1]) : 0;
+      });
+      sequence = Math.max(...sequences, 0) + 1;
+    }
+    const randomNum = Math.floor(Math.random() * 900) + 100;
+    return `MW-ZA-23-${sequence.toString().padStart(3, '0')}-${randomNum}`;
+  };
+
+  const saveStations = (newStations) => {
+    setStations(newStations);
+    localStorage.setItem('policeStations', JSON.stringify(newStations));
+  };
+
+  const addAuditLog = (action, admin, details, location) => {
+    const newLog = {
+      id: Date.now(),
+      action,
+      admin,
+      details,
+      timestamp: new Date().toISOString(),
+      location
+    };
+    const updatedLogs = [newLog, ...auditLogs];
+    setAuditLogs(updatedLogs);
+    localStorage.setItem('auditLogs', JSON.stringify(updatedLogs));
+  };
+
+  const showNotification = (message, type = 'success') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 3000);
+  };
+
+  const handleAddStation = () => {
+    setEditingStation(null);
+    const autoId = generatePoliceId();
+    setFormData({ id: autoId, name: '', admin: '' });
+    setIsModalOpen(true);
+  };
+
+  // ── Clicking Edit switches to the EditPoliceStation full-page view ──
+  const handleEditStation = (station) => {
+    setEditingStation(station);
+  };
+
+  // ── Called by <EditPoliceStation /> when Save Changes is clicked ──
+  const handleSaveEdit = (updatedStation) => {
+    const updated = stations.map(s =>
+      s.id === updatedStation.id ? { ...s, ...updatedStation } : s
+    );
+    saveStations(updated);
+    addAuditLog(
+      `Updated police station: ${updatedStation.name}`,
+      "Current User",
+      `Station ${updatedStation.id} information updated`,
+      "Management Console"
+    );
+    showNotification(`${updatedStation.name} has been updated`);
+    setEditingStation(null); // go back to list
+  };
+
+  const handleDeleteStation = (id, name) => {
+    if (window.confirm(`Are you sure you want to delete ${name}?`)) {
+      const filtered = stations.filter(s => s.id !== id);
+      saveStations(filtered);
+      addAuditLog(`Deleted police station: ${name}`, "Current User", `Station ${id} removed from registry`, "Management Console");
+      showNotification(`${name} has been deleted`, 'error');
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.admin) {
+      showNotification('Please fill all fields', 'error');
+      return;
+    }
+    if (stations.some(s => s.id === formData.id)) {
+      const newId = generatePoliceId();
+      setFormData({ ...formData, id: newId });
+      showNotification('ID collision detected, new ID generated', 'error');
+      return;
+    }
+    const newStation = {
+      id: formData.id,
+      name: formData.name,
+      admin: formData.admin,
+      status: 'active',
+      lastLogin: new Date().toISOString(),
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+    saveStations([...stations, newStation]);
+    addAuditLog(`Registered new police station: ${formData.name}`, "Current User", `Station ${formData.id} added to registry with admin ${formData.admin}`, "Management Console");
+    showNotification(`${formData.name} has been registered`);
+    setIsModalOpen(false);
+  };
+
+  const formatLastLogin = (dateString) => {
+    if (!dateString) return 'Never';
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} min ago`;
+    if (diffHours < 24) return `${diffHours} hrs ago`;
+    return `${diffDays} days ago`;
+  };
+
+  const filteredStations = stations.filter(station =>
+    station.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    station.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    station.admin.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // ── If a station is selected for editing, render EditPoliceStation full-screen ──
+  if (editingStation) {
+    return (
+      <>
+        {notification && (
+          <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg animate-slide-in ${
+            notification.type === 'error' ? 'bg-red-600' : 'bg-emerald-600'
+          } text-white`}>
+            {notification.message}
+          </div>
+        )}
+        <HeadquartersHeader />
+        <EditPoliceStation
+          station={editingStation}
+          onClose={() => setEditingStation(null)}
+          onSave={handleSaveEdit}
+        />
+        <Footer />
+        <style>{`
+          @keyframes slide-in {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+          }
+          .animate-slide-in { animation: slide-in 0.3s ease-out; }
+        `}</style>
+      </>
+    );
+  }
+
+  // ── Default: list/manage view ──
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white shadow-xl rounded-2xl p-10 text-center">
-        <h1 className="text-3xl font-bold text-purple-700 mb-4">
-          Manage Accounts
-        </h1>
-        <p className="text-gray-600 text-lg">
-          Create, update, and manage user accounts within the system.
-        </p>
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      {notification && (
+        <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg animate-slide-in ${
+          notification.type === 'error' ? 'bg-red-600' : 'bg-emerald-600'
+        } text-white`}>
+          {notification.message}
+        </div>
+      )}
+
+      <HeadquartersHeader />
+
+      <div className="flex-1 flex flex-col px-6 py-4">
+        {/* Welcome Banner */}
+              <div className="bg-blue-300 text-white p-3 rounded-md mb-6 shadow">
+                <h2 className="text-lg font-semibold">
+                  Manage Police Stations and Accounts
+                </h2>
+              </div>
+
+        <div className="flex flex-1 flex-col lg:flex-row gap-6 min-h-0">
+          {/* Police Stations Table */}
+          <div className="w-full lg:w-8/12 flex flex-col min-h-0">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full">
+              <div className="p-4 border-b border-gray-200 bg-gray-50 flex-shrink-0">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-lg font-bold text-gray-700 flex items-center gap-2">
+                    Manage Police Stations
+                  </h2>
+                  <div className="relative w-72">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <span className="text-gray-400 text-sm"></span>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Search by name, ID or admin..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="overflow-auto flex-1">
+                <table className="w-full table-auto">
+                  <thead className="bg-blue-300 text-white p-4 mt-7 rounded-md mb-4 shadow sticky top-0">
+                    <tr>
+                      <th className="px-5 py-3.5 text-left text-xs font-medium text-white uppercase tracking-wider">Police ID</th>
+                      <th className="px-5 py-3.5 text-left text-xs font-medium text-white uppercase tracking-wider">Station Name</th>
+                      <th className="px-5 py-3.5 text-left text-xs font-medium text-white uppercase tracking-wider">Admin</th>
+                      <th className="px-5 py-3.5 text-left text-xs font-medium text-white uppercase tracking-wider">Last Login</th>
+                      <th className="px-5 py-3.5 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
+                      <th className="px-5 py-3.5 text-left text-xs font-medium text-white uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {filteredStations.map((station) => (
+                      <tr key={station.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-5 py-3.5 font-mono text-sm text-gray-700 align-middle whitespace-nowrap">{station.id}</td>
+                        <td className="px-5 py-3.5 text-sm font-medium text-gray-900 align-middle">{station.name}</td>
+                        <td className="px-5 py-3.5 text-sm text-gray-600 align-middle whitespace-nowrap">{station.admin}</td>
+                        <td className="px-5 py-3.5 text-sm text-gray-500 align-middle whitespace-nowrap">{formatLastLogin(station.lastLogin)}</td>
+                        <td className="px-5 py-3.5 align-middle">
+                          <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700 whitespace-nowrap">
+                             Active
+                          </span>
+                        </td>
+                        <td className="px-5 py-3.5 align-middle">
+                          <div className="flex items-center gap-3 whitespace-nowrap">
+                            <button
+                              onClick={() => handleEditStation(station)}
+                              className="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteStation(station.id, station.name)}
+                              className="inline-flex items-center text-green-600 hover:text-green-800 text-sm font-medium transition-colors"
+                            >
+                              Deactivate
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {filteredStations.length === 0 && (
+                  <div className="text-center py-12 text-gray-500">
+                    <p>No police stations found</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Audit Log */}
+          <div className="w-full lg:w-4/12 flex flex-col min-h-0">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full">
+              <div className="px-5 py-3.5 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 flex-shrink-0">
+                <h2 className="font-semibold text-gray-800 flex items-center gap-2 text-base">
+                  Audit Log
+                  <span className="text-xs text-gray-500 ml-2">(Auto-deletes after 48 hours)</span>
+                </h2>
+              </div>
+              <div className="divide-y divide-gray-100 overflow-auto flex-1">
+                {auditLogs.length === 0 ? (
+                  <div className="text-center py-12 text-gray-500">
+                    <p>No audit logs available</p>
+                    <p className="text-xs mt-2">Logs older than 48 hours are automatically deleted</p>
+                  </div>
+                ) : (
+                  auditLogs.map((log) => (
+                    <div key={log.id} className="px-5 py-3.5 hover:bg-gray-50 transition-colors">
+                      <div className="flex items-start gap-3">
+                        <div className="text-blue-600 text-base flex-shrink-0">📄</div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-800 break-words">{log.action}</p>
+                          <p className="text-xs text-gray-500 mt-1 break-words">{log.details}</p>
+                          <div className="flex flex-wrap gap-3 mt-2 text-xs text-gray-400">
+                            <span className="whitespace-nowrap">{new Date(log.timestamp).toLocaleString()}</span>
+                            <span className="whitespace-nowrap">{log.location}</span>
+                            <span className="whitespace-nowrap">{log.admin}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* Add New Station Modal (unchanged) */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6 shadow-xl">
+            <h3 className="text-lg font-semibold mb-4 text-blue-900">
+              ➕ Register New Police Station
+            </h3>
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Police ID (Auto-generated)</label>
+                <input
+                  type="text"
+                  value={formData.id}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 font-mono text-sm"
+                  disabled
+                />
+                <p className="text-xs text-gray-500 mt-1">✓ ID is automatically generated</p>
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Station Name *</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="Enter police station name"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Admin (Officer in Charge) *</label>
+                <input
+                  type="text"
+                  value={formData.admin}
+                  onChange={(e) => setFormData({ ...formData, admin: e.target.value })}
+                  placeholder="e.g., Sgt. Name"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                  Register Station
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes slide-in {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        .animate-slide-in { animation: slide-in 0.3s ease-out; }
+      `}</style>
+
+      <Footer />
     </div>
   );
-}
+};
+
+export default ManageAccounts;

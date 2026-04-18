@@ -3,7 +3,7 @@ import CreateOfficer from '../../components/policestation/CreateOfficer/createOf
 
 function CreateOfficerPage() {
   return (
-    <div className="h-screen w-full">
+    <div className="h-screen w-screen overflow-hidden m-2 p-10">
         <CreateOfficer />
     </div>
   )
