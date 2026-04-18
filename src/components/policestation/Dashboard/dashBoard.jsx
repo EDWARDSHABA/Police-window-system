@@ -1,10 +1,8 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StationHeader from "../Header/PoliceStationHeader";
 import Footer from "../../officer/footer/footer";
 import { getStoredOfficers } from "../officersStorage";
-
 
 import {
   LineChart,
@@ -24,9 +22,9 @@ import {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [showProfile, setShowProfile] = useState(false);
+  const [displayCount, setTotalOfficers] = useState(0);
+  const [rotation, setRotation] = useState(0);
 
-  // 📊 DATA
   const lineData = [
     { month: "Jan", theft: 20, assault: 10, fraud: 5 },
     { month: "Feb", theft: 30, assault: 15, fraud: 10 },
@@ -51,7 +49,6 @@ export default function Dashboard() {
 
   const COLORS = ["#1E3A8A", "#F59E0B", "#10B981", "#EF4444"];
 
-  // 📊 Bar Data (FULL MONTHS)
   const barData = [
     { month: "Jan", solved: 60, unsolved: 40 },
     { month: "Feb", solved: 70, unsolved: 30 },
@@ -78,8 +75,11 @@ export default function Dashboard() {
     return () => window.removeEventListener("storage", syncOfficerCount);
   }, []);
 
-  return (
+  useEffect(() => {
+    setRotation(360);
+  }, []);
 
+  return (
     <div className="h-screen overflow-y-auto bg-gray-100 p-6">
       <StationHeader />
 
@@ -90,7 +90,6 @@ export default function Dashboard() {
 
       {/* STATS */}
       <div className="grid grid-cols-4 gap-6 mb-6">
-
         <div className="bg-gradient-to-r from-blue-400 to-blue-600 text-white p-5 rounded-xl shadow hover:scale-105 transition">
           <p className="text-sm opacity-80">Total Officers</p>
           <h2 className="text-2xl font-bold">{displayCount}</h2>
@@ -133,7 +132,6 @@ export default function Dashboard() {
 
       {/* CHARTS */}
       <div className="grid grid-cols-3 gap-6 mb-6">
-        {/* PIE */}
         <div className="bg-white p-4 rounded shadow">
           <h3 className="mb-2 font-semibold">Case Types Distribution</h3>
 
@@ -156,7 +154,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-
         {/* LINE */}
         <div className="col-span-2 bg-white p-4 rounded shadow">
           <h3 className="mb-2 font-semibold">Monthly Case Trends</h3>
@@ -168,7 +165,6 @@ export default function Dashboard() {
               <YAxis />
               <Tooltip />
               <Legend />
-
               <Line type="monotone" dataKey="theft" stroke="#1E3A8A" />
               <Line type="monotone" dataKey="assault" stroke="#F59E0B" />
               <Line type="monotone" dataKey="fraud" stroke="#10B981" />
@@ -177,7 +173,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* BAR CHART */}
       <div className="bg-white p-4 rounded shadow mb-10">
         <h3 className="mb-2 font-semibold">Monthly Case Resolution</h3>
 
@@ -188,7 +183,6 @@ export default function Dashboard() {
             <YAxis />
             <Tooltip />
             <Legend />
-
             <Bar dataKey="solved" fill="#1E3A8A" />
             <Bar dataKey="unsolved" fill="#F59E0B" />
           </BarChart>
