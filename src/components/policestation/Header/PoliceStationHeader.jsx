@@ -7,7 +7,7 @@ export default function StationHeader() {
   const navigate = useNavigate();
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-[#574726] text-white shadow-md z-50">
+    <header className="fixed top-0 left-0 w-full bg-yellow-700 text-white shadow-md z-50">
 
       {/* MAIN HEADER */}
       <div className="h-16 flex justify-between items-center px-6">
@@ -40,15 +40,12 @@ export default function StationHeader() {
           <button onClick={() => navigate("/track-cases")} className="hover:underline">
             Cases
           </button>
-
-          <button onClick={() => navigate("/statistics")} className="hover:underline">
-            Statistics
-          </button>
            
 
-          <button onClick={() => navigate("/about")} className="hover:underline">
+          {/*<button onClick={() => navigate("/about")} className="hover:underline">
             About Us
           </button>
+          */}
 
         </nav>
 
@@ -71,7 +68,7 @@ export default function StationHeader() {
         </div>
 
       </div>
-
+      
       <div className="h-1 w-full bg-blue-500"></div>
 
     </header>
