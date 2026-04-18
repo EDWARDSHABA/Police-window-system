@@ -226,7 +226,7 @@ export default function UpdateCase() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
+          <table className="w-full text-left text-xs">
             <thead className="bg-gray-100 border-b border-gray-200">
               <tr>
                 <th className="px-3 py-2 font-semibold text-gray-900 text-sm">CASE ID</th>
@@ -240,15 +240,17 @@ export default function UpdateCase() {
             </thead>
             <tbody className="divide-y divide-gray-200">
               {filteredCases.map((item) => (
-                <tr key={item.id} className="hover:bg-gray-50 text-sm">
+                <tr key={item.id} className="hover:bg-gray-50 text-xs">
                   <td className="px-3 py-2 font-medium text-gray-900">{item.id}</td>
-                  <td className="px-3 py-2 text-slate-900">{item.type}</td>
-                  <td className="px-3 py-2 text-slate-900">{item.status}</td>
-                  <td className="px-3 py-2 text-slate-900">{item.name}</td>
+                  <td className="px-3 py-2 text-gray-700">{item.type}</td>
+                  <td className="px-3 py-2 text-gray-700">{item.status}</td>
+                  <td className="px-3 py-2 text-gray-700">{item.name}</td>
                   <td className="px-3 py-2 text-center">
-                    <span className="inline-flex items-center justify-center w-5 h-5 bg-yellow-600 text-white rounded-full text-xs">•</span>
+                    <button className="bg-yellow-50 hover:bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-semibold border border-yellow-300">
+                      Edit
+                    </button>
                   </td>
-                  <td className="px-3 py-2 text-slate-900">{item.officer}</td>
+                  <td className="px-3 py-2 text-gray-700">{item.officer}</td>
                   <td className="px-3 py-2">
                     <button className="bg-yellow-50 hover:bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-semibold border border-yellow-300">
                       Edit
