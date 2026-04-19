@@ -98,14 +98,15 @@ const CASE_TYPES = ["All", "Robbery", "Assault", "Burglary", "Fraud", "Theft", "
 const CASE_STATUSES = ["All", "Aquito", "Under investigation", "Closed"];
 
 export default function ViewCases() {
-  const [typeFilter, setTypeFilter] = useState("All");
-  const [statusFilter, setStatusFilter] = useState("All");
+  const [typeFilter, setTypeFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredCases = useMemo(() => {
     return CASES.filter((item) => {
-      const matchesType = typeFilter === "All" || item.type === typeFilter;
-      const matchesStatus = statusFilter === "All" || item.status === statusFilter;
+      const matchesType = typeFilter === "" || typeFilter === "All" || item.type === typeFilter;
+      const matchesStatus =
+        statusFilter === "" || statusFilter === "All" || item.status === statusFilter;
       const normalizedSearch = searchTerm.toLowerCase().trim();
       const matchesSearch =
         normalizedSearch === "" ||
@@ -135,6 +136,9 @@ export default function ViewCases() {
             onChange={(e) => setTypeFilter(e.target.value)}
             className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none"
           >
+            <option value="" disabled>
+              Search by case type
+            </option>
             {CASE_TYPES.map((option) => (
               <option key={option} value={option}>
                 {option}
@@ -150,6 +154,9 @@ export default function ViewCases() {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none"
           >
+            <option value="" disabled>
+              Search by case status
+            </option>
             {CASE_STATUSES.map((option) => (
               <option key={option} value={option}>
                 {option}
@@ -160,16 +167,13 @@ export default function ViewCases() {
 
         <label className="block">
           <span className="sr-only">Search cases</span>
-          <div className="relative">
+          <div>
             <input
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search cases..."
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 pr-12 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none"
             />
-            <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-400">
-              🔍
-            </span>
           </div>
         </label>
       </div>
