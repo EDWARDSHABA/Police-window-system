@@ -25,10 +25,6 @@ export default function Dashboard() {
   const [displayCount, setTotalOfficers] = useState(0);
   const [rotation, setRotation] = useState(0);
 
-  //Added missing states
-  //const [totalOfficers, setTotalOfficers] = useState(0);
-  //const [rotation, setRotation] = useState(0);
-
   const lineData = [
     { month: "Jan", theft: 20, assault: 10, fraud: 5 },
     { month: "Feb", theft: 30, assault: 15, fraud: 10 },
@@ -108,7 +104,7 @@ export default function Dashboard() {
           <h2 className="text-2xl font-bold">22</h2>
         </div>
 
-        <div className="bg-yellow-500 text-white p-5 rounded-xl shadow hover:scale-105 transition">
+        <div className="bg-yellow-600 text-white p-5 rounded-xl shadow hover:scale-105 transition">
           <p className="text-sm opacity-80">All Cases</p>
           <h2 className="text-2xl font-bold">107</h2>
         </div>
@@ -120,14 +116,14 @@ export default function Dashboard() {
           <div className="flex flex-col gap-3">
             <button
               onClick={() => navigate("/manage-officers")}
-              className="w-full bg-blue-400 text-white py-2 rounded hover:bg-blue-600 transition shadow"
+              className="w-full bg-blue-500 text-white py-2 rounded mb-3 hover:bg-blue-600 transition shadow"
             >
               Officers
             </button>
 
             <button
               onClick={() => navigate("/assign-duties")}
-              className="w-full bg-green-400 text-white py-2 rounded hover:bg-green-600 transition shadow"
+              className="w-full bg-yellow-600 text-white py-2 rounded mb-3 hover:bg-green-600 transition shadow"
             >
               Assign Duties
             </button>
