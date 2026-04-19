@@ -1,12 +1,32 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getStoredViewCases, updateViewCaseStatus } from "../Data/viewCasesData";
 
 export default function UpdateCase() {
-  const [caseId, setCaseId] = useState("MW-ZA-015-04-26");
-  const [complainant, setComplainant] = useState("");
+  const { state } = useLocation();
+  const navigate = useNavigate();
+  const selectedCaseId = state?.selectedCase?.id;
+  const selectedCase = useMemo(() => {
+    if (!selectedCaseId) return state?.selectedCase ?? null;
+
+    return (
+      getStoredViewCases().find((item) => item.id === selectedCaseId) ??
+      state?.selectedCase ??
+      null
+    );
+  }, [selectedCaseId, state]);
+
+  const [caseId] = useState(selectedCase?.id ?? "MW-ZA-015-04-26");
+  const [complainant] = useState(selectedCase?.name ?? "");
   const [suspect, setSuspect] = useState("");
   const [additionalInfo, setAdditionalInfo] = useState("");
-  const [assignedOfficer, setAssignedOfficer] = useState("Sgt. Leoleo");
-  const [status, setStatus] = useState("Under investigation");
+  const [assignedOfficer] = useState(selectedCase?.officer ?? "Sgt. Leoleo");
+  const [status, setStatus] = useState(selectedCase?.status ?? "Under investigation");
+
+  const handleSaveChanges = () => {
+    updateViewCaseStatus(caseId, status);
+    navigate("/view-cases");
+  };
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-6">
@@ -21,7 +41,11 @@ export default function UpdateCase() {
             <div className="rounded-lg bg-gray-50 px-3 py-2 text-sm text-black">
               Selected: <span className="font-semibold">{caseId}</span>
             </div>
-            <button className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg font-semibold">
+            <button
+              type="button"
+              onClick={handleSaveChanges}
+              className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg font-semibold"
+            >
               Save changes
             </button>
           </div>
@@ -38,8 +62,8 @@ export default function UpdateCase() {
               <label className="block text-sm font-semibold text-black mb-1">Case ID</label>
               <input
                 value={caseId}
-                onChange={(e) => setCaseId(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                readOnly
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-yellow-500 outline-none"
               />
             </div>
 
@@ -47,9 +71,9 @@ export default function UpdateCase() {
               <label className="block text-sm font-semibold text-black mb-1">Victim / complainant</label>
               <input
                 value={complainant}
-                onChange={(e) => setComplainant(e.target.value)}
-                placeholder="Enter name"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                readOnly
+                placeholder="Enter complainant name"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black placeholder:text-gray-500 focus:ring-2 focus:ring-yellow-500 outline-none"
               />
             </div>
 
@@ -59,7 +83,7 @@ export default function UpdateCase() {
                 value={suspect}
                 onChange={(e) => setSuspect(e.target.value)}
                 placeholder="Enter suspect name"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black placeholder:text-gray-500 focus:ring-2 focus:ring-yellow-500 outline-none"
               />
             </div>
 
@@ -70,7 +94,7 @@ export default function UpdateCase() {
                 value={additionalInfo}
                 onChange={(e) => setAdditionalInfo(e.target.value)}
                 placeholder="Add case notes"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black placeholder:text-gray-500 focus:ring-2 focus:ring-yellow-500 outline-none"
               />
             </div>
           </div>
@@ -88,7 +112,7 @@ export default function UpdateCase() {
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-yellow-500 outline-none"
             >
               <option>Under investigation</option>
               <option>Open</option>
