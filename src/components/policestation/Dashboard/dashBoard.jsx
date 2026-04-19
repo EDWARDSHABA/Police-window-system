@@ -23,6 +23,10 @@ import {
 export default function Dashboard() {
   const navigate = useNavigate();
 
+  //Added missing states
+  const [totalOfficers, setTotalOfficers] = useState(0);
+  const [rotation, setRotation] = useState(0);
+
   // 📊 DATA
   const lineData = [
     { month: "Jan", theft: 20, assault: 10, fraud: 5 },
@@ -48,7 +52,6 @@ export default function Dashboard() {
 
   const COLORS = ["#1E3A8A", "#F59E0B", "#10B981", "#EF4444"];
 
-  // 📊 Bar Data (FULL MONTHS)
   const barData = [
     { month: "Jan", solved: 60, unsolved: 40 },
     { month: "Feb", solved: 70, unsolved: 30 },
@@ -72,6 +75,9 @@ export default function Dashboard() {
     syncOfficerCount();
     window.addEventListener("storage", syncOfficerCount);
 
+    //Add rotation animation
+    setRotation(360);
+
     return () => window.removeEventListener("storage", syncOfficerCount);
   }, []);
 
@@ -87,9 +93,10 @@ export default function Dashboard() {
       {/* STATS */}
       <div className="grid grid-cols-4 gap-6 mb-6">
 
+        {/*FIXED */}
         <div className="bg-gradient-to-r from-blue-400 to-blue-600 text-white p-5 rounded-xl shadow hover:scale-105 transition">
           <p className="text-sm opacity-80">Total Officers</p>
-          <h2 className="text-2xl font-bold">{displayCount}</h2>
+          <h2 className="text-2xl font-bold">{totalOfficers}</h2>
         </div>
 
         <div className="bg-white p-5 rounded-xl shadow hover:scale-105 transition">
@@ -101,10 +108,8 @@ export default function Dashboard() {
           <p className="text-sm opacity-80">All Cases</p>
           <h2 className="text-2xl font-bold">107</h2>
         </div>
-        <div className="bg-white p-4 rounded shadow">Today's Cases: 22</div>
-        <div className="bg-yellow-500 text-white p-4 rounded shadow">All Cases: 107</div>
 
-        {/* QUICK ACTIONS */}
+        {/* Removed duplicates */}
         <div className="bg-white p-5 rounded-xl shadow">
           <h3 className="font-semibold mb-3">Quick Actions</h3>
 
