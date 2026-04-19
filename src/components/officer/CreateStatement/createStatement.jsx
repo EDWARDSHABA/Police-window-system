@@ -43,38 +43,39 @@ export default function RulesPolicies() {
     <div className="min-h-screen bg-gray-100 px-6 py-8">
       <Header />
 
-      {/* NOTE */}
+      {/* HEADER NOTE */}
       <div className="bg-blue-600 mt-15 text-white px-6 py-3 rounded-lg shadow mb-6">
         Ignorance of the rules is not an excuse for non-compliance.
       </div>
 
+      {/* PAGE TITLE */}
       <h1 className="text-2xl font-bold text-gray-800 mb-6">
         Rules & Policies
       </h1>
 
-      {/* TABLE CONTAINER */}
+      {/* CARD CONTAINER */}
       <div className="bg-white rounded-xl shadow p-6">
 
-        {/* HEADER ROW */}
-        <div className="grid grid-cols-[40px_1fr_120px] font-semibold text-gray-600 border-b pb-3 mb-2">
+        {/* TABLE HEADER */}
+        <div className="grid grid-cols-3 font-semibold text-gray-600 border-b pb-3 mb-4">
           <div>#</div>
           <div>Document Name</div>
           <div className="text-right">Action</div>
         </div>
 
-        {/* ROWS */}
-        <div>
+        {/* DOCUMENT LIST */}
+        <div className="space-y-0.">
           {documents.map((doc, index) => (
             <div
               key={index}
-              className="grid grid-cols-[40px_1fr_120px] items-center py-3 border-b last:border-b-0 hover:bg-gray-50 transition"
+              className="grid grid-cols-3 items-center p-3 rounded-lg hover:bg-gray-50 transition"
             >
               {/* INDEX */}
               <div className="text-gray-500 font-medium">
                 {index + 1}
               </div>
 
-              {/* NAME (kept close to index naturally now) */}
+              {/* NAME */}
               <div className="flex items-center gap-2 text-gray-700">
                 {doc.icon}
                 <span>{doc.name}</span>
@@ -96,7 +97,6 @@ export default function RulesPolicies() {
       <div className="mt-6 text-center text-sm text-gray-600 italic">
         “All personnel are expected to know and adhere to the rules; ignorance shall not be accepted as justification for any violation.”
       </div>
-
       <Footer />
     </div>
   );
