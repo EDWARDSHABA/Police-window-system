@@ -61,7 +61,7 @@ export default function Header() {
           </button>
 
           <button onClick={() => navigate("/create-statement")} className="hover:underline">
-            Statement
+            Rules Policies
           </button>
 
           <span className="hover:underline cursor-pointer">
