@@ -68,7 +68,7 @@ function App() {
         <Route path="/notifications" element={<NotificationPage />} />
         <Route path="/about" element={<AboutUsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
-
+        <Route path="*" element={<HomePage />} />
       </Routes>
     </Router>
   );

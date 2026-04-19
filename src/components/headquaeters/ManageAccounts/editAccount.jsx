@@ -183,5 +183,7 @@ export default function EditPoliceStation() {
 
       <Footer />
     </div>
+      <Footer />
+    </div>
   );
 }
