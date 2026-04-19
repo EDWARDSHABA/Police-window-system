@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import OfficerHeader from "../Header/OfficerHeader";
 import Footer from "../footer/footer";
 const CASE_TYPES = [
@@ -57,17 +58,18 @@ function EvidenceVault({ onClose }) {
   useEffect(() => {
     async function load() {
       try {
-        const keysResult = await window.storage.list("case:");
-        const keys = keysResult?.keys ?? [];
-        const loaded = [];
-        for (const key of keys) {
-          try {
-            const r = await window.storage.get(key);
-            if (r?.value) loaded.push(JSON.parse(r.value));
-          } catch (_) {}
+        const allCases = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith('case:')) {
+            try {
+              const value = localStorage.getItem(key);
+              if (value) allCases.push(JSON.parse(value));
+            } catch (_) {}
+          }
         }
-        loaded.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
-        setCases(loaded);
+        allCases.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+        setCases(allCases);
       } catch (_) {
         setCases([]);
       }
@@ -235,6 +237,7 @@ function EvidenceVault({ onClose }) {
 
 // ── Main Component ─────────────────────────────────────────────────────────
 export default function RegisterCase() {
+  const navigate = useNavigate();
   const [caseId] = useState(generateCaseId);
   const [dateOfIncidence, setDateOfIncidence] = useState("");
   const [location, setLocation] = useState("");
@@ -305,10 +308,21 @@ export default function RegisterCase() {
         submittedAt: new Date().toISOString(),
       };
 
-      await window.storage.set(`case:${caseId}`, JSON.stringify(record));
-      setSubmittedCaseId(caseId);
-      setSubmittedFileCount(files.length);
-      setSubmitted(true);
+      localStorage.setItem(`case:${caseId}`, JSON.stringify(record));
+
+      // Add to view cases
+      const currentCases = JSON.parse(localStorage.getItem('officerViewCases') || '[]');
+      const newCase = {
+        id: caseId,
+        type: typeOfCrime,
+        status: "Under investigation",
+        name: vFullName,
+        officer: "Officer", // Placeholder, as officer not specified in form
+      };
+      currentCases.push(newCase);
+      localStorage.setItem('officerViewCases', JSON.stringify(currentCases));
+
+      navigate('/officer/view-cases');
     } catch (err) {
       setSaveError("Failed to save the case: " + err.message);
     } finally {
@@ -386,25 +400,25 @@ export default function RegisterCase() {
 
   // ── Main form ──
   return (
-    <div className="min-h-screen bg-gray-100 font-sans">
+    
+    <div className="min-h-screen bg-gray-100 font-sans relative">
       <OfficerHeader />
       {/* Top bar */}
-      <div className="bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <button className="text-gray-500 hover:text-gray-700 p-1">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <button className="flex items-center gap-1.5 bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold px-3 py-1.5 rounded transition-colors">
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            REGISTER NEW CASE
-          </button>
-        </div>
+      <div className="bg-white border-b border-gray-200 px-4 py-2 flex items-center">
+        <button className="text-gray-500 hover:text-gray-700 p-1">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+      </div>
 
-        {/* Vault access */}
+      <div className="absolute right-4 top-18 flex flex-col items-end gap-2">
+        <button className="flex items-center gap-1.5 bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold px-3 py-1.5 rounded transition-colors">
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          REGISTER NEW CASE
+        </button>
         <button
           onClick={() => setShowVault(true)}
           className="flex items-center gap-1.5 border border-sky-300 text-sky-600 hover:bg-sky-50 text-xs px-3 py-1.5 rounded transition-colors"
@@ -517,7 +531,7 @@ export default function RegisterCase() {
           <SectionHeader title="CASE DETAILS" />
 
           <div className="mb-3">
-            <label className="block text-xs text-gray-600 mb-0.5">Description of Incident</label>
+            <label className="block text-xs text-gray-600 mb-0.5">Victim statement</label>
             <textarea className={`${textareaCls} ${errCls("description")}`} rows={6}
               value={description} onChange={e => { setDescription(e.target.value); setErrors(p => ({ ...p, description: false })); }} />
           </div>
@@ -558,7 +572,7 @@ export default function RegisterCase() {
           </div>
 
           <div>
-            <label className="block text-xs text-gray-600 mb-0.5">Report<br />Details</label>
+            <label className="block text-xs text-gray-600 mb-0.5">Suspect<br />statement</label>
             <textarea className={textareaCls} rows={5} value={reportDetails}
               onChange={e => setReportDetails(e.target.value)} />
           </div>
