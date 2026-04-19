@@ -54,7 +54,7 @@ export default function ViewCases() {
             }`}
           >
             <option value="" disabled>
-              Search by case type
+              Filter by case type
             </option>
             {CASE_TYPES.map((option) => (
               <option key={option} value={option}>
@@ -74,7 +74,7 @@ export default function ViewCases() {
             }`}
           >
             <option value="" disabled>
-              Search by case status
+              Filter by case status
             </option>
             {CASE_STATUSES.map((option) => (
               <option key={option} value={option}>
