@@ -1,5 +1,5 @@
 import React from 'react'
-import HeadquartersDashboard from '../../components/headquaeters/Dashboard/dashBoard'
+import HeadquartersDashboard from '../../components/headquaeters/Dashboard/dashboard'
 
 function HeadquartersPage() {
   return (

@@ -22,12 +22,13 @@ import {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [totalOfficers, setTotalOfficers] = useState(0);
-
-  const [displayCount, setDisplayCount] = useState(1000);
+  const [displayCount, setTotalOfficers] = useState(0);
   const [rotation, setRotation] = useState(0);
 
-  // 📊 DATA
+  //Added missing states
+  //const [totalOfficers, setTotalOfficers] = useState(0);
+ // const [rotation, setRotation] = useState(0);
+
   const lineData = [
     { month: "Jan", theft: 20, assault: 10, fraud: 5 },
     { month: "Feb", theft: 30, assault: 15, fraud: 10 },
@@ -67,40 +68,22 @@ export default function Dashboard() {
     { month: "Dec", solved: 92, unsolved: 8 },
   ];
 
-  // ✅ Sync officers
   useEffect(() => {
-    const count = getStoredOfficers().length;
-    setTotalOfficers(count);
+    const syncOfficerCount = () => {
+      setTotalOfficers(getStoredOfficers().length);
+    };
+
+    syncOfficerCount();
+    window.addEventListener("storage", syncOfficerCount);
+
+    //Add rotation animation
+    setRotation(360);
+
+    return () => window.removeEventListener("storage", syncOfficerCount);
   }, []);
 
-  // ✅ Animated Counter
   useEffect(() => {
-    let start = 1000;
-    const end = totalOfficers;
-
-    if (end === 0) return;
-
-    const interval = setInterval(() => {
-      start -= Math.ceil((start - end) / 10);
-
-      if (start <= end) {
-        start = end;
-        clearInterval(interval);
-      }
-
-      setDisplayCount(start);
-    }, 30);
-
-    return () => clearInterval(interval);
-  }, [totalOfficers]);
-
-  // ✅ Pie Rotation Logic (every 30s)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRotation((prev) => prev + 360);
-    }, 30000);
-
-    return () => clearInterval(interval);
+    setRotation(360);
   }, []);
 
   return (
@@ -130,7 +113,7 @@ export default function Dashboard() {
           <h2 className="text-2xl font-bold">107</h2>
         </div>
 
-        {/* QUICK ACTIONS */}
+        {/* Removed duplicates */}
         <div className="bg-white p-5 rounded-xl shadow">
           <h3 className="font-semibold mb-3">Quick Actions</h3>
 
@@ -141,24 +124,21 @@ export default function Dashboard() {
             >
               Officers
             </button>
-            
+
             <button
               onClick={() => navigate("/assign-duties")}
               className="w-full bg-yellow-600 text-white py-2 rounded mb-3 hover:bg-green-600 transition shadow"
             >
               Assign Duties
             </button>
-            
           </div>
         </div>
       </div>
 
       {/* CHARTS */}
       <div className="grid grid-cols-3 gap-6 mb-6">
-
-        {/* PIE */}
-        <div className="bg-white p-5 rounded-xl shadow">
-          <h3 className="mb-3 font-semibold">Case Types Distribution</h3>
+        <div className="bg-white p-4 rounded shadow">
+          <h3 className="mb-2 font-semibold">Case Types Distribution</h3>
 
           <div
             style={{
@@ -180,8 +160,8 @@ export default function Dashboard() {
         </div>
 
         {/* LINE */}
-        <div className="col-span-2 bg-white p-5 rounded-xl shadow">
-          <h3 className="mb-3 font-semibold">Monthly Case Trends</h3>
+        <div className="col-span-2 bg-white p-4 rounded shadow">
+          <h3 className="mb-2 font-semibold">Monthly Case Trends</h3>
 
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={lineData}>
@@ -190,7 +170,6 @@ export default function Dashboard() {
               <YAxis />
               <Tooltip />
               <Legend />
-
               <Line type="monotone" dataKey="theft" stroke="#1E3A8A" />
               <Line type="monotone" dataKey="assault" stroke="#F59E0B" />
               <Line type="monotone" dataKey="fraud" stroke="#10B981" />
@@ -199,9 +178,8 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* BAR */}
-      <div className="bg-white p-5 rounded-xl shadow mb-10">
-        <h3 className="mb-3 font-semibold">Monthly Case Resolution</h3>
+      <div className="bg-white p-4 rounded shadow mb-10">
+        <h3 className="mb-2 font-semibold">Monthly Case Resolution</h3>
 
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={barData}>
@@ -210,11 +188,11 @@ export default function Dashboard() {
             <YAxis />
             <Tooltip />
             <Legend />
-
             <Bar dataKey="solved" fill="#1E3A8A" />
             <Bar dataKey="unsolved" fill="#F59E0B" />
           </BarChart>
         </ResponsiveContainer>
+
       </div>
 
       <Footer />
