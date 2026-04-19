@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../Header/OfficerHeader";
 import Footer from "../../officer/footer/footer";
 import {
@@ -21,6 +21,16 @@ export default function PoliceStationDashboard() {
     code: "MW-ZA-01",
   });
 
+  const [rotation, setRotation] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRotation((prev) => prev + 720);
+    }, 5000); // rotates every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   const stats = {
     casesInCourt: 18,
     caseClosed: 23,
@@ -42,7 +52,6 @@ export default function PoliceStationDashboard() {
     { month: "Dec", total: 180, solved: 150 },
   ];
 
-  // 🔥 Case types (colors + values)
   const pieData = [
     { name: "Fraud", value: 20, color: "#1e3a8a" },
     { name: "Theft", value: 30, color: "#f59e0b" },
@@ -50,18 +59,12 @@ export default function PoliceStationDashboard() {
     { name: "Burglary", value: 25, color: "#10b981" },
   ];
 
-  const stationRates = [
-    { name: "Lilongwe", solved: 91.7, unsolved: 52.1 },
-    { name: "Blantyre", solved: 79.5, unsolved: 57.3 },
-    { name: "Zomba", solved: 78.8, unsolved: 41.2 },
-    { name: "Mzuzu", solved: 78.3, unsolved: 51.3 },
-  ];
-
   return (
     <div className="h-screen flex flex-col bg-gray-100">
       <Header />
 
       <main className="flex-1 overflow-y-auto pt-24 px-6 pb-6">
+
         {/* HEADER */}
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-gray-800">
@@ -94,30 +97,37 @@ export default function PoliceStationDashboard() {
         {/* CHARTS */}
         <div className="grid grid-cols-3 gap-6 mb-6">
 
-          {/* PIE CHART (FIXED PROPER RECHARTS PIE) */}
+          {/* 🔥 ROTATING PIE CHART */}
           <div className="bg-white p-4 rounded-xl shadow">
             <h3 className="font-semibold mb-4 text-gray-600">
               Case Types Distribution (%)
             </h3>
 
-            <ResponsiveContainer width="100%" height={260}>
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={90}
-                  label={({ name, value }) => `${name} ${value}%`}
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+            <div
+              style={{
+                transform: `rotate(${rotation}deg)`,
+                transition: "transform 2s ease-in-out",
+              }}
+            >
+              <ResponsiveContainer width="100%" height={260}>
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={90}
+                    label={({ name, value }) => `${name} ${value}%`}
+                  >
+                    {pieData.map((entry, index) => (
+                      <Cell key={index} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
 
             {/* LEGEND */}
             <div className="mt-4 space-y-2">
@@ -154,13 +164,6 @@ export default function PoliceStationDashboard() {
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </div>
-
-        {/* RATES */}
-        <div className="bg-white p-4 rounded-xl shadow mb-10">
-          <h3 className="font-semibold mb-4 text-gray-600">
-            Cases Rates @ our Stations
-          </h3>
         </div>
       </main>
 
