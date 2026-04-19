@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-
+import OfficerHeader from "../Header/OfficerHeader";
+import Footer from "../footer/footer";
 const CASE_TYPES = [
   "Theft","Assault","Burglary","Fraud","Vandalism",
   "Drug Offence","Homicide","Robbery","Sexual Offence",
@@ -386,6 +387,7 @@ export default function RegisterCase() {
   // ── Main form ──
   return (
     <div className="min-h-screen bg-gray-100 font-sans">
+      <OfficerHeader />
       {/* Top bar */}
       <div className="bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -602,6 +604,7 @@ export default function RegisterCase() {
           <EvidenceVault onClose={() => setShowVault(false)} />
         </div>
       )}
+      <Footer />
     </div>
   );
 }

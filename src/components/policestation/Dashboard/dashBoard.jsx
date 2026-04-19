@@ -26,8 +26,8 @@ export default function Dashboard() {
   const [rotation, setRotation] = useState(0);
 
   //Added missing states
-  const [totalOfficers, setTotalOfficers] = useState(0);
-  const [rotation, setRotation] = useState(0);
+  //const [totalOfficers, setTotalOfficers] = useState(0);
+  //const [rotation, setRotation] = useState(0);
 
   const lineData = [
     { month: "Jan", theft: 20, assault: 10, fraud: 5 },
