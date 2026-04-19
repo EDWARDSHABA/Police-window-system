@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import showIcon from "../../../assets/icons/show.png";
 
 const CASES = [
   {
@@ -98,26 +100,19 @@ const CASE_TYPES = ["All", "Robbery", "Assault", "Burglary", "Fraud", "Theft", "
 const CASE_STATUSES = ["All", "Aquito", "Under investigation", "Closed"];
 
 export default function ViewCases() {
-  const [typeFilter, setTypeFilter] = useState("All");
-  const [statusFilter, setStatusFilter] = useState("All");
-  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+  const [typeFilter, setTypeFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
 
   const filteredCases = useMemo(() => {
     return CASES.filter((item) => {
-      const matchesType = typeFilter === "All" || item.type === typeFilter;
-      const matchesStatus = statusFilter === "All" || item.status === statusFilter;
-      const normalizedSearch = searchTerm.toLowerCase().trim();
-      const matchesSearch =
-        normalizedSearch === "" ||
-        item.id.toLowerCase().includes(normalizedSearch) ||
-        item.type.toLowerCase().includes(normalizedSearch) ||
-        item.status.toLowerCase().includes(normalizedSearch) ||
-        item.name.toLowerCase().includes(normalizedSearch) ||
-        item.officer.toLowerCase().includes(normalizedSearch);
+      const matchesType = typeFilter === "" || typeFilter === "All" || item.type === typeFilter;
+      const matchesStatus =
+        statusFilter === "" || statusFilter === "All" || item.status === statusFilter;
 
-      return matchesType && matchesStatus && matchesSearch;
+      return matchesType && matchesStatus;
     });
-  }, [typeFilter, statusFilter, searchTerm]);
+  }, [typeFilter, statusFilter]);
 
   return (
     <>
@@ -127,14 +122,19 @@ export default function ViewCases() {
         <p className="mt-2 text-slate-600">Search, filter, and review all registered cases.</p>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-[240px_240px_minmax(240px,1fr)]">
+      <div className="grid gap-3 md:grid-cols-2 md:min-w-[520px]">
         <label className="block">
           <span className="sr-only">Filter by case type</span>
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none"
+            className={`w-full rounded-lg border border-slate-300 bg-white px-4 py-3 shadow-sm focus:border-slate-500 focus:outline-none ${
+              typeFilter === "" ? "text-slate-400" : "text-slate-900"
+            }`}
           >
+            <option value="" disabled>
+              Search by case type
+            </option>
             {CASE_TYPES.map((option) => (
               <option key={option} value={option}>
                 {option}
@@ -148,29 +148,19 @@ export default function ViewCases() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none"
+            className={`w-full rounded-lg border border-slate-300 bg-white px-4 py-3 shadow-sm focus:border-slate-500 focus:outline-none ${
+              statusFilter === "" ? "text-slate-400" : "text-slate-900"
+            }`}
           >
+            <option value="" disabled>
+              Search by case status
+            </option>
             {CASE_STATUSES.map((option) => (
               <option key={option} value={option}>
                 {option}
               </option>
             ))}
           </select>
-        </label>
-
-        <label className="block">
-          <span className="sr-only">Search cases</span>
-          <div className="relative">
-            <input
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search cases..."
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 pr-12 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none"
-            />
-            <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-400">
-              🔍
-            </span>
-          </div>
         </label>
       </div>
     </div>
@@ -186,6 +176,7 @@ export default function ViewCases() {
               <th className="px-3 py-2 font-semibold text-gray-900 text-sm">NAME</th>
               <th className="px-3 py-2 font-semibold text-gray-900 text-sm">VIEW</th>
               <th className="px-3 py-2 font-semibold text-gray-900 text-sm">OFFICER</th>
+              <th className="px-3 py-2 font-semibold text-gray-900 text-sm">ACTION</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
@@ -195,17 +186,30 @@ export default function ViewCases() {
                 <td className="px-3 py-2 text-gray-700">{item.type}</td>
                 <td className="px-3 py-2 text-gray-700">{item.status}</td>
                 <td className="px-3 py-2 text-gray-700">{item.name}</td>
-                <td className="px-3 py-2 text-center">
-                  <button className="bg-yellow-50 hover:bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-semibold border border-yellow-300">
-                    Edit
+                <td className="px-3 py-2">
+                  <button
+                    type="button"
+                    className="inline-flex items-center justify-center"
+                    aria-label={`View case ${item.id}`}
+                  >
+                    <img src={showIcon} alt="" className="h-4 w-4 object-contain" />
                   </button>
                 </td>
                 <td className="px-3 py-2 text-gray-700">{item.officer}</td>
+                <td className="px-3 py-2">
+                  <button
+                    type="button"
+                    onClick={() => navigate("/update-case")}
+                    className="bg-yellow-50 hover:bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-semibold border border-yellow-300"
+                  >
+                    Edit
+                  </button>
+                </td>
               </tr>
             ))}
             {filteredCases.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-3 py-16 text-center text-sm text-gray-500">
+                <td colSpan={7} className="px-3 py-16 text-center text-sm text-gray-500">
                   No cases match your filters.
                 </td>
               </tr>
