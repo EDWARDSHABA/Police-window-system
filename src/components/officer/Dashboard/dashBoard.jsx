@@ -87,12 +87,15 @@ export default function PoliceStationDashboard() {
             <button className="w-full bg-white text-black py-2 mb-2 rounded hover:bg-gray-200 transition">
               Register Case
             </button>
+            
 
             <button className="w-full bg-white text-black py-2 rounded hover:bg-gray-200 transition">
               Duties
             </button>
+            
           </div>
         </div>
+        
 
         {/* CHARTS */}
         <div className="grid grid-cols-3 gap-6 mb-6">
