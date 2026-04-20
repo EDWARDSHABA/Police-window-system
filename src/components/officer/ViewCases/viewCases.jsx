@@ -1,118 +1,39 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import showIcon from "../../../assets/icons/show.png";
-
-const CASES = [
-  {
-    id: "MW-ZA-001-04-26",
-    type: "Robbery",
-    status: "Aquito",
-    name: "Chales Mandela",
-    officer: "Sgt. Leoleo",
-  },
-  {
-    id: "MW-ZA-002-04-26",
-    type: "Robbery",
-    status: "Under investigation",
-    name: "Hilon Kachambe",
-    officer: "Sgt. Makuali",
-  },
-  {
-    id: "MW-ZA-003-04-26",
-    type: "Difiement",
-    status: "Under investigation",
-    name: "Gilo Zenod",
-    officer: "Sgt. Zengo",
-  },
-  {
-    id: "MW-ZA-004-04-26",
-    type: "Difiement",
-    status: "Aquito",
-    name: "Zero Mavuto",
-    officer: "Sgt. Zengo",
-  },
-  {
-    id: "MW-ZA-005-04-26",
-    type: "Robbery",
-    status: "Under investigation",
-    name: "Nthawi Mayo",
-    officer: "Sgt. Leoleo",
-  },
-  {
-    id: "MW-ZA-006-04-26",
-    type: "Assault",
-    status: "Under investigation",
-    name: "Jay Utaka",
-    officer: "Sgt. Makuali",
-  },
-  {
-    id: "MW-ZA-007-04-26",
-    type: "Burglary",
-    status: "Closed",
-    name: "Lydia Phwezi",
-    officer: "Sgt. Samuel Ken",
-  },
-  {
-    id: "MW-ZA-008-04-26",
-    type: "Fraud",
-    status: "Under investigation",
-    name: "Patrick Dongo",
-    officer: "Sgt. Leoleo",
-  },
-  {
-    id: "MW-ZA-009-04-26",
-    type: "Assault",
-    status: "Aquito",
-    name: "Maureen Chipwanya",
-    officer: "Sgt. Makuali",
-  },
-  {
-    id: "MW-ZA-010-04-26",
-    type: "Theft",
-    status: "Under investigation",
-    name: "Brighton Sithole",
-    officer: "Sgt. Zengo",
-  },
-  {
-    id: "MW-ZA-011-04-26",
-    type: "Robbery",
-    status: "Under investigation",
-    name: "Dalitso Phiri",
-    officer: "Sgt. Leoleo",
-  },
-  {
-    id: "MW-ZA-012-04-26",
-    type: "Difiement",
-    status: "Closed",
-    name: "Erick Banda",
-    officer: "Sgt. Samuel Ken",
-  },
-  {
-    id: "MW-ZA-013-04-26",
-    type: "Assault",
-    status: "Under investigation",
-    name: "Witness Chithande",
-    officer: "Sgt. Makuali",
-  },
-];
+import { getStoredViewCases } from "../Data/viewCasesData";
 
 const CASE_TYPES = ["All", "Robbery", "Assault", "Burglary", "Fraud", "Theft", "Difiement"];
 const CASE_STATUSES = ["All", "Aquito", "Under investigation", "Closed"];
 
 export default function ViewCases() {
   const navigate = useNavigate();
+  const [cases, setCases] = useState(() => getStoredViewCases());
   const [typeFilter, setTypeFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    setCases(getStoredViewCases());
+  }, []);
 
   const filteredCases = useMemo(() => {
-    return CASES.filter((item) => {
+    return cases.filter((item) => {
       const matchesType = typeFilter === "" || typeFilter === "All" || item.type === typeFilter;
       const matchesStatus =
         statusFilter === "" || statusFilter === "All" || item.status === statusFilter;
+      const normalizedSearch = searchTerm.toLowerCase().trim();
+      const matchesSearch =
+        normalizedSearch === "" ||
+        item.id.toLowerCase().includes(normalizedSearch) ||
+        item.type.toLowerCase().includes(normalizedSearch) ||
+        item.status.toLowerCase().includes(normalizedSearch) ||
+        item.name.toLowerCase().includes(normalizedSearch) ||
+        item.officer.toLowerCase().includes(normalizedSearch);
 
-      return matchesType && matchesStatus;
+      return matchesType && matchesStatus && matchesSearch;
     });
-  }, [typeFilter, statusFilter]);
+  }, [cases, typeFilter, statusFilter, searchTerm]);
 
   return (
     <>
@@ -122,7 +43,7 @@ export default function ViewCases() {
         <p className="mt-2 text-slate-600">Search, filter, and review all registered cases.</p>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-2 md:min-w-[520px]">
+      <div className="grid gap-3 md:grid-cols-[240px_240px_minmax(240px,1fr)]">
         <label className="block">
           <span className="sr-only">Filter by case type</span>
           <select
@@ -162,6 +83,16 @@ export default function ViewCases() {
             ))}
           </select>
         </label>
+
+        <label className="block">
+          <span className="sr-only">Search cases</span>
+          <input
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search cases..."
+            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none"
+          />
+        </label>
       </div>
     </div>
 
@@ -199,7 +130,7 @@ export default function ViewCases() {
                 <td className="px-3 py-2">
                   <button
                     type="button"
-                    onClick={() => navigate("/update-case")}
+                    onClick={() => navigate("/update-case", { state: { selectedCase: item } })}
                     className="bg-yellow-50 hover:bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-semibold border border-yellow-300"
                   >
                     Edit
