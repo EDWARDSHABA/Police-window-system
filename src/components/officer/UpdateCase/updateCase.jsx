@@ -1,7 +1,42 @@
-import OfficerHeader from "../Header/OfficerHeader";
-import Footer from "../footer/footer";
+import { useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getStoredViewCases, updateViewCaseStatus } from "../Data/viewCasesData";
 
 export default function UpdateCase() {
+  const { state } = useLocation();
+  const navigate = useNavigate();
+  const selectedCaseId = state?.selectedCase?.id;
+  const selectedCase = useMemo(() => {
+    if (!selectedCaseId) return state?.selectedCase ?? null;
+
+    return (
+      getStoredViewCases().find((item) => item.id === selectedCaseId) ??
+      state?.selectedCase ??
+      null
+    );
+  }, [selectedCaseId, state]);
+
+  const [caseId] = useState(selectedCase?.id ?? "MW-ZA-015-04-26");
+  const [complainant] = useState(selectedCase?.name ?? "");
+  const [suspect, setSuspect] = useState("");
+  const [additionalInfo, setAdditionalInfo] = useState("");
+  const [assignedOfficer] = useState(selectedCase?.officer ?? "Sgt. Leoleo");
+  const [status, setStatus] = useState(selectedCase?.status ?? "Under investigation");
+  const [victimGender, setVictimGender] = useState("");
+  const [victimOccupation, setVictimOccupation] = useState("");
+  const [victimContact, setVictimContact] = useState("");
+  const [victimAddress, setVictimAddress] = useState("");
+  const [suspectGender, setSuspectGender] = useState("");
+  const [suspectOccupation, setSuspectOccupation] = useState("");
+  const [suspectContact, setSuspectContact] = useState("");
+  const [suspectAddress, setSuspectAddress] = useState("");
+  const [suspectStatement] = useState("");
+
+  const handleSaveChanges = () => {
+    updateViewCaseStatus(caseId, status);
+    navigate("/view-cases");
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
 
@@ -18,7 +53,6 @@ export default function UpdateCase() {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../Header/HeadQuartersHeader";
-import Footer from "../Footer/footer";
+import Footer from "../../officer/footer/footer";
 
 const Policestations = () => {
   const [stations, setStations] = useState([

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Footer from '../../officer/footer/footer';
 
 const DISTRICTS = ["Blantyre", "Zomba", "Lilongwe", "Mzuzu", "Kasungu", "Mangochi"];
 const REGIONS = ["Southern", "Central", "Northern"];
@@ -30,26 +31,22 @@ export default function EditPoliceStation() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Top spacing to push card down */}
-      <div className="pt-6"></div>
-
-      {/* Full Width Warning Card */}
-      <div className="w-full bg-gradient-to-r from-blue-300 to-blue-300 shadow-md border-l-4 border-yellow-400">
-        <div className="max-w-3xl mx-auto px-4 py-2.5">
-          <p className="text-white text-sm font-medium text-left">
-           Make sure every edit you do here are accepted by the Malawi Police  Policies, Rules and regulations and are supported from the above.
-          </p>
-        </div>
+    <div className="min-h-screen bg-gray-100 overflow-y-auto p-4">
+      
+      {/* Warning Card */}
+      <div className="bg-blue-300 text-white p-4 rounded-md mb-4 mt-7 shadow">
+        <p className="text-sm">
+          You can edit Police stations Admin Details make sure You are sure of this Action
+        </p>
       </div>
 
-      {/* Form Container */}
-      <div className="max-w-3xl mx-auto p-4">
-        <h1 className="text-sm font-medium text-gray-800 mb-2 mt-1">
+      <div className="max-w-3xl mx-auto flex flex-col">
+        <h1 className="text-sm font-medium text-gray-800 mb-2">
           Edit Police Station Information/Details
         </h1>
 
         <div className="bg-white border border-gray-200 rounded-lg p-3">
+          
           {/* Station Name */}
           <div className="mb-2">
             <label className="block text-[11px] text-gray-700 mb-0.5">Police Station Name</label>
@@ -87,7 +84,7 @@ export default function EditPoliceStation() {
             </select>
           </div>
 
-          {/* Station ID (auto-generated) */}
+          {/* Station ID */}
           <div className="mb-3">
             <label className="block text-[11px] text-gray-700 mb-0.5">Station ID</label>
             <input
@@ -100,10 +97,11 @@ export default function EditPoliceStation() {
           </div>
 
           {/* Admin Section */}
-          <div className="bg-[#8B7536] rounded-lg p-2.5">
+          <div className="bg-blue-300 text-white p-4 rounded-md mb-4 mt-7 shadow">
             <h2 className="text-white text-[11px] font-medium mb-2">Edit Police Station Admin</h2>
 
             <div className="grid grid-cols-2 gap-3">
+              
               {/* Left column */}
               <div className="space-y-1.5">
                 {[
@@ -112,7 +110,7 @@ export default function EditPoliceStation() {
                   { label: "Police Station Assigned", key: "stationAssigned", type: "text", placeholder: "Station name" },
                 ].map(({ label, key, type, placeholder }) => (
                   <div key={key}>
-                    <label className="block text-[9px] text-yellow-200 mb-0.5">{label}</label>
+                    <label className="block text-[11px] text-black mb-0.5">{label}</label>
                     <input
                       type={type}
                       placeholder={placeholder}
@@ -123,7 +121,7 @@ export default function EditPoliceStation() {
                   </div>
                 ))}
 
-                {/* Admin ID (auto-generated) */}
+                {/* Admin ID */}
                 <div>
                   <label className="block text-[9px] text-yellow-200 mb-0.5">Admin ID</label>
                   <input
@@ -136,7 +134,7 @@ export default function EditPoliceStation() {
                 </div>
               </div>
 
-              {/* Right column — Contact Details */}
+              {/* Right column */}
               <div className="bg-white/10 border border-white/20 rounded-lg p-2">
                 <p className="text-[9px] text-yellow-200 mb-1.5">Contact Details</p>
                 <div className="space-y-1.5">
@@ -159,8 +157,8 @@ export default function EditPoliceStation() {
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex justify-end gap-2 mt-2.5">
+          {/* Action Buttons (FIXED + STICKY) */}
+          <div className="flex justify-end gap-2 mt-2.5 sticky bottom-0 bg-white py-2">
             <button
               className="h-7 px-3 text-xs rounded border border-gray-300 text-gray-600 bg-gray-50 hover:bg-gray-100"
               onClick={() => window.history.back()}
@@ -168,7 +166,7 @@ export default function EditPoliceStation() {
               Cancel
             </button>
             <button
-              className="h-7 px-3 text-xs rounded bg-[#8B7536] text-white hover:bg-[#7a6530]"
+              className="h-7 px-3 text-xs rounded bg-blue-600 text-white hover:bg-blue-700"
               onClick={handleSave}
             >
               Save Changes
@@ -176,10 +174,14 @@ export default function EditPoliceStation() {
           </div>
 
           {saved && (
-            <p className="text-right text-[10px] text-green-600 mt-1.5">Changes saved successfully!</p>
+            <p className="text-right text-[10px] text-green-600 mt-1.5">
+              Changes saved successfully!
+            </p>
           )}
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 }
