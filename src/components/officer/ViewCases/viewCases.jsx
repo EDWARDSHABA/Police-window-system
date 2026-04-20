@@ -103,25 +103,16 @@ export default function ViewCases() {
   const navigate = useNavigate();
   const [typeFilter, setTypeFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
 
   const filteredCases = useMemo(() => {
     return CASES.filter((item) => {
       const matchesType = typeFilter === "" || typeFilter === "All" || item.type === typeFilter;
       const matchesStatus =
         statusFilter === "" || statusFilter === "All" || item.status === statusFilter;
-      const normalizedSearch = searchTerm.toLowerCase().trim();
-      const matchesSearch =
-        normalizedSearch === "" ||
-        item.id.toLowerCase().includes(normalizedSearch) ||
-        item.type.toLowerCase().includes(normalizedSearch) ||
-        item.status.toLowerCase().includes(normalizedSearch) ||
-        item.name.toLowerCase().includes(normalizedSearch) ||
-        item.officer.toLowerCase().includes(normalizedSearch);
 
-      return matchesType && matchesStatus && matchesSearch;
+      return matchesType && matchesStatus;
     });
-  }, [typeFilter, statusFilter, searchTerm]);
+  }, [typeFilter, statusFilter]);
 
   return (
     <>
@@ -131,13 +122,15 @@ export default function ViewCases() {
         <p className="mt-2 text-slate-600">Search, filter, and review all registered cases.</p>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-[240px_240px_minmax(240px,1fr)]">
+      <div className="grid gap-3 md:grid-cols-2 md:min-w-[520px]">
         <label className="block">
           <span className="sr-only">Filter by case type</span>
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none"
+            className={`w-full rounded-lg border border-slate-300 bg-white px-4 py-3 shadow-sm focus:border-slate-500 focus:outline-none ${
+              typeFilter === "" ? "text-slate-400" : "text-slate-900"
+            }`}
           >
             <option value="" disabled>
               Search by case type
@@ -155,7 +148,9 @@ export default function ViewCases() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none"
+            className={`w-full rounded-lg border border-slate-300 bg-white px-4 py-3 shadow-sm focus:border-slate-500 focus:outline-none ${
+              statusFilter === "" ? "text-slate-400" : "text-slate-900"
+            }`}
           >
             <option value="" disabled>
               Search by case status
@@ -166,18 +161,6 @@ export default function ViewCases() {
               </option>
             ))}
           </select>
-        </label>
-
-        <label className="block">
-          <span className="sr-only">Search cases</span>
-          <div>
-            <input
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search cases..."
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none"
-            />
-          </div>
         </label>
       </div>
     </div>
