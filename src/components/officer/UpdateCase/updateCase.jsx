@@ -22,6 +22,15 @@ export default function UpdateCase() {
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [assignedOfficer] = useState(selectedCase?.officer ?? "Sgt. Leoleo");
   const [status, setStatus] = useState(selectedCase?.status ?? "Under investigation");
+  const [victimGender, setVictimGender] = useState("");
+  const [victimOccupation, setVictimOccupation] = useState("");
+  const [victimContact, setVictimContact] = useState("");
+  const [victimAddress, setVictimAddress] = useState("");
+  const [suspectGender, setSuspectGender] = useState("");
+  const [suspectOccupation, setSuspectOccupation] = useState("");
+  const [suspectContact, setSuspectContact] = useState("");
+  const [suspectAddress, setSuspectAddress] = useState("");
+  const [suspectStatement] = useState("");
 
   const handleSaveChanges = () => {
     updateViewCaseStatus(caseId, status);
@@ -55,47 +64,135 @@ export default function UpdateCase() {
       {/* Form and Officer Section */}
       <div className="grid md:grid-cols-3 gap-6">
         {/* Form */}
-        <div className="md:col-span-2 bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
-          <h2 className="text-2xl font-black text-black mb-4 tracking-tight">Select case to update</h2>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-black mb-1">Case ID</label>
-              <input
-                value={caseId}
-                readOnly
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-yellow-500 outline-none"
-              />
-            </div>
+        <div className="md:col-span-2 space-y-6">
+          <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
+            <h2 className="text-2xl font-black text-black mb-4 tracking-tight">Select case to update</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-black mb-1">Case ID</label>
+                <input
+                  value={caseId}
+                  readOnly
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-yellow-500 outline-none"
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-black mb-1">Victim / complainant</label>
-              <input
-                value={complainant}
-                readOnly
-                placeholder="Enter complainant name"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black placeholder:text-gray-500 focus:ring-2 focus:ring-yellow-500 outline-none"
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-semibold text-black mb-1">Victim / complainant</label>
+                <input
+                  value={complainant}
+                  readOnly
+                  placeholder="Enter complainant name"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black placeholder:text-gray-500 focus:ring-2 focus:ring-yellow-500 outline-none"
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-black mb-1">Suspect</label>
-              <input
-                value={suspect}
-                onChange={(e) => setSuspect(e.target.value)}
-                placeholder="Enter suspect name"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black placeholder:text-gray-500 focus:ring-2 focus:ring-yellow-500 outline-none"
-              />
-            </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="block text-sm font-semibold text-black mb-1">Victim Gender</label>
+                  <input
+                    value={victimGender}
+                    readOnly
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-black mb-1">Victim Occupation</label>
+                  <input
+                    value={victimOccupation}
+                    readOnly
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-black mb-1">Victim Contact Number</label>
+                  <input
+                    value={victimContact}
+                    readOnly
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black outline-none"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-black mb-1">Victim Address</label>
+                  <textarea
+                    rows={3}
+                    value={victimAddress}
+                    readOnly
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black outline-none"
+                  />
+                </div>
+              </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-black mb-1">Any information</label>
-              <textarea
-                rows={3}
-                value={additionalInfo}
-                onChange={(e) => setAdditionalInfo(e.target.value)}
-                placeholder="Add case notes"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black placeholder:text-gray-500 focus:ring-2 focus:ring-yellow-500 outline-none"
-              />
+              <div>
+                <label className="block text-sm font-semibold text-black mb-1">Victim's statement</label>
+                <textarea
+                  rows={3}
+                  value={additionalInfo}
+                  readOnly
+                  placeholder="Add case notes"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black placeholder:text-gray-500 focus:ring-2 focus:ring-yellow-500 outline-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
+            <h2 className="text-2xl font-black text-black mb-4 tracking-tight">Suspect Details</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-black mb-1">Suspect</label>
+                <input
+                  value={suspect}
+                  readOnly
+                  placeholder="Enter suspect name"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black placeholder:text-gray-500 focus:ring-2 focus:ring-yellow-500 outline-none"
+                />
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="block text-sm font-semibold text-black mb-1">Suspect Gender</label>
+                  <input
+                    value={suspectGender}
+                    readOnly
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-black mb-1">Suspect Occupation</label>
+                  <input
+                    value={suspectOccupation}
+                    readOnly
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-black mb-1">Suspect Contact Number</label>
+                  <input
+                    value={suspectContact}
+                    readOnly
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black outline-none"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-black mb-1">Suspect Address</label>
+                  <textarea
+                    rows={3}
+                    value={suspectAddress}
+                    readOnly
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black outline-none"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-black mb-1">Suspect's statement</label>
+                  <textarea
+                    rows={3}
+                    value={suspectStatement}
+                    readOnly
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black outline-none"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -122,6 +219,7 @@ export default function UpdateCase() {
           </div>
         </div>
       </div>
+
     </div>
   );
 }
