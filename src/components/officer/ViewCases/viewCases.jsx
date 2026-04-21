@@ -1,111 +1,27 @@
-import { useMemo, useState } from "react";
-
-const CASES = [
-  {
-    id: "MW-ZA-001-04-26",
-    type: "Robbery",
-    status: "Aquito",
-    name: "Chales Mandela",
-    officer: "Sgt. Leoleo",
-  },
-  {
-    id: "MW-ZA-002-04-26",
-    type: "Robbery",
-    status: "Under investigation",
-    name: "Hilon Kachambe",
-    officer: "Sgt. Makuali",
-  },
-  {
-    id: "MW-ZA-003-04-26",
-    type: "Difiement",
-    status: "Under investigation",
-    name: "Gilo Zenod",
-    officer: "Sgt. Zengo",
-  },
-  {
-    id: "MW-ZA-004-04-26",
-    type: "Difiement",
-    status: "Aquito",
-    name: "Zero Mavuto",
-    officer: "Sgt. Zengo",
-  },
-  {
-    id: "MW-ZA-005-04-26",
-    type: "Robbery",
-    status: "Under investigation",
-    name: "Nthawi Mayo",
-    officer: "Sgt. Leoleo",
-  },
-  {
-    id: "MW-ZA-006-04-26",
-    type: "Assault",
-    status: "Under investigation",
-    name: "Jay Utaka",
-    officer: "Sgt. Makuali",
-  },
-  {
-    id: "MW-ZA-007-04-26",
-    type: "Burglary",
-    status: "Closed",
-    name: "Lydia Phwezi",
-    officer: "Sgt. Samuel Ken",
-  },
-  {
-    id: "MW-ZA-008-04-26",
-    type: "Fraud",
-    status: "Under investigation",
-    name: "Patrick Dongo",
-    officer: "Sgt. Leoleo",
-  },
-  {
-    id: "MW-ZA-009-04-26",
-    type: "Assault",
-    status: "Aquito",
-    name: "Maureen Chipwanya",
-    officer: "Sgt. Makuali",
-  },
-  {
-    id: "MW-ZA-010-04-26",
-    type: "Theft",
-    status: "Under investigation",
-    name: "Brighton Sithole",
-    officer: "Sgt. Zengo",
-  },
-  {
-    id: "MW-ZA-011-04-26",
-    type: "Robbery",
-    status: "Under investigation",
-    name: "Dalitso Phiri",
-    officer: "Sgt. Leoleo",
-  },
-  {
-    id: "MW-ZA-012-04-26",
-    type: "Difiement",
-    status: "Closed",
-    name: "Erick Banda",
-    officer: "Sgt. Samuel Ken",
-  },
-  {
-    id: "MW-ZA-013-04-26",
-    type: "Assault",
-    status: "Under investigation",
-    name: "Witness Chithande",
-    officer: "Sgt. Makuali",
-  },
-];
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import showIcon from "../../../assets/icons/show.png";
+import { getStoredViewCases } from "../Data/viewCasesData";
 
 const CASE_TYPES = ["All", "Robbery", "Assault", "Burglary", "Fraud", "Theft", "Difiement"];
 const CASE_STATUSES = ["All", "Aquito", "Under investigation", "Closed"];
 
 export default function ViewCases() {
-  const [typeFilter, setTypeFilter] = useState("All");
-  const [statusFilter, setStatusFilter] = useState("All");
+  const navigate = useNavigate();
+  const [cases, setCases] = useState(() => getStoredViewCases());
+  const [typeFilter, setTypeFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
+  useEffect(() => {
+    setCases(getStoredViewCases());
+  }, []);
+
   const filteredCases = useMemo(() => {
-    return CASES.filter((item) => {
-      const matchesType = typeFilter === "All" || item.type === typeFilter;
-      const matchesStatus = statusFilter === "All" || item.status === statusFilter;
+    return cases.filter((item) => {
+      const matchesType = typeFilter === "" || typeFilter === "All" || item.type === typeFilter;
+      const matchesStatus =
+        statusFilter === "" || statusFilter === "All" || item.status === statusFilter;
       const normalizedSearch = searchTerm.toLowerCase().trim();
       const matchesSearch =
         normalizedSearch === "" ||
@@ -117,7 +33,7 @@ export default function ViewCases() {
 
       return matchesType && matchesStatus && matchesSearch;
     });
-  }, [typeFilter, statusFilter, searchTerm]);
+  }, [cases, typeFilter, statusFilter, searchTerm]);
 
   return (
     <>
@@ -133,8 +49,13 @@ export default function ViewCases() {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none"
+            className={`w-full rounded-lg border border-slate-300 bg-white px-4 py-3 shadow-sm focus:border-slate-500 focus:outline-none ${
+              typeFilter === "" ? "text-slate-400" : "text-slate-900"
+            }`}
           >
+            <option value="" disabled>
+              Filter by case type
+            </option>
             {CASE_TYPES.map((option) => (
               <option key={option} value={option}>
                 {option}
@@ -148,8 +69,13 @@ export default function ViewCases() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none"
+            className={`w-full rounded-lg border border-slate-300 bg-white px-4 py-3 shadow-sm focus:border-slate-500 focus:outline-none ${
+              statusFilter === "" ? "text-slate-400" : "text-slate-900"
+            }`}
           >
+            <option value="" disabled>
+              Filter by case status
+            </option>
             {CASE_STATUSES.map((option) => (
               <option key={option} value={option}>
                 {option}
@@ -160,17 +86,12 @@ export default function ViewCases() {
 
         <label className="block">
           <span className="sr-only">Search cases</span>
-          <div className="relative">
-            <input
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search cases..."
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 pr-12 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none"
-            />
-            <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-400">
-              🔍
-            </span>
-          </div>
+          <input
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search cases..."
+            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none"
+          />
         </label>
       </div>
     </div>
@@ -186,6 +107,7 @@ export default function ViewCases() {
               <th className="px-3 py-2 font-semibold text-gray-900 text-sm">NAME</th>
               <th className="px-3 py-2 font-semibold text-gray-900 text-sm">VIEW</th>
               <th className="px-3 py-2 font-semibold text-gray-900 text-sm">OFFICER</th>
+              <th className="px-3 py-2 font-semibold text-gray-900 text-sm">ACTION</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
@@ -195,17 +117,30 @@ export default function ViewCases() {
                 <td className="px-3 py-2 text-gray-700">{item.type}</td>
                 <td className="px-3 py-2 text-gray-700">{item.status}</td>
                 <td className="px-3 py-2 text-gray-700">{item.name}</td>
-                <td className="px-3 py-2 text-center">
-                  <button className="bg-yellow-50 hover:bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-semibold border border-yellow-300">
-                    Edit
+                <td className="px-3 py-2">
+                  <button
+                    type="button"
+                    className="inline-flex items-center justify-center"
+                    aria-label={`View case ${item.id}`}
+                  >
+                    <img src={showIcon} alt="" className="h-4 w-4 object-contain" />
                   </button>
                 </td>
                 <td className="px-3 py-2 text-gray-700">{item.officer}</td>
+                <td className="px-3 py-2">
+                  <button
+                    type="button"
+                    onClick={() => navigate("/update-case", { state: { selectedCase: item } })}
+                    className="bg-yellow-50 hover:bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-semibold border border-yellow-300"
+                  >
+                    Edit
+                  </button>
+                </td>
               </tr>
             ))}
             {filteredCases.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-3 py-16 text-center text-sm text-gray-500">
+                <td colSpan={7} className="px-3 py-16 text-center text-sm text-gray-500">
                   No cases match your filters.
                 </td>
               </tr>
