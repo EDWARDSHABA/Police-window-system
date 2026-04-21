@@ -22,12 +22,12 @@ import {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [displayCount, setTotalOfficers] = useState(0);
-  const [rotation, setRotation] = useState(0);
 
-  //Added missing states
+  // ✅ FIX: Add missing states
   const [totalOfficers, setTotalOfficers] = useState(0);
   const [rotation, setRotation] = useState(0);
+
+  const displayCount = totalOfficers; // ✅ FIX
 
   const lineData = [
     { month: "Jan", theft: 20, assault: 10, fraud: 5 },
@@ -76,28 +76,20 @@ export default function Dashboard() {
     syncOfficerCount();
     window.addEventListener("storage", syncOfficerCount);
 
-    //Add rotation animation
     setRotation(360);
 
     return () => window.removeEventListener("storage", syncOfficerCount);
-  }, []);
-
-  useEffect(() => {
-    setRotation(360);
   }, []);
 
   return (
     <div className="h-screen overflow-y-auto bg-gray-100 p-6">
       <StationHeader />
 
-      {/* WELCOME */}
       <div className="mt-20 bg-blue-500 text-white p-4 rounded mb-6">
         Welcome Back, Officer Admin
       </div>
 
-      {/* STATS */}
       <div className="grid grid-cols-4 gap-6 mb-6">
-
         <div className="bg-gradient-to-r from-blue-400 to-blue-600 text-white p-5 rounded-xl shadow hover:scale-105 transition">
           <p className="text-sm opacity-80">Total Officers</p>
           <h2 className="text-2xl font-bold">{displayCount}</h2>
@@ -113,7 +105,6 @@ export default function Dashboard() {
           <h2 className="text-2xl font-bold">107</h2>
         </div>
 
-        {/* Removed duplicates */}
         <div className="bg-white p-5 rounded-xl shadow">
           <h3 className="font-semibold mb-3">Quick Actions</h3>
 
@@ -135,7 +126,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* CHARTS */}
       <div className="grid grid-cols-3 gap-6 mb-6">
         <div className="bg-white p-4 rounded shadow">
           <h3 className="mb-2 font-semibold">Case Types Distribution</h3>
@@ -159,7 +149,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* LINE */}
         <div className="col-span-2 bg-white p-4 rounded shadow">
           <h3 className="mb-2 font-semibold">Monthly Case Trends</h3>
 
@@ -192,7 +181,6 @@ export default function Dashboard() {
             <Bar dataKey="unsolved" fill="#F59E0B" />
           </BarChart>
         </ResponsiveContainer>
-
       </div>
 
       <Footer />

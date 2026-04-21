@@ -32,7 +32,7 @@ export default function EditPoliceStation() {
 
   return (
     <div className="min-h-screen bg-gray-100 overflow-y-auto p-4">
-      
+
       {/* Warning Card */}
       <div className="bg-blue-300 text-white p-4 rounded-md mb-4 mt-7 shadow">
         <p className="text-sm">
@@ -46,13 +46,13 @@ export default function EditPoliceStation() {
         </h1>
 
         <div className="bg-white border border-gray-200 rounded-lg p-3">
-          
+
           {/* Station Name */}
           <div className="mb-2">
             <label className="block text-[11px] text-gray-700 mb-0.5">Police Station Name</label>
             <input
               type="text"
-              className="w-full h-7 px-2 border border-gray-300 rounded text-xs focus:outline-none focus:ring-1 focus:ring-yellow-500"
+              className="w-full h-7 px-2 border border-gray-300 rounded text-xs"
               value={station.name}
               onChange={(e) => setStation({ ...station, name: e.target.value })}
             />
@@ -62,7 +62,7 @@ export default function EditPoliceStation() {
           <div className="mb-2">
             <label className="block text-[11px] text-gray-700 mb-0.5">District</label>
             <select
-              className="w-full h-7 px-2 border border-gray-300 rounded text-xs bg-white focus:outline-none focus:ring-1 focus:ring-yellow-500"
+              className="w-full h-7 px-2 border border-gray-300 rounded text-xs bg-white"
               value={station.district}
               onChange={(e) => setStation({ ...station, district: e.target.value })}
             >
@@ -75,7 +75,7 @@ export default function EditPoliceStation() {
           <div className="mb-2">
             <label className="block text-[11px] text-gray-700 mb-0.5">Region</label>
             <select
-              className="w-full h-7 px-2 border border-gray-300 rounded text-xs bg-white focus:outline-none focus:ring-1 focus:ring-yellow-500"
+              className="w-full h-7 px-2 border border-gray-300 rounded text-xs bg-white"
               value={station.region}
               onChange={(e) => setStation({ ...station, region: e.target.value })}
             >
@@ -89,84 +89,22 @@ export default function EditPoliceStation() {
             <label className="block text-[11px] text-gray-700 mb-0.5">Station ID</label>
             <input
               type="text"
-              className="w-full h-7 px-2 border border-gray-200 rounded text-xs bg-gray-100 text-gray-400 cursor-not-allowed"
+              className="w-full h-7 px-2 border border-gray-200 rounded text-xs bg-gray-100 text-gray-400"
               value={station.stationId}
               disabled
             />
-            <p className="text-[9px] text-gray-400 mt-0.5">auto generated</p>
           </div>
 
-          {/* Admin Section */}
-          <div className="bg-blue-300 text-white p-4 rounded-md mb-4 mt-7 shadow">
-            <h2 className="text-white text-[11px] font-medium mb-2">Edit Police Station Admin</h2>
-
-            <div className="grid grid-cols-2 gap-3">
-              
-              {/* Left column */}
-              <div className="space-y-1.5">
-                {[
-                  { label: "Admin Name", key: "adminName", type: "text", placeholder: "Full name" },
-                  { label: "Batch Number", key: "batchNumber", type: "text", placeholder: "Batch number" },
-                  { label: "Police Station Assigned", key: "stationAssigned", type: "text", placeholder: "Station name" },
-                ].map(({ label, key, type, placeholder }) => (
-                  <div key={key}>
-                    <label className="block text-[11px] text-black mb-0.5">{label}</label>
-                    <input
-                      type={type}
-                      placeholder={placeholder}
-                      className="w-full h-6 px-2 rounded text-xs text-white bg-white/15 border border-white/25 placeholder-white/40 focus:outline-none focus:ring-1 focus:ring-white/40"
-                      value={admin[key]}
-                      onChange={(e) => setAdmin({ ...admin, [key]: e.target.value })}
-                    />
-                  </div>
-                ))}
-
-                {/* Admin ID */}
-                <div>
-                  <label className="block text-[9px] text-yellow-200 mb-0.5">Admin ID</label>
-                  <input
-                    type="text"
-                    className="w-full h-6 px-2 rounded text-xs text-white/50 bg-black/20 border border-white/15 cursor-not-allowed"
-                    value={admin.adminId}
-                    disabled
-                  />
-                  <p className="text-[8px] text-yellow-200/50 mt-0.5">auto generated</p>
-                </div>
-              </div>
-
-              {/* Right column */}
-              <div className="bg-white/10 border border-white/20 rounded-lg p-2">
-                <p className="text-[9px] text-yellow-200 mb-1.5">Contact Details</p>
-                <div className="space-y-1.5">
-                  {[
-                    { key: "phone", type: "tel", placeholder: "Phone number" },
-                    { key: "email", type: "email", placeholder: "Email address" },
-                    { key: "address", type: "text", placeholder: "Address" },
-                  ].map(({ key, type, placeholder }) => (
-                    <input
-                      key={key}
-                      type={type}
-                      placeholder={placeholder}
-                      className="w-full h-6 px-2 rounded text-xs text-white bg-white/15 border border-white/25 placeholder-white/40 focus:outline-none focus:ring-1 focus:ring-white/40"
-                      value={admin[key]}
-                      onChange={(e) => setAdmin({ ...admin, [key]: e.target.value })}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Action Buttons (FIXED + STICKY) */}
-          <div className="flex justify-end gap-2 mt-2.5 sticky bottom-0 bg-white py-2">
+          {/* Buttons */}
+          <div className="flex justify-end gap-2 mt-4">
             <button
-              className="h-7 px-3 text-xs rounded border border-gray-300 text-gray-600 bg-gray-50 hover:bg-gray-100"
+              className="h-7 px-3 text-xs rounded border border-gray-300"
               onClick={() => window.history.back()}
             >
               Cancel
             </button>
             <button
-              className="h-7 px-3 text-xs rounded bg-blue-600 text-white hover:bg-blue-700"
+              className="h-7 px-3 text-xs rounded bg-blue-600 text-white"
               onClick={handleSave}
             >
               Save Changes
@@ -174,15 +112,13 @@ export default function EditPoliceStation() {
           </div>
 
           {saved && (
-            <p className="text-right text-[10px] text-green-600 mt-1.5">
+            <p className="text-right text-[10px] text-green-600 mt-2">
               Changes saved successfully!
             </p>
           )}
         </div>
       </div>
 
-      <Footer />
-    </div>
       <Footer />
     </div>
   );
