@@ -70,13 +70,16 @@ export default function Dashboard() {
 
   useEffect(() => {
     const syncOfficerCount = () => {
-      setTotalOfficers(getStoredOfficers().length);
+      // Uses the function you imported to get the count
+      const officers = getStoredOfficers();
+      setTotalOfficers(officers.length);
     };
 
     syncOfficerCount();
     window.addEventListener("storage", syncOfficerCount);
 
-    setRotation(360);
+    // Triggers the animation for the Pie Chart
+    setTimeout(() => setRotation(360), 100);
 
     return () => window.removeEventListener("storage", syncOfficerCount);
   }, []);
@@ -92,7 +95,8 @@ export default function Dashboard() {
       <div className="grid grid-cols-4 gap-6 mb-6">
         <div className="bg-gradient-to-r from-blue-400 to-blue-600 text-white p-5 rounded-xl shadow hover:scale-105 transition">
           <p className="text-sm opacity-80">Total Officers</p>
-          <h2 className="text-2xl font-bold">{displayCount}</h2>
+          {/* Use totalOfficers state here */}
+          <h2 className="text-2xl font-bold">{totalOfficers}</h2>
         </div>
 
         <div className="bg-white p-5 rounded-xl shadow hover:scale-105 transition">
@@ -107,7 +111,6 @@ export default function Dashboard() {
 
         <div className="bg-white p-5 rounded-xl shadow">
           <h3 className="font-semibold mb-3">Quick Actions</h3>
-
           <div className="flex flex-col gap-3">
             <button
               onClick={() => navigate("/manage-officers")}
@@ -115,7 +118,6 @@ export default function Dashboard() {
             >
               Officers
             </button>
-
             <button
               onClick={() => navigate("/assign-duties")}
               className="w-full bg-yellow-600 text-white py-2 rounded mb-3 hover:bg-green-600 transition shadow"
@@ -129,7 +131,6 @@ export default function Dashboard() {
       <div className="grid grid-cols-3 gap-6 mb-6">
         <div className="bg-white p-4 rounded shadow">
           <h3 className="mb-2 font-semibold">Case Types Distribution</h3>
-
           <div
             style={{
               transform: `rotate(${rotation}deg)`,
@@ -140,7 +141,7 @@ export default function Dashboard() {
               <PieChart>
                 <Pie data={pieData} dataKey="value" outerRadius={80} label>
                   {pieData.map((entry, index) => (
-                    <Cell key={index} fill={COLORS[index]} />
+                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Legend />
@@ -151,7 +152,6 @@ export default function Dashboard() {
 
         <div className="col-span-2 bg-white p-4 rounded shadow">
           <h3 className="mb-2 font-semibold">Monthly Case Trends</h3>
-
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={lineData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -169,7 +169,6 @@ export default function Dashboard() {
 
       <div className="bg-white p-4 rounded shadow mb-10">
         <h3 className="mb-2 font-semibold">Monthly Case Resolution</h3>
-
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={barData}>
             <CartesianGrid strokeDasharray="3 3" />
