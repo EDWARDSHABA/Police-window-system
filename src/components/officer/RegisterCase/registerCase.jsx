@@ -108,7 +108,7 @@ export default function RegisterCase() {
 
     setTimeout(() => {
       setLoading(false);
-      navigate("/officer/view-cases");
+      navigate("/view-cases");
     }, 600);
   };
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../Header/OfficerHeader";
 import Footer from "../../officer/footer/footer";
 import {
@@ -16,6 +17,7 @@ import {
 } from "recharts";
 
 export default function PoliceStationDashboard() {
+  const navigate = useNavigate();
   const [policeStation] = useState({
     name: "Chinamwali Police Station",
     code: "MW-ZA-01",
@@ -90,7 +92,11 @@ export default function PoliceStationDashboard() {
           <div className="bg-yellow-700 text-white rounded-xl p-4 shadow">
             <h3 className="font-semibold mb-3">Quick Actions</h3>
 
-            <button className="w-full bg-white text-black py-2 mb-2 rounded hover:bg-gray-200 transition">
+            <button
+              type="button"
+              onClick={() => navigate("/register-case")}
+              className="w-full bg-white text-black py-2 mb-2 rounded hover:bg-gray-200 transition"
+            >
               Register Case
             </button>
             
