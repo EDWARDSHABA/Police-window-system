@@ -115,6 +115,23 @@ export function saveViewCases(cases) {
   localStorage.setItem(VIEW_CASES_STORAGE_KEY, JSON.stringify(cases));
 }
 
+export function addViewCase(caseRecord) {
+  const existingCases = getStoredViewCases();
+  const nextCase = {
+    id: caseRecord.caseId,
+    type: caseRecord.typeOfCrime || "Other",
+    status: caseRecord.status || "Under investigation",
+    name: caseRecord.victim?.vFullName || caseRecord.caseName || "Unknown",
+    officer: caseRecord.officer || "Assigned Officer",
+    ...caseRecord,
+  };
+
+  const filteredCases = existingCases.filter((item) => item.id !== nextCase.id);
+  const updatedCases = [nextCase, ...filteredCases];
+  saveViewCases(updatedCases);
+  return nextCase;
+}
+
 export function updateViewCaseStatus(caseId, nextStatus) {
   const updatedCases = getStoredViewCases().map((item) =>
     item.id === caseId ? { ...item, status: nextStatus } : item

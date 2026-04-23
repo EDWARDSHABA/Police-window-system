@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import OfficerHeader from "../Header/OfficerHeader";
 import Footer from "../footer/footer";
+import { addViewCase } from "../Data/viewCasesData";
 
 const CASE_TYPES = [
   "Theft", "Assault", "Burglary", "Fraud", "Vandalism",
@@ -67,10 +68,7 @@ export default function RegisterCase() {
 
   // Case info
   const [description, setDescription] = useState("");
-  const [reportDetails, setReportDetails] = useState("");
-
-  // NEW: Evidence Notes (NOW REAL INPUT)
-  const [evidenceNotes, setEvidenceNotes] = useState("");
+  const [suspectStatement, setSuspectStatement] = useState("");
 
   const [files, setFiles] = useState([]);
 
@@ -98,13 +96,13 @@ export default function RegisterCase() {
       victim: { vFullName, vGender, vOccupation, vContact, vAddress },
       suspect: { sFullName, sGender, sOccupation, sContact, sAddress },
       description,
-      reportDetails,
-      evidenceNotes,
+      suspectStatement,
       files,
       submittedAt: new Date().toISOString(),
     };
 
     localStorage.setItem(`case:${caseId}`, JSON.stringify(record));
+    addViewCase(record);
 
     setTimeout(() => {
       setLoading(false);
@@ -230,15 +228,6 @@ export default function RegisterCase() {
                 />
               </div>
 
-              <div>
-                <FieldLabel label="Suspect Statement" />
-                <textarea
-                  className={textareaCls}
-                  value={reportDetails}
-                  onChange={e => setReportDetails(e.target.value)}
-                />
-              </div>
-
             </div>
           </div>
 
@@ -295,17 +284,16 @@ export default function RegisterCase() {
             </div>
           </div>
 
-          {/* EVIDENCE NOTES (NOW REAL INPUT) */}
           <div className="bg-white border rounded">
-            <SectionHeader title="EVIDENCE NOTES" />
+            <SectionHeader title="SUSPECT STATEMENT" />
 
             <div className="p-4 space-y-3">
               <div>
-                <FieldLabel label="Evidence Notes" />
+                <FieldLabel label="Suspect Statement" />
                 <textarea
                   className={textareaCls}
-                  value={evidenceNotes}
-                  onChange={(e) => setEvidenceNotes(e.target.value)}
+                  value={suspectStatement}
+                  onChange={(e) => setSuspectStatement(e.target.value)}
                 />
               </div>
             </div>
