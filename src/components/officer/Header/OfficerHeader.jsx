@@ -60,17 +60,6 @@ export default function Header() {
             View Cases
           </button>
 
-<<<<<<< HEAD
-=======
-          <button onClick={() => navigate("/create-statement")} className="hover:underline">
-            Rules Policies
-          </button>
-
-          <span className="hover:underline cursor-pointer">
-            Statistics
-          </span>
-
->>>>>>> f15e9b2520f8f57959441c6d46eb8bcccee5fa20
           <span className="hover:underline cursor-pointer">
             Help
           </span>

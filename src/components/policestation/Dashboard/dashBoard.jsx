@@ -23,15 +23,12 @@ import {
 export default function Dashboard() {
   const navigate = useNavigate();
 
-<<<<<<< HEAD
   // ✅ FIX: Add missing states
   const [totalOfficers, setTotalOfficers] = useState(0);
   const [rotation, setRotation] = useState(0);
 
   const displayCount = totalOfficers; // ✅ FIX
 
-=======
->>>>>>> f15e9b2520f8f57959441c6d46eb8bcccee5fa20
   const lineData = [
     { month: "Jan", theft: 20, assault: 10, fraud: 5 },
     { month: "Feb", theft: 30, assault: 15, fraud: 10 },
