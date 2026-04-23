@@ -119,7 +119,7 @@ export default function RegisterCase() {
       <div className="max-w-6xl mx-auto w-full px-6 py-6">
 
         {/* TITLE */}
-        <div className="bg-sky-300 text-white p-4 mt-15 rounded mb-6 font-semibold">
+        <div className="bg-blue-300 text-white p-4 mt-15 rounded mb-6 font-semibold">
           REGISTER NEW CASE HERE
         </div>
 
