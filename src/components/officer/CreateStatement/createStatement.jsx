@@ -16,26 +16,32 @@ export default function RulesPolicies() {
     {
       name: "Malawi Police Act - Main Legal Framework (2025 - 2026)",
       icon: <Scale size={18} />,
+      file: "/pdfs/malawi-police-act.pdf",
     },
     {
       name: "Constitutional Principles (Supreme Rules)",
       icon: <BookOpen size={18} />,
+      file: "/pdfs/constitution-principles.pdf",
     },
     {
       name: "Code of Conduct (Disciplinary Rules)",
       icon: <Users size={18} />,
+      file: "/pdfs/malawi-code-of-conduct.pdf",
     },
     {
       name: "Use of Force Policy",
       icon: <Shield size={18} />,
+      file: "/pdfs/use-of-force.pdf",
     },
     {
       name: "Public Order Management Policy",
       icon: <AlertTriangle size={18} />,
+      file: "/pdfs/public-order-management.pdf",
     },
     {
       name: "Community Policing Policy",
       icon: <FileText size={18} />,
+      file: "/pdfs/community-policing.pdf",
     },
   ];
 
@@ -47,7 +53,7 @@ export default function RulesPolicies() {
       <div className="max-w-4xl mx-auto px-4">
 
         {/* HEADER NOTE */}
-        <div className="bg-blue-600 mt-14 text-white px-6 py-3 rounded-lg shadow mb-6 text-center">
+        <div className="bg-blue-300 mt-14 text-white px-6 py-3 rounded-lg shadow mb-6 text-center">
           Ignorance of the rules is not an excuse for non-compliance.
         </div>
 
@@ -86,10 +92,14 @@ export default function RulesPolicies() {
 
                 {/* ACTION */}
                 <div className="flex justify-end">
-                  <button className="flex items-center gap-2 bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition">
-                    <Download size={16} />
-                    Download
-                  </button>
+                  <a
+                   href={doc.file}
+                     download
+                   className="flex items-center gap-2 bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition"
+>                   
+                 <Download size={16} />
+                   Download
+                  </a> 
                 </div>
               </div>
             ))}
