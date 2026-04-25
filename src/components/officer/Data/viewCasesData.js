@@ -197,9 +197,11 @@ export function getViewCaseById(caseId) {
 
 export function updateViewCaseStatus(caseId, nextStatus) {
   const updatedCases = getStoredViewCases().map((item) =>
-    item.id === caseId ? { ...item, status: nextStatus } : item
+    item.id === caseId || item.caseId === caseId
+      ? { ...item, id: item.id ?? caseId, caseId: item.caseId ?? caseId, status: nextStatus }
+      : item
   );
 
   saveViewCases(updatedCases);
-  return updatedCases.find((item) => item.id === caseId) ?? null;
+  return updatedCases.find((item) => item.id === caseId || item.caseId === caseId) ?? null;
 }

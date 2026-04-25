@@ -7,34 +7,9 @@ import {
   updateViewCaseStatus,
 } from "../Data/viewCasesData";
 
-function ReadOnlyField({ label, value }) {
-  return (
-    <div>
-      <label className="mb-1 block text-sm font-semibold text-black">{label}</label>
-      <input
-        value={value || "Not provided"}
-        readOnly
-        className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2 text-black outline-none"
-      />
-    </div>
-  );
-}
+const CASE_STATUSES = ["Aquito", "Under investigation", "Closed"];
 
-function ReadOnlyTextArea({ label, value, rows = 3 }) {
-  return (
-    <div>
-      <label className="mb-1 block text-sm font-semibold text-black">{label}</label>
-      <textarea
-        rows={rows}
-        value={value || "Not provided"}
-        readOnly
-        className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2 text-black outline-none"
-      />
-    </div>
-  );
-}
-
-export default function UpdateCase({ mode = "edit" }) {
+export default function UpdateCase() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const { id: routeCaseId } = useParams();
@@ -45,12 +20,27 @@ export default function UpdateCase({ mode = "edit" }) {
     return getViewCaseById(selectedCaseId) ?? normalizeViewCase(state?.selectedCase) ?? null;
   }, [selectedCaseId, state]);
 
+  const [caseId] = useState(selectedCase?.id ?? "MW-ZA-015-04-26");
+  const [complainant] = useState(
+    selectedCase?.name ?? selectedCase?.victim?.vFullName ?? selectedCase?.caseName ?? ""
+  );
+  const [suspect] = useState(selectedCase?.suspect?.sFullName ?? "");
+  const [additionalInfo] = useState(selectedCase?.description ?? "");
+  const [assignedOfficer] = useState(selectedCase?.officer ?? "Sgt. Leoleo");
   const [status, setStatus] = useState(selectedCase?.status ?? "Under investigation");
-  const isReadOnly = mode === "view";
-
-  useEffect(() => {
-    setStatus(selectedCase?.status ?? "Under investigation");
-  }, [selectedCase?.status]);
+  const [victimGender] = useState(selectedCase?.victim?.vGender ?? "");
+  const [victimOccupation] = useState(
+    selectedCase?.victim?.vOccupation ?? ""
+  );
+  const [victimContact] = useState(selectedCase?.victim?.vContact ?? "");
+  const [victimAddress] = useState(selectedCase?.victim?.vAddress ?? "");
+  const [suspectGender] = useState(selectedCase?.suspect?.sGender ?? "");
+  const [suspectOccupation] = useState(
+    selectedCase?.suspect?.sOccupation ?? ""
+  );
+  const [suspectContact] = useState(selectedCase?.suspect?.sContact ?? "");
+  const [suspectAddress] = useState(selectedCase?.suspect?.sAddress ?? "");
+  const [suspectStatement] = useState(selectedCase?.suspectStatement ?? "");
 
   const handleSaveChanges = () => {
     if (!selectedCase?.id) return;
@@ -77,111 +67,159 @@ export default function UpdateCase({ mode = "edit" }) {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-6">
-      <div className="rounded-2xl bg-white p-6 shadow-lg border border-gray-200">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <p className="text-sm uppercase tracking-wider text-black opacity-100">
-              {isReadOnly ? "View Case" : "Update Case"}
-            </p>
-            <h1 className="mt-1 text-4xl font-black tracking-tight !text-slate-950">
-              {isReadOnly ? "Case details" : "Case management dashboard"}
-            </h1>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <div className="rounded-lg bg-gray-50 px-3 py-2 text-sm text-black">
-              Selected: <span className="font-semibold">{selectedCase.id}</span>
-            </div>
-          </div>
+    <div className="mx-auto w-full max-w-5xl">
+      <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-slate-900">Case Details</h1>
+          <p className="mt-2 text-slate-600">
+            Review the registered case information below. This page is view-only.
+          </p>
         </div>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 space-y-6">
-          <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
-            <h2 className="mb-4 text-2xl font-black tracking-tight !text-slate-950">Case information</h2>
-            <div className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <ReadOnlyField label="Case ID" value={selectedCase.id} />
-                <ReadOnlyField label="Date" value={selectedCase.date} />
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <ReadOnlyField label="Case Type" value={selectedCase.type} />
-                <ReadOnlyField label="Location" value={selectedCase.location} />
-              </div>
-
-              <ReadOnlyField label="Victim / complainant" value={selectedCase.name} />
-              <ReadOnlyTextArea label="Incident Description" value={selectedCase.description} rows={4} />
-              <ReadOnlyTextArea label="Additional Notes" value={selectedCase.notes} />
-
-              <div className="border-t border-gray-200 pt-4">
-                <h3 className="mb-4 text-lg font-bold !text-slate-950">Victim Details</h3>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <ReadOnlyField label="Victim Full Name" value={selectedCase.name} />
-                  <ReadOnlyField label="Victim Gender" value={selectedCase.victimGender} />
-                  <ReadOnlyField label="Victim Contact" value={selectedCase.victimContact} />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
-            <h2 className="mb-4 text-2xl font-black tracking-tight !text-slate-950">Suspect Details</h2>
-            <div className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <ReadOnlyField label="Suspect Full Name" value={selectedCase.suspectName} />
-                <ReadOnlyField label="Suspect Gender" value={selectedCase.suspectGender} />
-                <ReadOnlyField label="Suspect Contact" value={selectedCase.suspectContact} />
-              </div>
-            </div>
-          </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          <Field label="Case ID" value={caseId} readOnly />
+          <Field label="Complainant" value={complainant} readOnly />
+          <Field label="Assigned Officer" value={assignedOfficer} readOnly />
+          <Field
+            label="Suspect"
+            value={suspect}
+            placeholder="Enter suspect name"
+            readOnly
+          />
+          <Field
+            label="Victim Occupation"
+            value={victimOccupation}
+            placeholder="Enter victim occupation"
+            readOnly
+          />
+          <Field
+            label="Victim Contact"
+            value={victimContact}
+            placeholder="Enter victim contact"
+            readOnly
+          />
+          <Field
+            label="Victim Address"
+            value={victimAddress}
+            placeholder="Enter victim address"
+            readOnly
+          />
+          <Field
+            label="Victim Gender"
+            value={victimGender}
+            placeholder="Enter victim gender"
+            readOnly
+          />
+          <Field
+            label="Suspect Occupation"
+            value={suspectOccupation}
+            placeholder="Enter suspect occupation"
+            readOnly
+          />
+          <Field
+            label="Suspect Contact"
+            value={suspectContact}
+            placeholder="Enter suspect contact"
+            readOnly
+          />
+          <Field
+            label="Suspect Address"
+            value={suspectAddress}
+            placeholder="Enter suspect address"
+            readOnly
+          />
+          <Field
+            label="Suspect Gender"
+            value={suspectGender}
+            placeholder="Enter suspect gender"
+            readOnly
+          />
+          <Field
+            label="Status"
+            value={status}
+            onChange={setStatus}
+            options={CASE_STATUSES}
+          />
         </div>
 
-        <div className="space-y-4">
-          <div className="bg-white p-5 rounded-2xl shadow-lg border border-gray-200">
-            <p className="text-xs uppercase tracking-wider text-black opacity-100">Assigned Officer</p>
-            <p className="text-lg font-bold text-black mt-2">{selectedCase.officer}</p>
-          </div>
+        <div className="mt-6 grid gap-6">
+          <TextArea
+            label="Additional Information"
+            value={additionalInfo}
+            placeholder="Add investigation notes or case updates"
+            readOnly
+          />
+          <TextArea
+            label="Suspect Statement"
+            value={suspectStatement}
+            readOnly
+            placeholder="No suspect statement available"
+          />
+        </div>
 
-          <div className="bg-white p-5 rounded-2xl shadow-lg border border-gray-200">
-            <label className="block text-sm font-medium text-black mb-2">Status</label>
-            {isReadOnly ? (
-              <input
-                value={status}
-                readOnly
-                className="w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-black outline-none"
-              />
-            ) : (
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-yellow-500 outline-none"
-              >
-                {CASE_STATUS_OPTIONS.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            )}
-          </div>
-
-          <div className="bg-white p-5 rounded-2xl shadow-lg border border-gray-200">
-            <p className="text-xs uppercase tracking-wider text-black opacity-100">Evidence</p>
-            <p className="mt-2 text-sm text-gray-700">
-              {selectedCase.fileName || "No uploaded evidence on record"}
-            </p>
-          </div>
-
-          <button 
+        <div className="mt-8 flex flex-wrap justify-end gap-3">
+          <button
+            type="button"
             onClick={handleSaveChanges}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition"
+            className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
           >
-            Save Changes
+            Save Status
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate("/view-cases")}
+            className="rounded-lg bg-sky-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-sky-700"
+          >
+            Back to Cases
           </button>
         </div>
       </div>
     </div>
+  );
+}
+
+function Field({ label, value, onChange, placeholder, readOnly = false, options }) {
+  return (
+    <label className="block">
+      <span className="mb-2 block text-sm font-medium text-slate-700">{label}</span>
+      {options ? (
+        <select
+          value={value}
+          onChange={(event) => onChange?.(event.target.value)}
+          className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none"
+        >
+          {options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          type="text"
+          value={value}
+          readOnly={readOnly}
+          placeholder={placeholder}
+          onChange={onChange ? (event) => onChange(event.target.value) : undefined}
+          className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none read-only:bg-slate-100"
+        />
+      )}
+    </label>
+  );
+}
+
+function TextArea({ label, value, onChange, placeholder, readOnly = false }) {
+  return (
+    <label className="block">
+      <span className="mb-2 block text-sm font-medium text-slate-700">{label}</span>
+      <textarea
+        value={value}
+        readOnly={readOnly}
+        placeholder={placeholder}
+        onChange={onChange ? (event) => onChange(event.target.value) : undefined}
+        className="min-h-32 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none read-only:bg-slate-100"
+      />
+    </label>
   );
 }
