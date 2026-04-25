@@ -16,13 +16,9 @@ export default function UpdateCase() {
   const selectedCaseId = state?.selectedCase?.id;
 
   const selectedCase = useMemo(() => {
-    if (!selectedCaseId) return state?.selectedCase ?? null;
+    if (!selectedCaseId) return normalizeViewCase(state?.selectedCase) ?? null;
 
-    return (
-      getStoredViewCases().find((item) => item.id === selectedCaseId) ??
-      state?.selectedCase ??
-      null
-    );
+    return getViewCaseById(selectedCaseId) ?? normalizeViewCase(state?.selectedCase) ?? null;
   }, [selectedCaseId, state]);
 
   // ---------------- STATE ----------------
@@ -85,7 +81,8 @@ export default function UpdateCase() {
 
   // ---------------- ACTION ----------------
   const handleSaveChanges = () => {
-    updateViewCaseStatus(caseId, status);
+    if (!selectedCase?.id) return;
+    updateViewCaseStatus(selectedCase.id, status);
     navigate("/view-cases");
   };
 

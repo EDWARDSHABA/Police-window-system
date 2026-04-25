@@ -9,7 +9,7 @@ function UpdateCasePage() {
       <OfficerHeader />
       <main className="flex-1 overflow-y-auto pt-24">
         <div className="min-h-[calc(100vh-6rem)] px-4 py-6 xl:px-10">
-          <UpdateCase />
+          <UpdateCase mode="edit" />
         </div>
       </main>
       <Footer />
