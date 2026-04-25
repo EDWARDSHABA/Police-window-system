@@ -22,6 +22,10 @@ export default function Header() {
     navigate("/profile");
   };
 
+  const handleUpdateCase = () => {
+    navigate("/update-case");
+  };
+
   return (
     <header className="fixed top-0 left-0 w-full bg-yellow-700 text-white shadow-md z-50">
 
@@ -52,21 +56,13 @@ export default function Header() {
             Register Case
           </button>
 
-          <button onClick={() => navigate("/update-case")} className="hover:underline">
+          <button onClick={handleUpdateCase} className="hover:underline">
             Case Update
           </button>
 
           <button onClick={() => navigate("/view-cases")} className="hover:underline">
             View Cases
           </button>
-
-          <button onClick={() => navigate("/create-statement")} className="hover:underline">
-            Rules Policies
-          </button>
-
-          <span className="hover:underline cursor-pointer">
-            Statistics
-          </span>
 
           <span className="hover:underline cursor-pointer">
             Help

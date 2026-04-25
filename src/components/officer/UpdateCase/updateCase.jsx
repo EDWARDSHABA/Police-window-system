@@ -1,21 +1,23 @@
-import { useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { getStoredViewCases, updateViewCaseStatus } from "../Data/viewCasesData";
+import { useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  CASE_STATUS_OPTIONS,
+  getViewCaseById,
+  normalizeViewCase,
+  updateViewCaseStatus,
+} from "../Data/viewCasesData";
 
 const CASE_STATUSES = ["Aquito", "Under investigation", "Closed"];
 
 export default function UpdateCase() {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const selectedCaseId = state?.selectedCase?.id;
+  const { id: routeCaseId } = useParams();
+  const selectedCaseId = routeCaseId ?? state?.selectedCase?.id;
   const selectedCase = useMemo(() => {
-    if (!selectedCaseId) return state?.selectedCase ?? null;
+    if (!selectedCaseId) return normalizeViewCase(state?.selectedCase) ?? null;
 
-    return (
-      getStoredViewCases().find((item) => item.id === selectedCaseId) ??
-      state?.selectedCase ??
-      null
-    );
+    return getViewCaseById(selectedCaseId) ?? normalizeViewCase(state?.selectedCase) ?? null;
   }, [selectedCaseId, state]);
 
   const [caseId] = useState(selectedCase?.id ?? "MW-ZA-015-04-26");
@@ -41,9 +43,28 @@ export default function UpdateCase() {
   const [suspectStatement] = useState(selectedCase?.suspectStatement ?? "");
 
   const handleSaveChanges = () => {
-    updateViewCaseStatus(caseId, status);
+    if (!selectedCase?.id) return;
+    updateViewCaseStatus(selectedCase.id, status);
     navigate("/view-cases");
   };
+
+  if (!selectedCase) {
+    return (
+      <div className="mx-auto w-full max-w-3xl rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-lg">
+        <h1 className="text-3xl font-black text-black">No case selected</h1>
+        <p className="mt-3 text-gray-600">
+          Open a case from View Cases to inspect details or update its status.
+        </p>
+        <button
+          type="button"
+          onClick={() => navigate("/view-cases")}
+          className="mt-6 rounded-lg bg-yellow-600 px-4 py-2 font-semibold text-white hover:bg-yellow-700"
+        >
+          Go to View Cases
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto w-full max-w-5xl">
@@ -54,6 +75,7 @@ export default function UpdateCase() {
             Review the registered case information below. This page is view-only.
           </p>
         </div>
+      </div>
 
         <div className="grid gap-6 md:grid-cols-2">
           <Field label="Case ID" value={caseId} readOnly />
