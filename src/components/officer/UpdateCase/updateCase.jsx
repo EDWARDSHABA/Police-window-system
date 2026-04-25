@@ -22,9 +22,11 @@ export default function UpdateCase() {
 
   // State declarations
   const [caseId] = useState(selectedCase?.id ?? "MW-ZA-015-04-26");
-  const [complainant] = useState(selectedCase?.name ?? "");
-  const [suspect, setSuspect] = useState("");
-  const [additionalInfo, setAdditionalInfo] = useState("");
+  const [complainant] = useState(
+    selectedCase?.name ?? selectedCase?.victim?.vFullName ?? selectedCase?.caseName ?? ""
+  );
+  const [suspect, setSuspect] = useState(selectedCase?.suspect?.sFullName ?? "");
+  const [additionalInfo, setAdditionalInfo] = useState(selectedCase?.description ?? "");
   const [assignedOfficer] = useState(selectedCase?.officer ?? "Sgt. Leoleo");
   const [status, setStatus] = useState(selectedCase?.status ?? "Under investigation");
   
