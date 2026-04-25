@@ -126,6 +126,7 @@ export default function ViewCases() {
                 <td className="px-3 py-2">
                   <button
                     type="button"
+                    onClick={() => navigate(`/view-case/${item.id}`)}
                     className="inline-flex items-center justify-center"
                     aria-label={`View case ${item.id ?? item.caseId}`}
                   >
@@ -136,7 +137,7 @@ export default function ViewCases() {
                 <td className="px-3 py-2">
                   <button
                     type="button"
-                    onClick={() => navigate("/update-case", { state: { selectedCase: item } })}
+                    onClick={() => navigate(`/update-case/${item.id}`, { state: { selectedCase: item } })}
                     className="bg-yellow-50 hover:bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-semibold border border-yellow-300"
                   >
                     Edit
