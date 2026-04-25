@@ -17,20 +17,26 @@ export default function UpdateCase() {
   }, [selectedCaseId, state]);
 
   const [caseId] = useState(selectedCase?.id ?? "MW-ZA-015-04-26");
-  const [complainant] = useState(selectedCase?.name ?? "");
-  const [suspect, setSuspect] = useState("");
-  const [additionalInfo, setAdditionalInfo] = useState("");
+  const [complainant] = useState(
+    selectedCase?.name ?? selectedCase?.victim?.vFullName ?? selectedCase?.caseName ?? ""
+  );
+  const [suspect, setSuspect] = useState(selectedCase?.suspect?.sFullName ?? "");
+  const [additionalInfo, setAdditionalInfo] = useState(selectedCase?.description ?? "");
   const [assignedOfficer] = useState(selectedCase?.officer ?? "Sgt. Leoleo");
   const [status, setStatus] = useState(selectedCase?.status ?? "Under investigation");
-  const [victimGender, setVictimGender] = useState("");
-  const [victimOccupation, setVictimOccupation] = useState("");
-  const [victimContact, setVictimContact] = useState("");
-  const [victimAddress, setVictimAddress] = useState("");
-  const [suspectGender, setSuspectGender] = useState("");
-  const [suspectOccupation, setSuspectOccupation] = useState("");
-  const [suspectContact, setSuspectContact] = useState("");
-  const [suspectAddress, setSuspectAddress] = useState("");
-  const [suspectStatement] = useState("");
+  const [victimGender, setVictimGender] = useState(selectedCase?.victim?.vGender ?? "");
+  const [victimOccupation, setVictimOccupation] = useState(
+    selectedCase?.victim?.vOccupation ?? ""
+  );
+  const [victimContact, setVictimContact] = useState(selectedCase?.victim?.vContact ?? "");
+  const [victimAddress, setVictimAddress] = useState(selectedCase?.victim?.vAddress ?? "");
+  const [suspectGender, setSuspectGender] = useState(selectedCase?.suspect?.sGender ?? "");
+  const [suspectOccupation, setSuspectOccupation] = useState(
+    selectedCase?.suspect?.sOccupation ?? ""
+  );
+  const [suspectContact, setSuspectContact] = useState(selectedCase?.suspect?.sContact ?? "");
+  const [suspectAddress, setSuspectAddress] = useState(selectedCase?.suspect?.sAddress ?? "");
+  const [suspectStatement] = useState(selectedCase?.suspectStatement ?? "");
 
   const handleSaveChanges = () => {
     updateViewCaseStatus(caseId, status);

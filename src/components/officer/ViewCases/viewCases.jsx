@@ -19,17 +19,23 @@ export default function ViewCases() {
 
   const filteredCases = useMemo(() => {
     return cases.filter((item) => {
-      const matchesType = typeFilter === "" || typeFilter === "All" || item.type === typeFilter;
+      const caseId = item.id ?? item.caseId ?? "";
+      const caseType = item.type ?? item.typeOfCrime ?? "Other";
+      const caseStatus = item.status ?? "Under investigation";
+      const caseName = item.name ?? item.victim?.vFullName ?? item.caseName ?? "Unknown";
+      const assignedOfficer = item.officer ?? "Assigned Officer";
+
+      const matchesType = typeFilter === "" || typeFilter === "All" || caseType === typeFilter;
       const matchesStatus =
-        statusFilter === "" || statusFilter === "All" || item.status === statusFilter;
+        statusFilter === "" || statusFilter === "All" || caseStatus === statusFilter;
       const normalizedSearch = searchTerm.toLowerCase().trim();
       const matchesSearch =
         normalizedSearch === "" ||
-        item.id.toLowerCase().includes(normalizedSearch) ||
-        item.type.toLowerCase().includes(normalizedSearch) ||
-        item.status.toLowerCase().includes(normalizedSearch) ||
-        item.name.toLowerCase().includes(normalizedSearch) ||
-        item.officer.toLowerCase().includes(normalizedSearch);
+        caseId.toLowerCase().includes(normalizedSearch) ||
+        caseType.toLowerCase().includes(normalizedSearch) ||
+        caseStatus.toLowerCase().includes(normalizedSearch) ||
+        caseName.toLowerCase().includes(normalizedSearch) ||
+        assignedOfficer.toLowerCase().includes(normalizedSearch);
 
       return matchesType && matchesStatus && matchesSearch;
     });
@@ -112,21 +118,21 @@ export default function ViewCases() {
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
             {filteredCases.map((item) => (
-              <tr key={item.id} className="hover:bg-gray-50 text-xs">
-                <td className="px-3 py-2 font-medium text-gray-900">{item.id}</td>
-                <td className="px-3 py-2 text-gray-700">{item.type}</td>
-                <td className="px-3 py-2 text-gray-700">{item.status}</td>
-                <td className="px-3 py-2 text-gray-700">{item.name}</td>
+              <tr key={item.id ?? item.caseId} className="hover:bg-gray-50 text-xs">
+                <td className="px-3 py-2 font-medium text-gray-900">{item.id ?? item.caseId}</td>
+                <td className="px-3 py-2 text-gray-700">{item.type ?? item.typeOfCrime ?? "Other"}</td>
+                <td className="px-3 py-2 text-gray-700">{item.status ?? "Under investigation"}</td>
+                <td className="px-3 py-2 text-gray-700">{item.name ?? item.victim?.vFullName ?? item.caseName ?? "Unknown"}</td>
                 <td className="px-3 py-2">
                   <button
                     type="button"
                     className="inline-flex items-center justify-center"
-                    aria-label={`View case ${item.id}`}
+                    aria-label={`View case ${item.id ?? item.caseId}`}
                   >
                     <img src={showIcon} alt="" className="h-4 w-4 object-contain" />
                   </button>
                 </td>
-                <td className="px-3 py-2 text-gray-700">{item.officer}</td>
+                <td className="px-3 py-2 text-gray-700">{item.officer ?? "Assigned Officer"}</td>
                 <td className="px-3 py-2">
                   <button
                     type="button"

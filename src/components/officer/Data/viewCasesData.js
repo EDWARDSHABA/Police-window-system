@@ -115,16 +115,46 @@ export function saveViewCases(cases) {
   localStorage.setItem(VIEW_CASES_STORAGE_KEY, JSON.stringify(cases));
 }
 
+function normalizeViewCase(caseRecord = {}) {
+  const victim = caseRecord.victim ?? {};
+  const suspect = caseRecord.suspect ?? {};
+
+  return {
+    ...caseRecord,
+    id: caseRecord.id ?? caseRecord.caseId ?? "",
+    caseId: caseRecord.caseId ?? caseRecord.id ?? "",
+    type: caseRecord.type ?? caseRecord.typeOfCrime ?? "Other",
+    typeOfCrime: caseRecord.typeOfCrime ?? caseRecord.type ?? "Other",
+    status: caseRecord.status ?? "Under investigation",
+    name: caseRecord.name ?? victim.vFullName ?? caseRecord.caseName ?? "Unknown",
+    caseName: caseRecord.caseName ?? caseRecord.name ?? "Untitled Case",
+    officer: caseRecord.officer ?? "Assigned Officer",
+    victim: {
+      vFullName: victim.vFullName ?? caseRecord.name ?? caseRecord.caseName ?? "",
+      vGender: victim.vGender ?? "",
+      vOccupation: victim.vOccupation ?? "",
+      vContact: victim.vContact ?? "",
+      vAddress: victim.vAddress ?? "",
+    },
+    suspect: {
+      sFullName: suspect.sFullName ?? "",
+      sGender: suspect.sGender ?? "",
+      sOccupation: suspect.sOccupation ?? "",
+      sContact: suspect.sContact ?? "",
+      sAddress: suspect.sAddress ?? "",
+    },
+    description: caseRecord.description ?? "",
+    suspectStatement: caseRecord.suspectStatement ?? "",
+    location: caseRecord.location ?? "",
+    dateOfIncidence: caseRecord.dateOfIncidence ?? "",
+    files: Array.isArray(caseRecord.files) ? caseRecord.files : [],
+    submittedAt: caseRecord.submittedAt ?? new Date().toISOString(),
+  };
+}
+
 export function addViewCase(caseRecord) {
   const existingCases = getStoredViewCases();
-  const nextCase = {
-    id: caseRecord.caseId,
-    type: caseRecord.typeOfCrime || "Other",
-    status: caseRecord.status || "Under investigation",
-    name: caseRecord.victim?.vFullName || caseRecord.caseName || "Unknown",
-    officer: caseRecord.officer || "Assigned Officer",
-    ...caseRecord,
-  };
+  const nextCase = normalizeViewCase(caseRecord);
 
   const filteredCases = existingCases.filter((item) => item.id !== nextCase.id);
   const updatedCases = [nextCase, ...filteredCases];
