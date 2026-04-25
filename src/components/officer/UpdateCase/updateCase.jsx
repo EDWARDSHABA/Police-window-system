@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getStoredViewCases, updateViewCaseStatus } from "../Data/viewCasesData";
 
+const CASE_STATUSES = ["Aquito", "Under investigation", "Closed"];
+
 export default function UpdateCase() {
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -20,22 +22,22 @@ export default function UpdateCase() {
   const [complainant] = useState(
     selectedCase?.name ?? selectedCase?.victim?.vFullName ?? selectedCase?.caseName ?? ""
   );
-  const [suspect, setSuspect] = useState(selectedCase?.suspect?.sFullName ?? "");
-  const [additionalInfo, setAdditionalInfo] = useState(selectedCase?.description ?? "");
+  const [suspect] = useState(selectedCase?.suspect?.sFullName ?? "");
+  const [additionalInfo] = useState(selectedCase?.description ?? "");
   const [assignedOfficer] = useState(selectedCase?.officer ?? "Sgt. Leoleo");
   const [status, setStatus] = useState(selectedCase?.status ?? "Under investigation");
-  const [victimGender, setVictimGender] = useState(selectedCase?.victim?.vGender ?? "");
-  const [victimOccupation, setVictimOccupation] = useState(
+  const [victimGender] = useState(selectedCase?.victim?.vGender ?? "");
+  const [victimOccupation] = useState(
     selectedCase?.victim?.vOccupation ?? ""
   );
-  const [victimContact, setVictimContact] = useState(selectedCase?.victim?.vContact ?? "");
-  const [victimAddress, setVictimAddress] = useState(selectedCase?.victim?.vAddress ?? "");
-  const [suspectGender, setSuspectGender] = useState(selectedCase?.suspect?.sGender ?? "");
-  const [suspectOccupation, setSuspectOccupation] = useState(
+  const [victimContact] = useState(selectedCase?.victim?.vContact ?? "");
+  const [victimAddress] = useState(selectedCase?.victim?.vAddress ?? "");
+  const [suspectGender] = useState(selectedCase?.suspect?.sGender ?? "");
+  const [suspectOccupation] = useState(
     selectedCase?.suspect?.sOccupation ?? ""
   );
-  const [suspectContact, setSuspectContact] = useState(selectedCase?.suspect?.sContact ?? "");
-  const [suspectAddress, setSuspectAddress] = useState(selectedCase?.suspect?.sAddress ?? "");
+  const [suspectContact] = useState(selectedCase?.suspect?.sContact ?? "");
+  const [suspectAddress] = useState(selectedCase?.suspect?.sAddress ?? "");
   const [suspectStatement] = useState(selectedCase?.suspectStatement ?? "");
 
   const handleSaveChanges = () => {
@@ -47,9 +49,9 @@ export default function UpdateCase() {
     <div className="mx-auto w-full max-w-5xl">
       <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Update Case</h1>
+          <h1 className="text-3xl font-bold text-slate-900">Case Details</h1>
           <p className="mt-2 text-slate-600">
-            Modify case details, update status, and manage ongoing investigations.
+            Review the registered case information below. This page is view-only.
           </p>
         </div>
 
@@ -60,62 +62,62 @@ export default function UpdateCase() {
           <Field
             label="Suspect"
             value={suspect}
-            onChange={setSuspect}
             placeholder="Enter suspect name"
+            readOnly
           />
           <Field
             label="Victim Occupation"
             value={victimOccupation}
-            onChange={setVictimOccupation}
             placeholder="Enter victim occupation"
+            readOnly
           />
           <Field
             label="Victim Contact"
             value={victimContact}
-            onChange={setVictimContact}
             placeholder="Enter victim contact"
+            readOnly
           />
           <Field
             label="Victim Address"
             value={victimAddress}
-            onChange={setVictimAddress}
             placeholder="Enter victim address"
+            readOnly
           />
           <Field
             label="Victim Gender"
             value={victimGender}
-            onChange={setVictimGender}
             placeholder="Enter victim gender"
+            readOnly
           />
           <Field
             label="Suspect Occupation"
             value={suspectOccupation}
-            onChange={setSuspectOccupation}
             placeholder="Enter suspect occupation"
+            readOnly
           />
           <Field
             label="Suspect Contact"
             value={suspectContact}
-            onChange={setSuspectContact}
             placeholder="Enter suspect contact"
+            readOnly
           />
           <Field
             label="Suspect Address"
             value={suspectAddress}
-            onChange={setSuspectAddress}
             placeholder="Enter suspect address"
+            readOnly
           />
           <Field
             label="Suspect Gender"
             value={suspectGender}
-            onChange={setSuspectGender}
             placeholder="Enter suspect gender"
+            readOnly
           />
           <Field
             label="Status"
             value={status}
             onChange={setStatus}
-            placeholder="Enter case status"
+            options={CASE_STATUSES}
           />
         </div>
 
@@ -123,8 +125,8 @@ export default function UpdateCase() {
           <TextArea
             label="Additional Information"
             value={additionalInfo}
-            onChange={setAdditionalInfo}
             placeholder="Add investigation notes or case updates"
+            readOnly
           />
           <TextArea
             label="Suspect Statement"
@@ -137,17 +139,17 @@ export default function UpdateCase() {
         <div className="mt-8 flex flex-wrap justify-end gap-3">
           <button
             type="button"
-            onClick={() => navigate("/view-cases")}
+            onClick={handleSaveChanges}
             className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
           >
-            Cancel
+            Save Status
           </button>
           <button
             type="button"
-            onClick={handleSaveChanges}
+            onClick={() => navigate("/view-cases")}
             className="rounded-lg bg-sky-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-sky-700"
           >
-            Save Changes
+            Back to Cases
           </button>
         </div>
       </div>
@@ -155,18 +157,32 @@ export default function UpdateCase() {
   );
 }
 
-function Field({ label, value, onChange, placeholder, readOnly = false }) {
+function Field({ label, value, onChange, placeholder, readOnly = false, options }) {
   return (
     <label className="block">
       <span className="mb-2 block text-sm font-medium text-slate-700">{label}</span>
-      <input
-        type="text"
-        value={value}
-        readOnly={readOnly}
-        placeholder={placeholder}
-        onChange={onChange ? (event) => onChange(event.target.value) : undefined}
-        className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none read-only:bg-slate-100"
-      />
+      {options ? (
+        <select
+          value={value}
+          onChange={(event) => onChange?.(event.target.value)}
+          className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none"
+        >
+          {options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          type="text"
+          value={value}
+          readOnly={readOnly}
+          placeholder={placeholder}
+          onChange={onChange ? (event) => onChange(event.target.value) : undefined}
+          className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none read-only:bg-slate-100"
+        />
+      )}
     </label>
   );
 }

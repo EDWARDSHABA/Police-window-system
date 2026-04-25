@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import showIcon from "../../../assets/icons/show.png";
 import { getStoredViewCases } from "../Data/viewCasesData";
 
@@ -8,6 +8,7 @@ const CASE_STATUSES = ["All", "Aquito", "Under investigation", "Closed"];
 
 export default function ViewCases() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [cases, setCases] = useState(() => getStoredViewCases());
   const [typeFilter, setTypeFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -15,7 +16,7 @@ export default function ViewCases() {
 
   useEffect(() => {
     setCases(getStoredViewCases());
-  }, []);
+  }, [location.key]);
 
   const filteredCases = useMemo(() => {
     return cases.filter((item) => {

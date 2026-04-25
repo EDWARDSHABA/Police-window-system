@@ -13,21 +13,21 @@ const CASE_TYPES = [
 // ---------------- SECTION HEADER ----------------
 function SectionHeader({ title }) {
   return (
-    <div className="bg-sky-600 text-white text-sm font-bold px-4 py-2 rounded-t-md">
+    <div className="bg-blue-300 text-white text-sm font-bold px-4 py-2 rounded-t-md">
       {title}
     </div>
   );
 }
 
 const inputCls =
-  "w-full bg-gray-200 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none";
+  "w-full rounded-md border-2 border-slate-400 bg-white px-4 py-3 text-base font-medium text-slate-900 placeholder:text-slate-500 focus:border-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-200";
 
 const textareaCls =
-  "w-full bg-gray-200 border border-gray-300 rounded px-3 py-2 text-sm h-40 resize-none focus:outline-none";
+  "w-full rounded-md border-2 border-slate-400 bg-white px-4 py-3 text-base font-medium leading-7 text-slate-900 placeholder:text-slate-500 h-40 resize-none focus:border-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-200";
 
 function FieldLabel({ label }) {
   return (
-    <label className="text-xs text-gray-600 font-semibold mb-1 block">
+    <label className="mb-2 block text-sm font-bold text-slate-800">
       {label}
     </label>
   );
@@ -117,7 +117,7 @@ export default function RegisterCase() {
       <div className="max-w-6xl mx-auto w-full px-6 py-6">
 
         {/* TITLE */}
-        <div className="bg-blue-300 text-white p-4 mt-15 rounded mb-6 font-semibold">
+        <div className="bg-blue-400 text-white p-4 mt-15 rounded mb-6 font-semibold">
           REGISTER NEW CASE HERE
         </div>
 
@@ -129,7 +129,11 @@ export default function RegisterCase() {
 
             <div>
               <FieldLabel label="Case ID" />
-              <input value={caseId} disabled className={inputCls + " bg-gray-300"} />
+              <input
+                value={caseId}
+                disabled
+                className={inputCls + " bg-slate-200 text-slate-800"}
+              />
             </div>
 
             <div>
