@@ -1,20 +1,308 @@
+import { useState, useMemo, useEffect } from "react";
+import axios from "axios";
 import StationHeader from "../Header/PoliceStationHeader";
 import Footer from "../../officer/footer/footer";
+
 export default function AssignDuties() {
+  // ==========================
+  // STATE
+  // ==========================
+  const [officers, setOfficers] = useState([]);
+  const [loadingOfficers, setLoadingOfficers] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
+
+  const [week] = useState("April 10 - April 17, 2026");
+  const [specifyTime, setSpecifyTime] = useState("");
+  const [shift, setShift] = useState("All Shifts");
+  const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState(new Set());
+  const [location, setLocation] = useState("");
+  const [dutyType, setDutyType] = useState("");
+  const [taskDescription, setTaskDescription] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const SHIFTS = ["All Shifts", "Day", "Evening", "Night"];
+
+  // ==========================
+  // FETCH OFFICERS FROM BACKEND
+  // ==========================
+  useEffect(() => {
+    const fetchOfficers = async () => {
+      try {
+        setLoadingOfficers(true);
+
+        const res = await axios.get(
+          "http://localhost:5000/api/admin/officers"
+        );
+
+        setOfficers(res.data || []);
+      } catch (err) {
+        console.error("Failed to load officers:", err.message);
+      } finally {
+        setLoadingOfficers(false);
+      }
+    };
+
+    fetchOfficers();
+  }, []);
+
+  // ==========================
+  // FILTER OFFICERS
+  // ==========================
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase();
+
+    return officers.filter((o) => {
+      const fullName =
+        `${o.firstName} ${o.lastName}`.toLowerCase();
+
+      const id = (o.officerId || "").toLowerCase();
+
+      return !q || fullName.includes(q) || id.includes(q);
+    });
+  }, [search, officers]);
+
+  // ==========================
+  // SELECT TOGGLE
+  // ==========================
+  const toggleOfficer = (id) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+
+    setSuccess("");
+    setError("");
+  };
+
+  const allChecked =
+    filtered.length > 0 &&
+    filtered.every((o) => selected.has(o._id));
+
+  const toggleAll = (e) => {
+    if (e.target.checked) {
+      setSelected(new Set(filtered.map((o) => o._id)));
+    } else {
+      setSelected(new Set());
+    }
+  };
+
+  // ==========================
+  // SUBMIT DUTY (CONNECTED TO BACKEND)
+  // ==========================
+  const handleSubmit = async () => {
+    if (selected.size === 0) {
+      return setError("Please select at least one officer.");
+    }
+
+    if (!location) {
+      return setError("Please select location.");
+    }
+
+    if (!dutyType) {
+      return setError("Please select duty type.");
+    }
+
+    setError("");
+    setLoadingSubmit(true);
+
+    try {
+      const payload = {
+        officerIds: Array.from(selected), // 🔥 IMPORTANT FIX
+        dutyType,
+        location,
+        week,
+        specifyTime,
+        shift,
+        taskDescription,
+      };
+
+      const res = await axios.post(
+        "http://localhost:5000/api/admin/duties",
+        payload
+      );
+
+      console.log("SERVER RESPONSE:", res.data);
+
+      setSuccess("Duty assigned successfully & emails sent!");
+      setSelected(new Set());
+
+      setLocation("");
+      setDutyType("");
+      setTaskDescription("");
+      setSpecifyTime("");
+    } catch (err) {
+      console.error(err);
+      setError(
+        err.response?.data?.message || "Failed to assign duty"
+      );
+    } finally {
+      setLoadingSubmit(false);
+    }
+  };
+
+  // ==========================
+  // UI
+  // ==========================
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen bg-gray-100 p-4">
+      <StationHeader />
 
-     <StationHeader/>
+      <h2 className="text-lg font-bold mb-4">
+        Assign Duties
+      </h2>
 
-      <div className="bg-white shadow-xl rounded-2xl p-10 text-center">
-        <h1 className="text-3xl font-bold text-pink-700 mb-4">
-          Assign Duties
-        </h1>
-        <p className="text-gray-600 text-lg">
-          Allocate tasks and responsibilities to officers efficiently.
-        </p>
+      <div className="flex gap-4">
+
+        {/* LEFT */}
+        <div className="flex-1">
+
+          {/* FILTERS */}
+          <div className="bg-white p-3 rounded mb-3 flex gap-3">
+            <input
+              placeholder="Search officer..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="border p-1 text-sm"
+            />
+
+            <select
+              value={shift}
+              onChange={(e) => setShift(e.target.value)}
+              className="border p-1 text-sm"
+            >
+              {SHIFTS.map((s) => (
+                <option key={s}>{s}</option>
+              ))}
+            </select>
+
+            <input
+              placeholder="Time (e.g 08:00 - 17:00)"
+              value={specifyTime}
+              onChange={(e) => setSpecifyTime(e.target.value)}
+              className="border p-1 text-sm"
+            />
+          </div>
+
+          {/* TABLE */}
+          <div className="bg-white rounded">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b bg-gray-100">
+                  <th className="p-2">ID</th>
+                  <th>Name</th>
+                  <th>
+                    <input
+                      type="checkbox"
+                      checked={allChecked}
+                      onChange={toggleAll}
+                    />
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {loadingOfficers ? (
+                  <tr>
+                    <td colSpan="3" className="p-3 text-center">
+                      Loading...
+                    </td>
+                  </tr>
+                ) : filtered.length === 0 ? (
+                  <tr>
+                    <td colSpan="3" className="p-3 text-center">
+                      No officers found
+                    </td>
+                  </tr>
+                ) : (
+                  filtered.map((o) => (
+                    <tr
+                      key={o._id}
+                      className="border-b cursor-pointer hover:bg-gray-50"
+                      onClick={() => toggleOfficer(o._id)}
+                    >
+                      <td className="p-2 text-xs">
+                        {o.officerId}
+                      </td>
+
+                      <td className="p-2">
+                        {o.firstName} {o.lastName}
+                      </td>
+
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={selected.has(o._id)}
+                          onChange={() => toggleOfficer(o._id)}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* RIGHT PANEL */}
+        <div className="w-72 bg-white p-3 rounded">
+
+          <h3 className="font-bold mb-2">
+            Duty Details
+          </h3>
+
+          <select
+            value={dutyType}
+            onChange={(e) => setDutyType(e.target.value)}
+            className="border w-full p-1 mb-2"
+          >
+            <option value="">Select Duty</option>
+            <option>Patrol</option>
+            <option>Traffic</option>
+            <option>Investigation</option>
+          </select>
+
+          <input
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="Type location"
+            className="border w-full p-1 mb-2"
+          />
+
+          <textarea
+            value={taskDescription}
+            onChange={(e) =>
+              setTaskDescription(e.target.value)
+            }
+            placeholder="Task description"
+            className="border w-full p-1 mb-2"
+          />
+
+          {error && (
+            <p className="text-red-500 text-xs">{error}</p>
+          )}
+
+          {success && (
+            <p className="text-green-600 text-xs">
+              {success}
+            </p>
+          )}
+
+          <button
+            onClick={handleSubmit}
+            disabled={loadingSubmit}
+            className="bg-blue-600 text-white w-full p-2 mt-2"
+          >
+            {loadingSubmit ? "Assigning..." : "Submit Duty"}
+          </button>
+        </div>
       </div>
-        <Footer/>
+
+      <Footer />
     </div>
   );
 }
+

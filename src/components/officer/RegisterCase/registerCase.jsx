@@ -1,249 +1,359 @@
-import React, { useState, useEffect, useRef } from "react";
-import Header from "../Header/OfficerHeader";
+import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import OfficerHeader from "../Header/OfficerHeader";
 import Footer from "../footer/footer";
+import { addViewCase } from "../Data/viewCasesData";
 
-const RegisterCase = () => {
-  const [step, setStep] = useState(1);
-  const topRef = useRef(null);
+const CASE_TYPES = [
+  "Theft", "Assault", "Burglary", "Fraud", "Vandalism",
+  "Drug Offence", "Homicide", "Robbery", "Sexual Offence",
+  "Missing Person", "Traffic Offence", "Other",
+];
 
-  const [formData, setFormData] = useState({
-    caseId: "CASE-" + Date.now(),
-    date: "",
-    location: "",
-    crimeType: "",
-    description: "",
-    notes: "",
-    evidence: null,
-    fileName: "",
-  });
+// ---------------- SECTION HEADER ----------------
+function SectionHeader({ title }) {
+  return (
+    <div className="bg-sky-600 text-white text-sm font-bold px-4 py-2 rounded-t-md">
+      {title}
+    </div>
+  );
+}
 
-  const [preview, setPreview] = useState(null);
+const inputCls =
+  "w-full bg-gray-200 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none";
 
-  // 🔥 AUTO SCROLL TO TOP ON STEP CHANGE
-  useEffect(() => {
-    topRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [step]);
+const textareaCls =
+  "w-full bg-gray-200 border border-gray-300 rounded px-3 py-2 text-sm h-40 resize-none focus:outline-none";
 
-  const nextStep = () => setStep((prev) => prev + 1);
-  const prevStep = () => setStep((prev) => prev - 1);
+function FieldLabel({ label }) {
+  return (
+    <label className="text-xs text-gray-600 font-semibold mb-1 block">
+      {label}
+    </label>
+  );
+}
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+function generateCaseId() {
+  const now = new Date();
+  const rnd = Math.floor(1000 + Math.random() * 9000);
+  return `CASE-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${rnd}`;
+}
+
+// ---------------- MAIN ----------------
+export default function RegisterCase() {
+  const navigate = useNavigate();
+  const fileRef = useRef();
+
+  const [caseId] = useState(generateCaseId());
+  const [loading, setLoading] = useState(false);
+
+  const [caseName, setCaseName] = useState("");
+  const [dateOfIncidence, setDateOfIncidence] = useState("");
+  const [location, setLocation] = useState("");
+  const [typeOfCrime, setTypeOfCrime] = useState("");
+
+  // Victim
+  const [vFullName, setVFullName] = useState("");
+  const [vGender, setVGender] = useState("");
+  const [vOccupation, setVOccupation] = useState("");
+  const [vContact, setVContact] = useState("");
+  const [vAddress, setVAddress] = useState("");
+
+  // Suspect
+  const [sFullName, setSFullName] = useState("");
+  const [sGender, setSGender] = useState("");
+  const [sOccupation, setSOccupation] = useState("");
+  const [sContact, setSContact] = useState("");
+  const [sAddress, setSAddress] = useState("");
+
+  // Case info
+  const [description, setDescription] = useState("");
+  const [suspectStatement, setSuspectStatement] = useState("");
+
+  const [files, setFiles] = useState([]);
+
+  const handleFileChange = (e) => {
+    setFiles([...files, ...Array.from(e.target.files)]);
   };
 
-  const handleFile = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  const triggerFileSelect = () => {
+    fileRef.current.click();
+  };
 
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-      setFormData({
-        ...formData,
-        evidence: reader.result,
-        fileName: file.name,
-      });
-
-      if (file.type.startsWith("image/")) {
-        setPreview(reader.result);
-      } else {
-        setPreview(null);
-      }
-    };
-
-    reader.readAsDataURL(file);
+  const removeFile = (i) => {
+    setFiles(files.filter((_, idx) => idx !== i));
   };
 
   const handleSubmit = () => {
-    const existing =
-      JSON.parse(localStorage.getItem("cases")) || [];
+    setLoading(true);
 
-    existing.push(formData);
-    localStorage.setItem("cases", JSON.stringify(existing));
+    const record = {
+      caseId,
+      caseName,
+      dateOfIncidence,
+      location,
+      typeOfCrime,
+      victim: { vFullName, vGender, vOccupation, vContact, vAddress },
+      suspect: { sFullName, sGender, sOccupation, sContact, sAddress },
+      description,
+      suspectStatement,
+      files,
+      submittedAt: new Date().toISOString(),
+    };
 
-    alert("✅ Case Registered Successfully");
-    setStep(1);
+    localStorage.setItem(`case:${caseId}`, JSON.stringify(record));
+    addViewCase(record);
+
+    setTimeout(() => {
+      setLoading(false);
+      navigate("/view-cases");
+    }, 600);
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      <OfficerHeader />
 
-      <Header />
+      <div className="max-w-6xl mx-auto w-full px-6 py-6">
 
-      {/* MAIN CONTENT */}
-      <div className="flex-1 pt-20 px-6 pb-6 flex flex-col">
+        {/* TITLE */}
+        <div className="bg-blue-300 text-white p-4 mt-15 rounded mb-6 font-semibold">
+          REGISTER NEW CASE HERE
+        </div>
 
-        {/* TOP REF FOR SCROLL */}
-        <div ref={topRef}></div>
+        {/* CASE DETAILS */}
+        <div className="bg-white border mb-6 rounded">
+          <SectionHeader title="CASE DETAILS" />
 
-        {/* HEADER */}
-        <div className="bg-white shadow p-4 rounded mb-4">
-          <h2 className="text-xl font-bold text-gray-800">
-            Register New Case
-          </h2>
+          <div className="p-4 grid grid-cols-2 gap-4">
 
-          {/* 🔵 STEP INDICATOR */}
-          <div className="flex items-center gap-2 mt-2">
-            {[1, 2, 3].map((s) => (
-              <div
-                key={s}
-                className={`w-3 h-3 rounded-full ${
-                  step >= s ? "bg-blue-600" : "bg-gray-300"
-                }`}
-              ></div>
-            ))}
+            <div>
+              <FieldLabel label="Case ID" />
+              <input value={caseId} disabled className={inputCls + " bg-gray-300"} />
+            </div>
+
+            <div>
+              <FieldLabel label="Case Name" />
+              <input className={inputCls} value={caseName}
+                onChange={(e) => setCaseName(e.target.value)} />
+            </div>
+
+            <div>
+              <FieldLabel label="Date of Incidence" />
+              <input type="date" className={inputCls}
+                value={dateOfIncidence}
+                onChange={e => setDateOfIncidence(e.target.value)} />
+            </div>
+
+            <div>
+              <FieldLabel label="Location" />
+              <input className={inputCls}
+                value={location}
+                onChange={e => setLocation(e.target.value)} />
+            </div>
+
+            <div>
+              <FieldLabel label="Type of Crime" />
+              <select className={inputCls}
+                value={typeOfCrime}
+                onChange={e => setTypeOfCrime(e.target.value)}>
+                <option value="">Select</option>
+                {CASE_TYPES.map(c => <option key={c}>{c}</option>)}
+              </select>
+            </div>
+
           </div>
         </div>
 
-        {/* CONTENT BOX */}
-        <div className="flex-1 bg-white shadow rounded p-4 flex flex-col">
+        {/* VICTIM + DESCRIPTION */}
+        <div className="grid grid-cols-2 gap-6 mb-6">
 
-          {/* SCROLLABLE CONTENT */}
-          <div className="flex-1 overflow-y-auto pr-2 pb-6">
+          {/* VICTIM */}
+          <div className="bg-white border rounded">
+            <SectionHeader title="VICTIM DETAILS" />
 
-            {/* STEP 1 */}
-            {step === 1 && (
-              <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-4 space-y-3">
 
-                <input
-                  value={formData.caseId}
-                  disabled
-                  className="p-3 border rounded bg-gray-200"
-                />
+              <div>
+                <FieldLabel label="Full Name" />
+                <input className={inputCls} value={vFullName}
+                  onChange={e => setVFullName(e.target.value)} />
+              </div>
 
-                <input
-                  type="date"
-                  name="date"
-                  onChange={handleChange}
-                  className="p-3 border rounded"
-                />
+              <div>
+                <FieldLabel label="Occupation" />
+                <input className={inputCls} value={vOccupation}
+                  onChange={e => setVOccupation(e.target.value)} />
+              </div>
 
-                <input
-                  name="location"
-                  placeholder="Location"
-                  onChange={handleChange}
-                  className="p-3 border rounded md:col-span-2"
-                />
+              <div>
+                <FieldLabel label="Contact Number" />
+                <input className={inputCls} value={vContact}
+                  onChange={e => setVContact(e.target.value)} />
+              </div>
 
-                <select
-                  name="crimeType"
-                  onChange={handleChange}
-                  className="p-3 border rounded md:col-span-2"
-                >
-                  <option>Select Crime</option>
-                  <option>Robbery</option>
-                  <option>Assault</option>
-                  <option>Fraud</option>
+              <div>
+                <FieldLabel label="Gender" />
+                <select className={inputCls}
+                  value={vGender}
+                  onChange={e => setVGender(e.target.value)}>
+                  <option value="">Select Gender</option>
+                  <option>Male</option>
+                  <option>Female</option>
                 </select>
-
               </div>
-            )}
 
-            {/* STEP 2 */}
-            {step === 2 && (
-              <div className="grid md:grid-cols-2 gap-6">
-
-                <div>
-                  <h4 className="font-semibold mb-2">Victim</h4>
-                  <input className="w-full p-2 border rounded mb-2" placeholder="Full Name" />
-                  <input className="w-full p-2 border rounded mb-2" placeholder="Gender" />
-                  <input className="w-full p-2 border rounded mb-2" placeholder="Contact" />
-                </div>
-
-                <div>
-                  <h4 className="font-semibold mb-2">Suspect</h4>
-                  <input className="w-full p-2 border rounded mb-2" placeholder="Full Name" />
-                  <input className="w-full p-2 border rounded mb-2" placeholder="Gender" />
-                  <input className="w-full p-2 border rounded mb-2" placeholder="Contact" />
-                </div>
-
+              <div>
+                <FieldLabel label="Address" />
+                <textarea className={inputCls}
+                  value={vAddress}
+                  onChange={e => setVAddress(e.target.value)} />
               </div>
-            )}
 
-            {/* STEP 3 */}
-            {step === 3 && (
-              <div className="space-y-4">
-
-                <textarea
-                  name="description"
-                  onChange={handleChange}
-                  className="w-full p-3 border rounded h-28"
-                  placeholder="Incident Description"
-                />
-
-                <div>
-                  <label className="block mb-1 font-medium">
-                    Upload Evidence
-                  </label>
-
-                  <input
-                    type="file"
-                    onChange={handleFile}
-                    className="w-full border p-2 rounded"
-                  />
-
-                  {formData.fileName && (
-                    <p className="text-sm text-gray-600 mt-1">
-                      📄 {formData.fileName}
-                    </p>
-                  )}
-
-                  {preview && (
-                    <img
-                      src={preview}
-                      alt="preview"
-                      className="w-32 mt-2 rounded border"
-                    />
-                  )}
-                </div>
-
-                <textarea
-                  name="notes"
-                  onChange={handleChange}
-                  className="w-full p-3 border rounded h-20"
-                  placeholder="Additional Notes"
-                />
-
-              </div>
-            )}
-
+            </div>
           </div>
 
-          {/* 🔥 STICKY ACTION BAR */}
-          <div className="flex justify-between border-t pt-3 bg-white sticky bottom-0">
+          {/* CASE DESCRIPTION */}
+          <div className="bg-white border rounded">
+            <SectionHeader title="CASE DESCRIPTION" />
+
+            <div className="p-4 space-y-4">
+
+              <div>
+                <FieldLabel label="Victim Statement" />
+                <textarea
+                  className={textareaCls}
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
+                />
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        {/* SUSPECT */}
+        <div className="grid grid-cols-2 gap-6 mb-6">
+
+          <div className="bg-white border rounded">
+            <SectionHeader title="SUSPECT DETAILS" />
+
+            <div className="p-4 space-y-3">
+
+              <div>
+                <FieldLabel label="Full Name" />
+                <input className={inputCls}
+                  value={sFullName}
+                  onChange={e => setSFullName(e.target.value)} />
+              </div>
+
+              <div>
+                <FieldLabel label="Occupation" />
+                <input className={inputCls}
+                  value={sOccupation}
+                  onChange={e => setSOccupation(e.target.value)} />
+              </div>
+
+              <div>
+                <FieldLabel label="Contact Number" />
+                <input className={inputCls}
+                  value={sContact}
+                  onChange={e => setSContact(e.target.value)} />
+              </div>
+
+              <div>
+                <FieldLabel label="Gender" />
+                <select className={inputCls}
+                  value={sGender}
+                  onChange={e => setSGender(e.target.value)}>
+                  <option value="">Select Gender</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Unknown</option>
+                </select>
+              </div>
+
+              <div>
+                <FieldLabel label="Address" />
+                <textarea className={inputCls}
+                  value={sAddress}
+                  onChange={e => setSAddress(e.target.value)} />
+              </div>
+
+            </div>
+          </div>
+
+          <div className="bg-white border rounded">
+            <SectionHeader title="SUSPECT STATEMENT" />
+
+            <div className="p-4 space-y-3">
+              <div>
+                <FieldLabel label="Suspect Statement" />
+                <textarea
+                  className={textareaCls}
+                  value={suspectStatement}
+                  onChange={(e) => setSuspectStatement(e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* UPLOAD */}
+        <div className="bg-white border rounded mb-6">
+          <SectionHeader title="EVIDENCE UPLOAD" />
+
+          <div className="p-4">
+
+            <input
+              type="file"
+              multiple
+              ref={fileRef}
+              className="hidden"
+              onChange={handleFileChange}
+            />
 
             <button
-              onClick={prevStep}
-              disabled={step === 1}
-              className="bg-gray-400 text-white px-5 py-2 rounded disabled:opacity-50"
+              onClick={triggerFileSelect}
+              className="mb-3 px-4 py-2 bg-sky-600 text-white rounded"
             >
-              Back
+              + Add Evidence
             </button>
 
-            {step < 3 ? (
-              <button
-                onClick={nextStep}
-                className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700"
-              >
-                Next →
-              </button>
-            ) : (
-              <button
-                onClick={handleSubmit}
-                className="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700"
-              >
-                Submit ✔
-              </button>
-            )}
+            <div className="space-y-2">
+              {files.map((f, i) => (
+                <div key={i} className="flex justify-between bg-gray-200 p-2 rounded">
+                  <span>{f.name}</span>
+                  <button onClick={() => removeFile(i)} className="text-red-600">
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
 
           </div>
-
         </div>
+
+        {/* ACTIONS */}
+        <div className="flex justify-end gap-4">
+          <button className="px-6 py-2 bg-gray-400 text-white rounded">
+            Cancel
+          </button>
+
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="px-6 py-2 bg-sky-600 text-white rounded"
+          >
+            {loading ? "Submitting..." : "Submit Case"}
+          </button>
+        </div>
+
       </div>
 
       <Footer />
     </div>
   );
-};
-
-export default RegisterCase;
+}

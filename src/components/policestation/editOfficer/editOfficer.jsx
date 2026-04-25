@@ -231,7 +231,7 @@ export default function EditOfficer() {
           <div className="flex justify-end mt-6">
             <button
               onClick={handleSave}
-              className="bg-green-500 text-white px-6 py-2 rounded"
+              className="bg-blue-500 text-white px-6 py-2 rounded"
             >
               Save Changes
             </button>

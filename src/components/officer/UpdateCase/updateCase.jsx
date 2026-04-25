@@ -176,6 +176,13 @@ export default function UpdateCase({ mode = "edit" }) {
               {selectedCase.fileName || "No uploaded evidence on record"}
             </p>
           </div>
+
+          <button 
+            onClick={handleSaveChanges}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition"
+          >
+            Save Changes
+          </button>
         </div>
       </div>
     </div>
