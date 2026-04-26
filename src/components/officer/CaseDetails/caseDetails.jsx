@@ -46,7 +46,7 @@ export default function CaseDetails() {
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">
               Case Details
             </p>
-            <h1 className="mt-2 text-4xl font-bold text-slate-900">{selectedCase.id}</h1>
+            <h1 className="mt-2 text-4xl font-bold !text-slate-950">{selectedCase.id}</h1>
             <p className="mt-2 text-slate-600">
               Review the full details of this case. Use Edit if you need to update the case status.
             </p>
@@ -62,7 +62,7 @@ export default function CaseDetails() {
             <button
               type="button"
               onClick={() => navigate(`/update-case/${selectedCase.id}`, { state: { selectedCase } })}
-              className="rounded-xl bg-yellow-600 px-4 py-2 text-sm font-semibold text-white hover:bg-yellow-700"
+              className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
             >
               Edit Status
             </button>
@@ -73,7 +73,7 @@ export default function CaseDetails() {
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         <section className="space-y-6">
           <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-            <h2 className="text-xl font-bold text-slate-900">Case Information</h2>
+            <h2 className="text-xl font-bold !text-slate-950">Case Information</h2>
             <div className="mt-5 grid gap-4 md:grid-cols-2">
               <DetailField label="Case ID" value={selectedCase.id} />
               <DetailField label="Date" value={selectedCase.date} />
@@ -90,7 +90,7 @@ export default function CaseDetails() {
           </div>
 
           <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-            <h2 className="text-xl font-bold text-slate-900">People Involved</h2>
+            <h2 className="text-xl font-bold !text-slate-950">People Involved</h2>
             <div className="mt-5 grid gap-4 md:grid-cols-2">
               <DetailField label="Victim Name" value={selectedCase.name} />
               <DetailField label="Victim Gender" value={selectedCase.victimGender} />
@@ -103,15 +103,15 @@ export default function CaseDetails() {
         </section>
 
         <aside className="space-y-6">
-          <div className="rounded-3xl bg-slate-900 p-6 text-white shadow-sm">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-300">
+          <div className="rounded-3xl bg-blue-600 p-6 text-white shadow-sm">
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-blue-100">
               Current Status
             </p>
             <p className="mt-3 text-3xl font-bold">{selectedCase.status}</p>
           </div>
 
           <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-            <h2 className="text-lg font-bold text-slate-900">Evidence</h2>
+            <h2 className="text-lg font-bold !text-slate-950">Evidence</h2>
             <p className="mt-3 text-sm text-slate-600">
               {selectedCase.fileName || "No uploaded evidence on record"}
             </p>
