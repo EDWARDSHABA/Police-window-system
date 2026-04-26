@@ -84,7 +84,7 @@ export default function UpdateCase({ mode = "edit" }) {
             <p className="text-sm uppercase tracking-wider text-black opacity-100">
               {isReadOnly ? "View Case" : "Update Case"}
             </p>
-            <h1 className="mt-1 text-4xl font-black tracking-tight text-black">
+            <h1 className="mt-1 text-4xl font-black tracking-tight !text-slate-950">
               {isReadOnly ? "Case details" : "Case management dashboard"}
             </h1>
           </div>
@@ -92,15 +92,6 @@ export default function UpdateCase({ mode = "edit" }) {
             <div className="rounded-lg bg-gray-50 px-3 py-2 text-sm text-black">
               Selected: <span className="font-semibold">{selectedCase.id}</span>
             </div>
-            {!isReadOnly && (
-              <button
-                type="button"
-                onClick={handleSaveChanges}
-                className="rounded-lg bg-yellow-600 px-4 py-2 font-semibold text-white hover:bg-yellow-700"
-              >
-                Save changes
-              </button>
-            )}
           </div>
         </div>
       </div>
@@ -108,7 +99,7 @@ export default function UpdateCase({ mode = "edit" }) {
       <div className="grid md:grid-cols-3 gap-6">
         <div className="md:col-span-2 space-y-6">
           <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
-            <h2 className="text-2xl font-black text-black mb-4 tracking-tight">Case information</h2>
+            <h2 className="mb-4 text-2xl font-black tracking-tight !text-slate-950">Case information</h2>
             <div className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <ReadOnlyField label="Case ID" value={selectedCase.id} />
@@ -123,16 +114,22 @@ export default function UpdateCase({ mode = "edit" }) {
               <ReadOnlyField label="Victim / complainant" value={selectedCase.name} />
               <ReadOnlyTextArea label="Incident Description" value={selectedCase.description} rows={4} />
               <ReadOnlyTextArea label="Additional Notes" value={selectedCase.notes} />
+
+              <div className="border-t border-gray-200 pt-4">
+                <h3 className="mb-4 text-lg font-bold !text-slate-950">Victim Details</h3>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <ReadOnlyField label="Victim Full Name" value={selectedCase.name} />
+                  <ReadOnlyField label="Victim Gender" value={selectedCase.victimGender} />
+                  <ReadOnlyField label="Victim Contact" value={selectedCase.victimContact} />
+                </div>
+              </div>
             </div>
           </div>
 
           <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
-            <h2 className="text-2xl font-black text-black mb-4 tracking-tight">People involved</h2>
+            <h2 className="mb-4 text-2xl font-black tracking-tight !text-slate-950">Suspect Details</h2>
             <div className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
-                <ReadOnlyField label="Victim Full Name" value={selectedCase.name} />
-                <ReadOnlyField label="Victim Gender" value={selectedCase.victimGender} />
-                <ReadOnlyField label="Victim Contact" value={selectedCase.victimContact} />
                 <ReadOnlyField label="Suspect Full Name" value={selectedCase.suspectName} />
                 <ReadOnlyField label="Suspect Gender" value={selectedCase.suspectGender} />
                 <ReadOnlyField label="Suspect Contact" value={selectedCase.suspectContact} />
