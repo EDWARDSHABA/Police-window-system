@@ -54,13 +54,6 @@ export default function CaseDetails() {
           <div className="flex gap-3">
             <button
               type="button"
-              onClick={() => navigate("/view-cases")}
-              className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
-            >
-              Back
-            </button>
-            <button
-              type="button"
               onClick={() => navigate(`/update-case/${selectedCase.id}`, { state: { selectedCase } })}
               className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
             >

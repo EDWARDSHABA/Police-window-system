@@ -120,16 +120,23 @@ export default function ViewCases() {
           <tbody className="divide-y divide-gray-200 bg-white">
             {filteredCases.map((item) => (
               <tr key={item.id ?? item.caseId} className="hover:bg-gray-50 text-xs">
+                {(() => {
+                  const caseId = item.id ?? item.caseId;
+                  const caseStatus = item.status ?? "Under investigation";
+                  const isClosed = caseStatus === "Closed";
+
+                  return (
+                    <>
                 <td className="px-3 py-2 font-medium text-gray-900">{item.id ?? item.caseId}</td>
                 <td className="px-3 py-2 text-gray-700">{item.type ?? item.typeOfCrime ?? "Other"}</td>
-                <td className="px-3 py-2 text-gray-700">{item.status ?? "Under investigation"}</td>
+                <td className="px-3 py-2 text-gray-700">{caseStatus}</td>
                 <td className="px-3 py-2 text-gray-700">{item.name ?? item.victim?.vFullName ?? item.caseName ?? "Unknown"}</td>
                 <td className="px-3 py-2">
                   <button
                     type="button"
-                    onClick={() => navigate(`/view-case/${item.id}`)}
+                    onClick={() => navigate(`/view-case/${caseId}`)}
                     className="inline-flex items-center justify-center"
-                    aria-label={`View case ${item.id ?? item.caseId}`}
+                    aria-label={`View case ${caseId}`}
                   >
                     <img src={showIcon} alt="" className="h-4 w-4 object-contain" />
                   </button>
@@ -138,12 +145,22 @@ export default function ViewCases() {
                 <td className="px-3 py-2">
                   <button
                     type="button"
-                    onClick={() => navigate(`/update-case/${item.id}`, { state: { selectedCase: item } })}
-                    className="bg-yellow-50 hover:bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-semibold border border-yellow-300"
+                    onClick={() => {
+                      if (isClosed) return;
+                      navigate(`/update-case/${caseId}`, { state: { selectedCase: item } });
+                    }}
+                    className={`px-2 py-1 rounded-full text-xs font-semibold border ${
+                      isClosed
+                        ? "bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed"
+                        : "bg-yellow-50 hover:bg-yellow-100 text-yellow-800 border-yellow-300"
+                    }`}
                   >
                     Edit
                   </button>
                 </td>
+                    </>
+                  );
+                })()}
               </tr>
             ))}
             {filteredCases.length === 0 && (
