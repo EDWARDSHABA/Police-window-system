@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import showIcon from "../../../assets/icons/show.png";
 import { getStoredViewCases } from "../Data/viewCasesData";
 
 const CASE_TYPES = ["All", "Robbery", "Assault", "Burglary", "Fraud", "Theft", "Difiement"];
@@ -135,10 +134,10 @@ export default function ViewCases() {
                   <button
                     type="button"
                     onClick={() => navigate(`/view-case/${caseId}`)}
-                    className="inline-flex items-center justify-center"
+                    className="rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white hover:bg-blue-700"
                     aria-label={`View case ${caseId}`}
                   >
-                    <img src={showIcon} alt="" className="h-4 w-4 object-contain" />
+                    View
                   </button>
                 </td>
                 <td className="px-3 py-2 text-gray-700">{item.officer ?? "Assigned Officer"}</td>
