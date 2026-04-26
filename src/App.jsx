@@ -25,6 +25,7 @@ import RegisterCasePage from "./pages/officer/registerCasePage";
 import UpdateCasePage from "./pages/officer/updateCasePage";
 import CreateStatementPage from "./pages/officer/createStatementPage";
 import ViewCasesPage from "./pages/officer/viewCasesPage";
+import CaseDetailsPage from "./pages/officer/caseDetailsPage";
 
 // general
 import NotificationPage from "./pages/notification/notificationPage";
@@ -61,8 +62,10 @@ function App() {
         <Route path="/officer-dashboard" element={<OfficerDashboardPage />} />
         <Route path="/register-case" element={<RegisterCasePage />} />
         <Route path="/update-case" element={<UpdateCasePage />} />
+        <Route path="/update-case/:id" element={<UpdateCasePage />} />
         <Route path="/create-statement" element={<CreateStatementPage />} />
         <Route path="/view-cases" element={<ViewCasesPage />} />
+        <Route path="/view-case/:id" element={<CaseDetailsPage />} />
 
         {/* general */}
         <Route path="/notifications" element={<NotificationPage />} />
