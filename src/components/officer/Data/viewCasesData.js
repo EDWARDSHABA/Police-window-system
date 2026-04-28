@@ -195,6 +195,37 @@ export function getViewCaseById(caseId) {
   return getStoredViewCases().find((item) => item.id === caseId) ?? null;
 }
 
+export function addViewCase(caseRecord) {
+  const normalizedRecord = normalizeViewCase({
+    ...caseRecord,
+    id: caseRecord?.id ?? caseRecord?.caseId,
+    caseId: caseRecord?.caseId ?? caseRecord?.id,
+    type: caseRecord?.type ?? caseRecord?.typeOfCrime,
+    name: caseRecord?.name ?? caseRecord?.victim?.vFullName ?? caseRecord?.caseName,
+    officer: caseRecord?.officer ?? "Assigned Officer",
+    date: caseRecord?.date ?? caseRecord?.dateOfIncidence,
+    suspectName: caseRecord?.suspectName ?? caseRecord?.suspect?.sFullName,
+    suspectGender: caseRecord?.suspectGender ?? caseRecord?.suspect?.sGender,
+    suspectContact: caseRecord?.suspectContact ?? caseRecord?.suspect?.sContact,
+    victimGender: caseRecord?.victimGender ?? caseRecord?.victim?.vGender,
+    victimContact: caseRecord?.victimContact ?? caseRecord?.victim?.vContact,
+    fileName:
+      caseRecord?.fileName ??
+      (Array.isArray(caseRecord?.files) && caseRecord.files.length > 0
+        ? caseRecord.files.map((file) => file?.name).filter(Boolean).join(", ")
+        : ""),
+  });
+
+  const existingCases = getStoredViewCases();
+  const updatedCases = [
+    normalizedRecord,
+    ...existingCases.filter((item) => item.id !== normalizedRecord.id),
+  ];
+
+  saveViewCases(updatedCases);
+  return normalizedRecord;
+}
+
 export function updateViewCaseStatus(caseId, nextStatus) {
   const updatedCases = getStoredViewCases().map((item) =>
     item.id === caseId || item.caseId === caseId
