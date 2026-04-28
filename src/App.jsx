@@ -1,76 +1,88 @@
+import { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import HomePage from "./pages/home/homePage";
-import SignInPage from "./pages/authentication/signInPage";
+const HomePage = lazy(() => import("./pages/home/homePage"));
+const SignInPage = lazy(() => import("./pages/authentication/signInPage"));
 
 // headquarters
-import HeadquartersPage from "./pages/headquarters/dashboardPage";
-import CreatePoliceStationAdminPage from "./pages/headquarters/createPoliceStationAdminPage";
-import PoliceStationPage from "./pages/headquarters/createPoliceStationPage";
-import PolicestationsPage from "./pages/headquarters/policestationsPage";
-import ManageAccountsPage from "./pages/headquarters/manageAccountsPage";
-import EditAccountPage from "./pages/headquarters/editAccountPage";
+const HeadquartersPage = lazy(() => import("./pages/headquarters/dashboardPage"));
+const CreatePoliceStationAdminPage = lazy(() =>
+  import("./pages/headquarters/createPoliceStationAdminPage")
+);
+const PoliceStationPage = lazy(() => import("./pages/headquarters/createPoliceStationPage"));
+const PolicestationsPage = lazy(() => import("./pages/headquarters/policestationsPage"));
+const ManageAccountsPage = lazy(() => import("./pages/headquarters/manageAccountsPage"));
+const EditAccountPage = lazy(() => import("./pages/headquarters/editAccountPage"));
 
-// police station/
-import PoliceStationDashboardPage from "./pages/policestation/DashboardPage";
-import ManageOfficersPage from "./pages/policestation/manageOfficersPage";
-import AssignDutiesPage from "./pages/policestation/assignDutiesPage";
-import TrackCasesPage from "./pages/policestation/trackCasesPage";
-import CreateOfficer from "./components/policestation/CreateOfficer/createOfficer";
-import EditOfficer from "./components/policestation/editOfficer/editOfficer";
+// police station
+const PoliceStationDashboardPage = lazy(() => import("./pages/policestation/DashboardPage"));
+const ManageOfficersPage = lazy(() => import("./pages/policestation/manageOfficersPage"));
+const AssignDutiesPage = lazy(() => import("./pages/policestation/assignDutiesPage"));
+const TrackCasesPage = lazy(() => import("./pages/policestation/trackCasesPage"));
+const CreateOfficer = lazy(() => import("./components/policestation/CreateOfficer/createOfficer"));
+const EditOfficer = lazy(() => import("./components/policestation/editOfficer/editOfficer"));
 
 // officer
-import OfficerDashboardPage from "./pages/officer/dashboardPage";
-import RegisterCasePage from "./pages/officer/registerCasePage";
-import UpdateCasePage from "./pages/officer/updateCasePage";
-import ViewCasesPage from "./pages/officer/viewCasesPage";
-import CaseDetailsPage from "./pages/officer/caseDetailsPage";
+const OfficerDashboardPage = lazy(() => import("./pages/officer/dashboardPage"));
+const RegisterCasePage = lazy(() => import("./pages/officer/registerCasePage"));
+const UpdateCasePage = lazy(() => import("./pages/officer/updateCasePage"));
+const CreateStatementPage = lazy(() => import("./pages/officer/createStatementPage"));
+const ViewCasesPage = lazy(() => import("./pages/officer/viewCasesPage"));
+const CaseDetailsPage = lazy(() => import("./pages/officer/caseDetailsPage"));
 
 // general
-import NotificationPage from "./pages/notification/notificationPage";
-import AboutUsPage from "./pages/aboutus/aboutUsPage";
-import ProfilePage from "./pages/profile/profilePage";
+const NotificationPage = lazy(() => import("./pages/notification/notificationPage"));
+const AboutUsPage = lazy(() => import("./pages/aboutus/aboutUsPage"));
+const ProfilePage = lazy(() => import("./pages/profile/profilePage"));
+
+function LoadingScreen() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-slate-100 px-6 text-center">
+      <div className="rounded-2xl border border-slate-200 bg-white px-8 py-6 shadow-sm">
+        <h1 className="text-2xl font-bold text-slate-900">Loading Police Window System</h1>
+        <p className="mt-2 text-sm text-slate-600">Preparing the requested page...</p>
+      </div>
+    </div>
+  );
+}
 
 function App() {
   return (
     <Router>
-      <Routes>
+      <Suspense fallback={<LoadingScreen />}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<SignInPage />} />
 
-        <Route path="/" element={<HomePage />} />
+          <Route path="/headquarters" element={<HeadquartersPage />} />
+          <Route path="/headquarters/create-admin" element={<CreatePoliceStationAdminPage />} />
+          <Route path="/headquarters/police-stations" element={<PolicestationsPage />} />
+          <Route path="/headquarters/create-police-station" element={<PoliceStationPage />} />
+          <Route path="/manage-accounts" element={<ManageAccountsPage />} />
+          <Route path="/police-stations" element={<PoliceStationPage />} />
+          <Route path="/edit-stations" element={<EditAccountPage />} />
 
-        <Route path="/login" element={<SignInPage />} />
+          <Route path="/dashboard" element={<PoliceStationDashboardPage />} />
+          <Route path="/manage-officers" element={<ManageOfficersPage />} />
+          <Route path="/assign-duties" element={<AssignDutiesPage />} />
+          <Route path="/track-cases" element={<TrackCasesPage />} />
+          <Route path="/create-officer" element={<CreateOfficer />} />
+          <Route path="/edit-officer/:id" element={<EditOfficer />} />
 
-        {/* headquarters */}
-        <Route path="/headquarters" element={<HeadquartersPage />} />
-        <Route path="/headquarters/create-admin" element={<CreatePoliceStationAdminPage />} />
-        <Route path="/headquarters/police-stations" element={<PolicestationsPage />} />
-        <Route path="/headquarters/create-police-station" element={<PoliceStationPage />} />
-        <Route path="/manage-accounts" element={<ManageAccountsPage />} />
-        <Route path="/police-stations" element={<PoliceStationPage />} />
-        <Route path="/edit-stations" element={<EditAccountPage />} />
+          <Route path="/officer-dashboard" element={<OfficerDashboardPage />} />
+          <Route path="/register-case" element={<RegisterCasePage />} />
+          <Route path="/update-case" element={<UpdateCasePage />} />
+          <Route path="/update-case/:id" element={<UpdateCasePage />} />
+          <Route path="/create-statement" element={<CreateStatementPage />} />
+          <Route path="/view-cases" element={<ViewCasesPage />} />
+          <Route path="/view-case/:id" element={<CaseDetailsPage />} />
 
-        {/* police station */}
-        <Route path="/dashboard" element={<PoliceStationDashboardPage />} />
-        <Route path="/manage-officers" element={<ManageOfficersPage />} />
-        <Route path="/assign-duties" element={<AssignDutiesPage />} />
-        <Route path="/track-cases" element={<TrackCasesPage />} />
-        <Route path="/create-officer" element={<CreateOfficer />} />
-        <Route path="/edit-officer/:id" element={<EditOfficer />} />
-
-        {/* officer */}
-        <Route path="/officer-dashboard" element={<OfficerDashboardPage />} />
-        <Route path="/register-case" element={<RegisterCasePage />} />
-        <Route path="/update-case" element={<UpdateCasePage />} />
-        <Route path="/update-case/:id" element={<UpdateCasePage />} />
-        <Route path="/view-cases" element={<ViewCasesPage />} />
-        <Route path="/view-case/:id" element={<CaseDetailsPage />} />
-
-        {/* general */}
-        <Route path="/notifications" element={<NotificationPage />} />
-        <Route path="/about" element={<AboutUsPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="*" element={<HomePage />} />
-      </Routes>
+          <Route path="/notifications" element={<NotificationPage />} />
+          <Route path="/about" element={<AboutUsPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="*" element={<HomePage />} />
+        </Routes>
+      </Suspense>
     </Router>
   );
 }
