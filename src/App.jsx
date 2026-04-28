@@ -61,6 +61,7 @@ function App() {
         <Route path="/officer-dashboard" element={<OfficerDashboardPage />} />
         <Route path="/register-case" element={<RegisterCasePage />} />
         <Route path="/update-case" element={<UpdateCasePage />} />
+        <Route path="/update-case/:id" element={<UpdateCasePage />} />
         <Route path="/view-cases" element={<ViewCasesPage />} />
         <Route path="/view-case/:id" element={<CaseDetailsPage />} />
 

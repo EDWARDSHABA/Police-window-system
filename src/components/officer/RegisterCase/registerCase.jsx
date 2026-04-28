@@ -68,7 +68,9 @@ export default function RegisterCase() {
 
   // Case info
   const [description, setDescription] = useState("");
+  const [witnessVictimStatement, setWitnessVictimStatement] = useState("");
   const [suspectStatement, setSuspectStatement] = useState("");
+  const [witnessSuspectStatement, setWitnessSuspectStatement] = useState("");
 
   const [files, setFiles] = useState([]);
 
@@ -96,7 +98,9 @@ export default function RegisterCase() {
       victim: { vFullName, vGender, vOccupation, vContact, vAddress },
       suspect: { sFullName, sGender, sOccupation, sContact, sAddress },
       description,
+      witnessVictimStatement,
       suspectStatement,
+      witnessSuspectStatement,
       files,
       submittedAt: new Date().toISOString(),
     };
@@ -232,6 +236,15 @@ export default function RegisterCase() {
                 />
               </div>
 
+              <div>
+                <FieldLabel label="Witness of Victim Statement" />
+                <textarea
+                  className={textareaCls}
+                  value={witnessVictimStatement}
+                  onChange={e => setWitnessVictimStatement(e.target.value)}
+                />
+              </div>
+
             </div>
           </div>
 
@@ -298,6 +311,15 @@ export default function RegisterCase() {
                   className={textareaCls}
                   value={suspectStatement}
                   onChange={(e) => setSuspectStatement(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <FieldLabel label="Witness Suspect Statement" />
+                <textarea
+                  className={textareaCls}
+                  value={witnessSuspectStatement}
+                  onChange={(e) => setWitnessSuspectStatement(e.target.value)}
                 />
               </div>
             </div>
