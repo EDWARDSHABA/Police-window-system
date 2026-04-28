@@ -387,7 +387,7 @@ function TextArea({
           </button>
         </div>
       </div>
-    </div>
+    
   );
 }
 >>>>>>> 7d4ef253e9be6d0587b999692b79c2670056754c
