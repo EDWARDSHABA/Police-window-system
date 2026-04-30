@@ -263,6 +263,7 @@ export default function AssignDuties() {
             <option>Patrol</option>
             <option>Traffic</option>
             <option>Investigation</option>
+            <option>Invigilation</option>
           </select>
 
           <input
