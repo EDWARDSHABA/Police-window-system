@@ -3,7 +3,7 @@ import logo from "../../../assets/logo/logo.jpeg";
 import notificationIcon from "../../../assets/icons/notification.png";
 import profileIcon from "../../../assets/icons/profile.png";
 
-export default function StationHeader() {
+export default function StationHeader({ pageTitle = "" }) {
   const navigate = useNavigate();
 
   return (
@@ -35,6 +35,10 @@ export default function StationHeader() {
 
           <button onClick={() => navigate("/assign-duties")} className="hover:underline">
             Duties
+          </button>
+
+          <button onClick={() => navigate("/view-duties")} className="hover:underline">
+            View Duties
           </button>
 
           <button onClick={() => navigate("/track-cases")} className="hover:underline">
@@ -70,6 +74,14 @@ export default function StationHeader() {
       </div>
       
       <div className="h-1 w-full bg-blue-500"></div>
+
+      {pageTitle ? (
+        <div className="border-t border-yellow-600/40 bg-yellow-800/95 px-6 py-2">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em]">
+            {pageTitle}
+          </p>
+        </div>
+      ) : null}
 
     </header>
   );

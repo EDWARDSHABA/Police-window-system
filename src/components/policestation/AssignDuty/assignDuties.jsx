@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import axios from "axios";
 import StationHeader from "../Header/PoliceStationHeader";
 import Footer from "../../officer/footer/footer";
+import { addAssignedDuties } from "../dutiesStorage";
 
 export default function AssignDuties() {
   // ==========================
@@ -126,6 +127,24 @@ export default function AssignDuties() {
 
       console.log("SERVER RESPONSE:", res.data);
 
+      const selectedOfficerRecords = officers.filter((officer) =>
+        selected.has(officer._id)
+      );
+
+      const createdDutyRecords = selectedOfficerRecords.map((officer) => ({
+        id: officer.officerId,
+        officer: `${officer.firstName} ${officer.lastName}`,
+        location,
+        dutyType,
+        shift: specifyTime || shift,
+        specifyTime,
+        week,
+        taskDescription,
+        createdAt: new Date().toISOString(),
+      }));
+
+      addAssignedDuties(createdDutyRecords);
+
       setSuccess("Duty assigned successfully & emails sent!");
       setSelected(new Set());
 
@@ -133,6 +152,7 @@ export default function AssignDuties() {
       setDutyType("");
       setTaskDescription("");
       setSpecifyTime("");
+      setShift("All Shifts");
     } catch (err) {
       console.error(err);
       setError(
@@ -148,7 +168,7 @@ export default function AssignDuties() {
   // ==========================
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <StationHeader />
+      <StationHeader pageTitle="Assign Duties" />
 
       <h2 className="text-lg font-bold mb-4">
         Assign Duties

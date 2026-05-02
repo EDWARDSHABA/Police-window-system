@@ -18,6 +18,7 @@ const EditAccountPage = lazy(() => import("./pages/headquarters/editAccountPage"
 const PoliceStationDashboardPage = lazy(() => import("./pages/policestation/DashboardPage"));
 const ManageOfficersPage = lazy(() => import("./pages/policestation/manageOfficersPage"));
 const AssignDutiesPage = lazy(() => import("./pages/policestation/assignDutiesPage"));
+const ViewDutiesPage = lazy(() => import("./pages/policestation/viewDutiesPage"));
 const TrackCasesPage = lazy(() => import("./pages/policestation/trackCasesPage"));
 const CreateOfficer = lazy(() => import("./components/policestation/CreateOfficer/createOfficer"));
 const EditOfficer = lazy(() => import("./components/policestation/editOfficer/editOfficer"));
@@ -65,6 +66,7 @@ function App() {
           <Route path="/dashboard" element={<PoliceStationDashboardPage />} />
           <Route path="/manage-officers" element={<ManageOfficersPage />} />
           <Route path="/assign-duties" element={<AssignDutiesPage />} />
+          <Route path="/view-duties" element={<ViewDutiesPage />} />
           <Route path="/track-cases" element={<TrackCasesPage />} />
           <Route path="/create-officer" element={<CreateOfficer />} />
           <Route path="/edit-officer/:id" element={<EditOfficer />} />
