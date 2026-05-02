@@ -26,6 +26,10 @@ export default function Header() {
     navigate("/update-case");
   };
 
+  const handleHelp = () => {
+    navigate("/officer-help");
+  };
+
   return (
     <header className="fixed top-0 left-0 w-full bg-yellow-700 text-white shadow-md z-50">
 
@@ -48,25 +52,29 @@ export default function Header() {
         {/* NAVIGATION */}
         <nav className="hidden md:flex gap-6 text-sm font-medium">
 
-          <button onClick={() => navigate("/officer-dashboard")} className="hover:underline">
+          <button type="button" onClick={() => navigate("/officer-dashboard")} className="hover:underline">
             Dashboard
           </button>
 
-          <button onClick={() => navigate("/register-case")} className="hover:underline">
+          <button type="button" onClick={() => navigate("/register-case")} className="hover:underline">
             Register Case
           </button>
 
-          <button onClick={handleUpdateCase} className="hover:underline">
+          <button type="button" onClick={handleUpdateCase} className="hover:underline">
             Case Update
           </button>
 
-          <button onClick={() => navigate("/view-cases")} className="hover:underline">
+          <button type="button" onClick={() => navigate("/view-cases")} className="hover:underline">
             View Cases
           </button>
 
-          <span className="hover:underline cursor-pointer">
+          <button type="button" onClick={() => navigate("/officer-duties")} className="hover:underline">
+            Duties
+          </button>
+
+          <button type="button" onClick={handleHelp} className="hover:underline cursor-pointer">
             Help
-          </span>
+          </button>
 
         </nav>
 
