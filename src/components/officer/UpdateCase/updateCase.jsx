@@ -168,6 +168,6 @@ export default function UpdateCase() {
           </button>
         </div>
       </div>
-    
+    </div>
   );
 }

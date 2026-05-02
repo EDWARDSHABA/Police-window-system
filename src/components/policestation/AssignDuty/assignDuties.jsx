@@ -2,6 +2,8 @@ import { useState, useMemo, useEffect } from "react";
 import axios from "axios";
 import StationHeader from "../Header/PoliceStationHeader";
 import Footer from "../../officer/footer/footer";
+import { assignOfficerDuties } from "../../officer/Data/dutiesData";
+import { getStoredOfficers } from "../officersStorage";
 
 export default function AssignDuties() {
   // ==========================
@@ -23,6 +25,7 @@ export default function AssignDuties() {
   const [success, setSuccess] = useState("");
 
   const SHIFTS = ["All Shifts", "Day", "Evening", "Night"];
+  const getOfficerKey = (officer) => officer?._id ?? officer?.id ?? officer?.officerId;
 
   // ==========================
   // FETCH OFFICERS FROM BACKEND
@@ -36,9 +39,10 @@ export default function AssignDuties() {
           "http://localhost:5000/api/admin/officers"
         );
 
-        setOfficers(res.data || []);
+        setOfficers(res.data?.length ? res.data : getStoredOfficers());
       } catch (err) {
         console.error("Failed to load officers:", err.message);
+        setOfficers(getStoredOfficers());
       } finally {
         setLoadingOfficers(false);
       }
@@ -54,10 +58,9 @@ export default function AssignDuties() {
     const q = search.toLowerCase();
 
     return officers.filter((o) => {
-      const fullName =
-        `${o.firstName} ${o.lastName}`.toLowerCase();
+      const fullName = (o.name || `${o.firstName ?? ""} ${o.lastName ?? ""}`).toLowerCase();
 
-      const id = (o.officerId || "").toLowerCase();
+      const id = (o.officerId || o.id || "").toLowerCase();
 
       return !q || fullName.includes(q) || id.includes(q);
     });
@@ -79,11 +82,11 @@ export default function AssignDuties() {
 
   const allChecked =
     filtered.length > 0 &&
-    filtered.every((o) => selected.has(o._id));
+    filtered.every((o) => selected.has(getOfficerKey(o)));
 
   const toggleAll = (e) => {
     if (e.target.checked) {
-      setSelected(new Set(filtered.map((o) => o._id)));
+      setSelected(new Set(filtered.map(getOfficerKey).filter(Boolean)));
     } else {
       setSelected(new Set());
     }
@@ -108,6 +111,20 @@ export default function AssignDuties() {
     setError("");
     setLoadingSubmit(true);
 
+    const selectedOfficers = officers.filter((officer) =>
+      selected.has(getOfficerKey(officer))
+    );
+
+    assignOfficerDuties({
+      officers: selectedOfficers,
+      dutyType,
+      location,
+      week,
+      specifyTime,
+      shift,
+      taskDescription,
+    });
+
     try {
       const payload = {
         officerIds: Array.from(selected), // 🔥 IMPORTANT FIX
@@ -126,7 +143,7 @@ export default function AssignDuties() {
 
       console.log("SERVER RESPONSE:", res.data);
 
-      setSuccess("Duty assigned successfully & emails sent!");
+      setSuccess("Duty assigned successfully. Officers can now view it in their Duties page.");
       setSelected(new Set());
 
       setLocation("");
@@ -135,9 +152,8 @@ export default function AssignDuties() {
       setSpecifyTime("");
     } catch (err) {
       console.error(err);
-      setError(
-        err.response?.data?.message || "Failed to assign duty"
-      );
+      setSuccess("Duty saved locally. Officers can now view it in their Duties page.");
+      setError(err.response?.data?.message || "Backend unavailable; email was not sent.");
     } finally {
       setLoadingSubmit(false);
     }
@@ -219,23 +235,23 @@ export default function AssignDuties() {
                 ) : (
                   filtered.map((o) => (
                     <tr
-                      key={o._id}
+                      key={getOfficerKey(o)}
                       className="border-b cursor-pointer hover:bg-gray-50"
-                      onClick={() => toggleOfficer(o._id)}
+                      onClick={() => toggleOfficer(getOfficerKey(o))}
                     >
                       <td className="p-2 text-xs">
-                        {o.officerId}
+                        {o.officerId ?? o.id}
                       </td>
 
                       <td className="p-2">
-                        {o.firstName} {o.lastName}
+                        {o.name ?? `${o.firstName ?? ""} ${o.lastName ?? ""}`}
                       </td>
 
                       <td>
                         <input
                           type="checkbox"
-                          checked={selected.has(o._id)}
-                          onChange={() => toggleOfficer(o._id)}
+                          checked={selected.has(getOfficerKey(o))}
+                          onChange={() => toggleOfficer(getOfficerKey(o))}
                           onClick={(e) => e.stopPropagation()}
                         />
                       </td>

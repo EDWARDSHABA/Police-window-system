@@ -102,7 +102,11 @@ export default function PoliceStationDashboard() {
             </button>
             
 
-            <button className="w-full bg-white text-black py-2 rounded hover:bg-gray-200 transition">
+            <button
+              type="button"
+              onClick={() => navigate("/officer-duties")}
+              className="w-full bg-white text-black py-2 rounded hover:bg-gray-200 transition"
+            >
               Duties
             </button>
             
