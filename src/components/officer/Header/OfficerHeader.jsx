@@ -26,6 +26,10 @@ export default function Header() {
     navigate("/update-case");
   };
 
+  const handleHelp = () => {
+    navigate("/createStatement");
+  };
+
   return (
     <header className="fixed top-0 left-0 w-full bg-yellow-700 text-white shadow-md z-50">
 
@@ -64,7 +68,7 @@ export default function Header() {
             View Cases
           </button>
 
-          <span className="hover:underline cursor-pointer">
+          <span onClick={handleHelp} className="hover:underline cursor-pointer">
             Help
           </span>
 
