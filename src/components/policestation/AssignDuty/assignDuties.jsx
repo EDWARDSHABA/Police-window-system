@@ -149,6 +149,9 @@ export default function AssignDuties() {
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <StationHeader />
+      <div className="mt-10 bg-blue-500 text-white p-4 rounded mb-6">
+        Assign Duties for all officers
+      </div>
 
       <h2 className="text-lg font-bold mb-4">
         Assign Duties
