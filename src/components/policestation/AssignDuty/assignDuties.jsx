@@ -150,6 +150,7 @@ export default function AssignDuties() {
       setDutyType("");
       setTaskDescription("");
       setSpecifyTime("");
+      setShift("All Shifts");
     } catch (err) {
       console.error(err);
       setSuccess("Duty saved locally. Officers can now view it in their Duties page.");
@@ -164,7 +165,7 @@ export default function AssignDuties() {
   // ==========================
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <StationHeader />
+      <StationHeader pageTitle="Assign Duties" />
 
       <h2 className="text-lg font-bold mb-4">
         Assign Duties
@@ -279,6 +280,7 @@ export default function AssignDuties() {
             <option>Patrol</option>
             <option>Traffic</option>
             <option>Investigation</option>
+            <option>Invigilation</option>
           </select>
 
           <input

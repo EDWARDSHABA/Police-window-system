@@ -1,11 +1,15 @@
 import { useMemo, useState } from "react";
+<<<<<<< HEAD
+import { useLocation, useNavigate } from "react-router-dom";
+=======
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+>>>>>>> 7d4ef253e9be6d0587b999692b79c2670056754c
 import {
-  CASE_STATUS_OPTIONS,
-  getViewCaseById,
-  normalizeViewCase,
+  getStoredViewCases,
   updateViewCaseStatus,
 } from "../Data/viewCasesData";
+import OfficerHeader from "../Header/OfficerHeader";
+import Footer from "../footer/footer";
 
 function ReadOnlyField({ label, value }) {
   return (
@@ -37,22 +41,160 @@ function ReadOnlyTextArea({ label, value, rows = 3 }) {
 export default function UpdateCase() {
   const { state } = useLocation();
   const navigate = useNavigate();
+<<<<<<< HEAD
+
+  const selectedCaseId = state?.selectedCase?.id;
+=======
   const { id: routeCaseId } = useParams();
   const selectedCaseId = routeCaseId ?? state?.selectedCase?.id;
+>>>>>>> 7d4ef253e9be6d0587b999692b79c2670056754c
 
   const selectedCase = useMemo(() => {
     if (!selectedCaseId) return normalizeViewCase(state?.selectedCase) ?? null;
     return getViewCaseById(selectedCaseId) ?? normalizeViewCase(state?.selectedCase) ?? null;
   }, [selectedCaseId, state]);
 
-  const [status, setStatus] = useState(selectedCase?.status ?? "Under investigation");
+<<<<<<< HEAD
+  // ---------------- STATE ----------------
+  const [caseId] = useState(selectedCase?.id ?? "MW-ZA-015-04-26");
 
+  const [complainant] = useState(
+    selectedCase?.name ??
+      selectedCase?.victim?.vFullName ??
+      selectedCase?.caseName ??
+      ""
+  );
+
+  const [suspect] = useState(
+    selectedCase?.suspect?.sFullName ?? ""
+  );
+
+  const [additionalInfo] = useState(
+    selectedCase?.description ?? ""
+  );
+
+  const [assignedOfficer] = useState(
+    selectedCase?.officer ?? "Sgt. Leoleo"
+  );
+
+  const [status, setStatus] = useState(
+    selectedCase?.status ?? "Under investigation"
+  );
+
+  // Victim
+  const [victimGender] = useState(
+    selectedCase?.victim?.vGender ?? ""
+  );
+  const [victimOccupation] = useState(
+    selectedCase?.victim?.vOccupation ?? ""
+  );
+  const [victimContact] = useState(
+    selectedCase?.victim?.vContact ?? ""
+  );
+  const [victimAddress] = useState(
+    selectedCase?.victim?.vAddress ?? ""
+  );
+
+  // Suspect
+  const [suspectGender] = useState(
+    selectedCase?.suspect?.sGender ?? ""
+  );
+  const [suspectOccupation] = useState(
+    selectedCase?.suspect?.sOccupation ?? ""
+  );
+  const [suspectContact] = useState(
+    selectedCase?.suspect?.sContact ?? ""
+  );
+  const [suspectAddress] = useState(
+    selectedCase?.suspect?.sAddress ?? ""
+  );
+=======
+  const [status, setStatus] = useState(selectedCase?.status ?? "Under investigation");
+>>>>>>> 7d4ef253e9be6d0587b999692b79c2670056754c
+
+  const [suspectStatement] = useState(
+    selectedCase?.suspectStatement ?? ""
+  );
+
+  // ---------------- ACTION ----------------
   const handleSaveChanges = () => {
     if (!selectedCase?.id) return;
     updateViewCaseStatus(selectedCase.id, status);
     navigate("/view-cases");
   };
 
+<<<<<<< HEAD
+  // ---------------- UI ----------------
+  return (
+    <div className="min-h-screen flex flex-col bg-gray-100">
+      <OfficerHeader />
+
+      <div className="flex-1 flex items-center justify-center px-4 py-10">
+        <div className="w-full max-w-5xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+          
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-slate-900">
+              Case Details
+            </h1>
+            <p className="mt-2 text-slate-600">
+              Review case information and update its status.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <Field label="Case ID" value={caseId} readOnly />
+            <Field label="Complainant" value={complainant} readOnly />
+            <Field label="Assigned Officer" value={assignedOfficer} readOnly />
+            <Field label="Suspect" value={suspect} readOnly />
+
+            <Field label="Victim Occupation" value={victimOccupation} readOnly />
+            <Field label="Victim Contact" value={victimContact} readOnly />
+            <Field label="Victim Address" value={victimAddress} readOnly />
+            <Field label="Victim Gender" value={victimGender} readOnly />
+
+            <Field label="Suspect Occupation" value={suspectOccupation} readOnly />
+            <Field label="Suspect Contact" value={suspectContact} readOnly />
+            <Field label="Suspect Address" value={suspectAddress} readOnly />
+            <Field label="Suspect Gender" value={suspectGender} readOnly />
+
+            <Field
+              label="Status"
+              value={status}
+              onChange={setStatus}
+              options={CASE_STATUSES}
+            />
+          </div>
+
+          <div className="mt-6 grid gap-6">
+            <TextArea
+              label="Additional Information"
+              value={additionalInfo}
+              readOnly
+            />
+            <TextArea
+              label="Suspect Statement"
+              value={suspectStatement}
+              readOnly
+            />
+          </div>
+
+          <div className="mt-8 flex flex-wrap justify-end gap-3">
+            <button
+              type="button"
+              onClick={handleSaveChanges}
+              className="rounded-lg bg-slate-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-800"
+            >
+              Save Status
+            </button>
+
+            <button
+              type="button"
+              onClick={() => navigate("/view-cases")}
+              className="rounded-lg bg-sky-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-sky-700"
+            >
+              Back to Cases
+            </button>
+=======
   if (!selectedCase) {
     return (
       <div className="mx-auto w-full max-w-3xl rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-lg">
@@ -83,10 +225,87 @@ export default function UpdateCase() {
           </div>
           <div className="rounded-lg bg-gray-50 px-3 py-2 text-sm text-black">
             Selected: <span className="font-semibold">{selectedCase.id}</span>
+>>>>>>> 7d4ef253e9be6d0587b999692b79c2670056754c
           </div>
         </div>
       </div>
 
+<<<<<<< HEAD
+      <Footer />
+    </div>
+  );
+}
+
+// ---------------- COMPONENTS ----------------
+
+function Field({
+  label,
+  value,
+  onChange,
+  placeholder,
+  readOnly = false,
+  options,
+}) {
+  return (
+    <label className="block">
+      <span className="mb-2 block text-sm font-medium text-slate-700">
+        {label}
+      </span>
+
+      {options ? (
+        <select
+          value={value}
+          onChange={(e) => onChange?.(e.target.value)}
+          className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none"
+        >
+          {options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          type="text"
+          value={value || ""}
+          readOnly={readOnly}
+          placeholder={placeholder}
+          onChange={
+            onChange ? (e) => onChange(e.target.value) : undefined
+          }
+          className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none read-only:bg-slate-100"
+        />
+      )}
+    </label>
+  );
+}
+
+function TextArea({
+  label,
+  value,
+  onChange,
+  placeholder,
+  readOnly = false,
+}) {
+  return (
+    <label className="block">
+      <span className="mb-2 block text-sm font-medium text-slate-700">
+        {label}
+      </span>
+
+      <textarea
+        value={value || ""}
+        readOnly={readOnly}
+        placeholder={placeholder}
+        onChange={
+          onChange ? (e) => onChange(e.target.value) : undefined
+        }
+        className="min-h-32 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none read-only:bg-slate-100"
+      />
+    </label>
+  );
+}
+=======
       <div className="grid gap-6 md:grid-cols-3">
         <div className="space-y-6 md:col-span-2">
           <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-lg">
@@ -171,3 +390,4 @@ export default function UpdateCase() {
     </div>
   );
 }
+>>>>>>> 7d4ef253e9be6d0587b999692b79c2670056754c
