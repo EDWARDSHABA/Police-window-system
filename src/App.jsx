@@ -23,21 +23,12 @@ const CreateOfficer = lazy(() => import("./components/policestation/CreateOffice
 const EditOfficer = lazy(() => import("./components/policestation/editOfficer/editOfficer"));
 
 // officer
-<<<<<<< HEAD
 const OfficerDashboardPage = lazy(() => import("./pages/officer/dashboardPage"));
 const RegisterCasePage = lazy(() => import("./pages/officer/registerCasePage"));
 const UpdateCasePage = lazy(() => import("./pages/officer/updateCasePage"));
 const CreateStatementPage = lazy(() => import("./pages/officer/createStatementPage"));
 const ViewCasesPage = lazy(() => import("./pages/officer/viewCasesPage"));
 const CaseDetailsPage = lazy(() => import("./pages/officer/caseDetailsPage"));
-=======
-import OfficerDashboardPage from "./pages/officer/dashboardPage";
-import RegisterCasePage from "./pages/officer/registerCasePage";
-import CreateStatementPage from "./pages/officer/createStatementPage";
-import UpdateCasePage from "./pages/officer/updateCasePage";
-import ViewCasesPage from "./pages/officer/viewCasesPage";
-import CaseDetailsPage from "./pages/officer/caseDetailsPage";
->>>>>>> 21a473b (header)
 
 // general
 const NotificationPage = lazy(() => import("./pages/notification/notificationPage"));
@@ -86,39 +77,12 @@ function App() {
           <Route path="/view-cases" element={<ViewCasesPage />} />
           <Route path="/view-case/:id" element={<CaseDetailsPage />} />
 
-<<<<<<< HEAD
           <Route path="/notifications" element={<NotificationPage />} />
           <Route path="/about" element={<AboutUsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="*" element={<HomePage />} />
         </Routes>
       </Suspense>
-=======
-        {/* police station */}
-        <Route path="/dashboard" element={<PoliceStationDashboardPage />} />
-        <Route path="/manage-officers" element={<ManageOfficersPage />} />
-        <Route path="/assign-duties" element={<AssignDutiesPage />} />
-        <Route path="/track-cases" element={<TrackCasesPage />} />
-        <Route path="/create-officer" element={<CreateOfficer />} />
-        <Route path="/edit-officer/:id" element={<EditOfficer />} />
-
-        {/* officer */}
-        <Route path="/officer-dashboard" element={<OfficerDashboardPage />} />
-        <Route path="/register-case" element={<RegisterCasePage />} />
-        <Route path="/createStatement" element={<CreateStatementPage />} />
-        <Route path="/create-statement" element={<CreateStatementPage />} />
-        <Route path="/update-case" element={<UpdateCasePage />} />
-        <Route path="/update-case/:id" element={<UpdateCasePage />} />
-        <Route path="/view-cases" element={<ViewCasesPage />} />
-        <Route path="/view-case/:id" element={<CaseDetailsPage />} />
-
-        {/* general */}
-        <Route path="/notifications" element={<NotificationPage />} />
-        <Route path="/about" element={<AboutUsPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="*" element={<HomePage />} />
-      </Routes>
->>>>>>> 21a473b (header)
     </Router>
   );
 }
