@@ -2,7 +2,12 @@ import { useState, useMemo, useEffect } from "react";
 import axios from "axios";
 import StationHeader from "../Header/PoliceStationHeader";
 import Footer from "../../officer/footer/footer";
+<<<<<<< HEAD
 import { addAssignedDuties } from "../dutiesStorage";
+=======
+import { assignOfficerDuties } from "../../officer/Data/dutiesData";
+import { getStoredOfficers } from "../officersStorage";
+>>>>>>> 7a0791d988cc9123919b2c5479e3a8c84bc4368f
 
 export default function AssignDuties() {
   // ==========================
@@ -142,6 +147,7 @@ export default function AssignDuties() {
 
       console.log("SERVER RESPONSE:", res.data);
 
+<<<<<<< HEAD
       const selectedOfficerRecords = officers.filter((officer) =>
         selected.has(officer._id)
       );
@@ -161,6 +167,9 @@ export default function AssignDuties() {
       addAssignedDuties(createdDutyRecords);
 
       setSuccess("Duty assigned successfully & emails sent!");
+=======
+      setSuccess("Duty assigned successfully. Officers can now view it in their Duties page.");
+>>>>>>> 7a0791d988cc9123919b2c5479e3a8c84bc4368f
       setSelected(new Set());
 
       setLocation("");
