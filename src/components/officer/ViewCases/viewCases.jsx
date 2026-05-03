@@ -1,17 +1,27 @@
 import { useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { getStoredViewCases } from "../Data/viewCasesData";
 
-const CASE_TYPES = ["All", "Robbery", "Assault", "Burglary", "Fraud", "Theft", "Difiement"];
-const CASE_STATUSES = ["All", "Aquito", "Under investigation", "Closed"];
+import Header from "../Header/OfficerHeader";
+import Footer from "../../officer/footer/footer";
+
+const CASE_TYPES = ["All", "Robbery", "Assault", "Burglary", "Fraud", "Theft", "Defilement"];
+const CASE_STATUSES = ["All", "Aquitted", "Under investigation", "Closed"];
 
 export default function ViewCases() {
-  const navigate = useNavigate();
   const location = useLocation();
+
   const [cases, setCases] = useState(() => getStoredViewCases());
-  const [typeFilter, setTypeFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  const [typeFilter, setTypeFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
+
+  // =========================
+  // POPUPS
+  // =========================
+  const [viewCase, setViewCase] = useState(null);
+  const [editCase, setEditCase] = useState(null);
+  const [newStatus, setNewStatus] = useState("");
 
   useEffect(() => {
     setCases(getStoredViewCases());
@@ -22,157 +32,194 @@ export default function ViewCases() {
       const caseId = item.id ?? item.caseId ?? "";
       const caseType = item.type ?? item.typeOfCrime ?? "Other";
       const caseStatus = item.status ?? "Under investigation";
-      const caseName = item.name ?? item.victim?.vFullName ?? item.caseName ?? "Unknown";
+      const caseName =
+        item.name ?? item.victim?.vFullName ?? item.caseName ?? "Unknown";
       const assignedOfficer = item.officer ?? "Assigned Officer";
 
-      const matchesType = typeFilter === "" || typeFilter === "All" || caseType === typeFilter;
-      const matchesStatus =
-        statusFilter === "" || statusFilter === "All" || caseStatus === statusFilter;
-      const normalizedSearch = searchTerm.toLowerCase().trim();
-      const matchesSearch =
-        normalizedSearch === "" ||
-        caseId.toLowerCase().includes(normalizedSearch) ||
-        caseType.toLowerCase().includes(normalizedSearch) ||
-        caseStatus.toLowerCase().includes(normalizedSearch) ||
-        caseName.toLowerCase().includes(normalizedSearch) ||
-        assignedOfficer.toLowerCase().includes(normalizedSearch);
+      const search = searchTerm.toLowerCase();
 
-      return matchesType && matchesStatus && matchesSearch;
+      return (
+        (typeFilter === "All" || caseType === typeFilter) &&
+        (statusFilter === "All" || caseStatus === statusFilter) &&
+        (
+          caseId.toLowerCase().includes(search) ||
+          caseType.toLowerCase().includes(search) ||
+          caseStatus.toLowerCase().includes(search) ||
+          caseName.toLowerCase().includes(search) ||
+          assignedOfficer.toLowerCase().includes(search)
+        )
+      );
     });
   }, [cases, typeFilter, statusFilter, searchTerm]);
 
+  // =========================
+  // SAVE STATUS
+  // =========================
+  const handleSave = () => {
+    const updated = cases.map((c) =>
+      c.id === editCase.id ? { ...c, status: newStatus } : c
+    );
+    setCases(updated);
+    setEditCase(null);
+  };
+
   return (
-    <>
-    <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-      <div>
-        <h1 className="text-3xl font-bold text-slate-900">View Cases</h1>
-        <p className="mt-2 text-slate-600">Search, filter, and review all registered cases.</p>
-      </div>
+    <div className="flex flex-col min-h-screen bg-gray-100 relative">
 
-      <div className="grid gap-3 md:grid-cols-[240px_240px_minmax(240px,1fr)]">
-        <label className="block">
-          <span className="sr-only">Filter by case type</span>
-          <select
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
-            className={`w-full rounded-lg border border-slate-300 bg-white px-4 py-3 shadow-sm focus:border-slate-500 focus:outline-none ${
-              typeFilter === "" ? "text-slate-400" : "text-slate-900"
-            }`}
-          >
-            <option value="" disabled>
-              Filter by case type
-            </option>
-            {CASE_TYPES.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
+      <Header />
+
+      <div className="flex-1 p-6 mt-16">
+
+        {/* FILTERS */}
+        <div className="bg-white p-4 rounded shadow mb-6 flex gap-4">
+          <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} className="border p-2">
+            {CASE_TYPES.map(t => <option key={t}>{t}</option>)}
           </select>
-        </label>
 
-        <label className="block">
-          <span className="sr-only">Filter by case status</span>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className={`w-full rounded-lg border border-slate-300 bg-white px-4 py-3 shadow-sm focus:border-slate-500 focus:outline-none ${
-              statusFilter === "" ? "text-slate-400" : "text-slate-900"
-            }`}
-          >
-            <option value="" disabled>
-              Filter by case status
-            </option>
-            {CASE_STATUSES.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
+          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="border p-2">
+            {CASE_STATUSES.map(s => <option key={s}>{s}</option>)}
           </select>
-        </label>
 
-        <label className="block">
-          <span className="sr-only">Search cases</span>
           <input
+            className="border p-2 ml-auto"
+            placeholder="Search..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search cases..."
-            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-slate-500 focus:outline-none"
           />
-        </label>
-      </div>
-    </div>
+        </div>
 
-    <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs">
-          <thead className="bg-gray-100 border-b border-gray-200">
-            <tr>
-              <th className="px-3 py-2 font-semibold text-gray-900 text-sm">CASE ID</th>
-              <th className="px-3 py-2 font-semibold text-gray-900 text-sm">CASE TYPE</th>
-              <th className="px-3 py-2 font-semibold text-gray-900 text-sm">STATUS</th>
-              <th className="px-3 py-2 font-semibold text-gray-900 text-sm">NAME</th>
-              <th className="px-3 py-2 font-semibold text-gray-900 text-sm">VIEW</th>
-              <th className="px-3 py-2 font-semibold text-gray-900 text-sm">OFFICER</th>
-              <th className="px-3 py-2 font-semibold text-gray-900 text-sm">ACTION</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
-            {filteredCases.map((item) => (
-              <tr key={item.id ?? item.caseId} className="hover:bg-gray-50 text-xs">
-                {(() => {
-                  const caseId = item.id ?? item.caseId;
-                  const caseStatus = item.status ?? "Under investigation";
-                  const isClosed = caseStatus === "Closed";
-
-                  return (
-                    <>
-                <td className="px-3 py-2 font-medium text-gray-900">{item.id ?? item.caseId}</td>
-                <td className="px-3 py-2 text-gray-700">{item.type ?? item.typeOfCrime ?? "Other"}</td>
-                <td className="px-3 py-2 text-gray-700">{caseStatus}</td>
-                <td className="px-3 py-2 text-gray-700">{item.name ?? item.victim?.vFullName ?? item.caseName ?? "Unknown"}</td>
-                <td className="px-3 py-2">
-                  <button
-                    type="button"
-                    onClick={() => navigate(`/view-case/${caseId}`)}
-                    className="rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white hover:bg-blue-700"
-                    aria-label={`View case ${caseId}`}
-                  >
-                    View
-                  </button>
-                </td>
-                <td className="px-3 py-2 text-gray-700">{item.officer ?? "Assigned Officer"}</td>
-                <td className="px-3 py-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (isClosed) return;
-                      navigate(`/update-case/${caseId}`, { state: { selectedCase: item } });
-                    }}
-                    className={`px-2 py-1 rounded-full text-xs font-semibold border ${
-                      isClosed
-                        ? "bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed"
-                        : "bg-yellow-50 hover:bg-yellow-100 text-yellow-800 border-yellow-300"
-                    }`}
-                  >
-                    Edit
-                  </button>
-                </td>
-                    </>
-                  );
-                })()}
-              </tr>
-            ))}
-            {filteredCases.length === 0 && (
+        {/* TABLE */}
+        <div className="bg-white rounded shadow overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-200">
               <tr>
-                <td colSpan={7} className="px-3 py-16 text-center text-sm text-gray-500">
-                  No cases match your filters.
-                </td>
+                <th className="p-3">ID</th>
+                <th className="p-3">TYPE</th>
+                <th className="p-3">STATUS</th>
+                <th className="p-3">NAME</th>
+                <th className="p-3">VIEW</th>
+                <th className="p-3">OFFICER</th>
+                <th className="p-3">ACTION</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {filteredCases.map((item) => {
+                const isClosed = item.status === "Closed";
+
+                return (
+                  <tr key={item.id} className="border-b">
+
+                    <td className="p-3">{item.id}</td>
+                    <td className="p-3">{item.type}</td>
+                    <td className="p-3">{item.status}</td>
+                    <td className="p-3">{item.name}</td>
+
+                    <td className="p-3 text-center">
+                      <button
+                        onClick={() => setViewCase(item)}
+                        className="text-blue-600 font-bold"
+                      >
+                        View
+                      </button>
+                    </td>
+
+                    <td className="p-3">{item.officer}</td>
+
+                    <td className="p-3">
+                      <button
+                        disabled={isClosed}
+                        onClick={() => {
+                          if (isClosed) {
+                            alert("Case is CLOSED and cannot be edited.");
+                            return;
+                          }
+                          setEditCase(item);
+                          setNewStatus(item.status);
+                        }}
+                        className={`px-3 py-1 rounded text-xs ${
+                          isClosed ? "bg-gray-300" : "bg-yellow-200"
+                        }`}
+                      >
+                        Edit
+                      </button>
+                    </td>
+
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      {/* =========================
+          VIEW POPUP (SOFT OVERLAY)
+      ========================= */}
+      {viewCase && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+          <div className="bg-white p-6 rounded w-[500px] shadow-2xl">
+            <h2 className="text-xl font-bold mb-3">Case Details</h2>
+
+            <p><b>ID:</b> {viewCase.id}</p>
+            <p><b>Type:</b> {viewCase.type}</p>
+            <p><b>Status:</b> {viewCase.status}</p>
+            <p><b>Name:</b> {viewCase.name}</p>
+            <p><b>Officer:</b> {viewCase.officer}</p>
+            <p className="mt-2"><b>Description:</b> {viewCase.description}</p>
+
+            <button
+              onClick={() => setViewCase(null)}
+              className="mt-4 bg-gray-300 px-4 py-2 rounded w-full"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* =========================
+          EDIT POPUP (SOFT OVERLAY)
+      ========================= */}
+      {editCase && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+          <div className="bg-white p-6 rounded w-[400px] shadow-2xl">
+
+            <h2 className="text-xl font-bold mb-3">Update Status</h2>
+
+            <p className="mb-2"><b>ID:</b> {editCase.id}</p>
+
+            <select
+              value={newStatus}
+              onChange={(e) => setNewStatus(e.target.value)}
+              className="border p-2 w-full"
+            >
+              {CASE_STATUSES.map((s) => (
+                <option key={s}>{s}</option>
+              ))}
+            </select>
+
+            <div className="flex gap-2 mt-4">
+              <button
+                onClick={handleSave}
+                className="bg-blue-600 text-white px-4 py-2 rounded w-full"
+              >
+                Save
+              </button>
+
+              <button
+                onClick={() => setEditCase(null)}
+                className="bg-gray-300 px-4 py-2 rounded w-full"
+              >
+                Cancel
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      <Footer />
     </div>
-    </>
   );
 }
