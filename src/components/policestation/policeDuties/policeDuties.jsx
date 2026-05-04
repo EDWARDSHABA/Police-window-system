@@ -58,23 +58,10 @@ export default function PoliceDuties() {
 
       <main className="px-4 pb-14 pt-28 sm:px-6 lg:px-10">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-6 flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => navigate("/dashboard")}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-sm text-slate-700 transition hover:bg-slate-100"
-              aria-label="Back to dashboard"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </button>
+          
 
-            <div className="h-9 min-w-[190px] rounded-sm bg-sky-500 px-4 text-white shadow-sm">
-              <span className="flex h-full items-center text-base font-medium">
-                Assigned Duties Table
-              </span>
-            </div>
-
-            <div className="h-px flex-1 bg-sky-200" />
+          <div className="mb-6 mt-1 rounded bg-blue-500 p-4 text-white">
+            Assigned Duties Table
           </div>
 
           <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">

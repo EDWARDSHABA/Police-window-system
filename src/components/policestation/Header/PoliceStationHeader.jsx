@@ -1,10 +1,26 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import logo from "../../../assets/logo/logo.jpeg";
 import notificationIcon from "../../../assets/icons/notification.png";
 import profileIcon from "../../../assets/icons/profile.png";
 
 export default function StationHeader({ pageTitle = "" }) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const pathname = location.pathname;
+
+  const isActive = (section) => {
+    if (section === "dashboard") return pathname === "/dashboard";
+    if (section === "officers") {
+      return pathname === "/manage-officers" || pathname === "/create-officer" || pathname.startsWith("/edit-officer/");
+    }
+    if (section === "duties") return pathname === "/assign-duties" || pathname === "/assign-duties/new";
+    if (section === "view-duties") return pathname === "/view-duties";
+    if (section === "cases") return pathname === "/track-cases";
+    return false;
+  };
+
+  const navClassName = (section) =>
+    `underline-offset-8 transition hover:underline ${isActive(section) ? "underline decoration-2" : ""}`;
 
   return (
     <header className="fixed top-0 left-0 w-full bg-yellow-700 text-white shadow-md z-50">
@@ -25,23 +41,23 @@ export default function StationHeader({ pageTitle = "" }) {
         {/* NAV */}
         <nav className="flex gap-8 text-sm font-medium">
 
-          <button onClick={() => navigate("/dashboard")} className="hover:underline">
+          <button onClick={() => navigate("/dashboard")} className={navClassName("dashboard")}>
             Dashboard
           </button>
 
-          <button onClick={() => navigate("/manage-officers")} className="hover:underline">
+          <button onClick={() => navigate("/manage-officers")} className={navClassName("officers")}>
             Officers
           </button>
 
-          <button onClick={() => navigate("/assign-duties")} className="hover:underline">
+          <button onClick={() => navigate("/assign-duties")} className={navClassName("duties")}>
             Duties
           </button>
 
-          <button onClick={() => navigate("/view-duties")} className="hover:underline">
+          <button onClick={() => navigate("/view-duties")} className={navClassName("view-duties")}>
             View Duties
           </button>
 
-          <button onClick={() => navigate("/track-cases")} className="hover:underline">
+          <button onClick={() => navigate("/track-cases")} className={navClassName("cases")}>
             Cases
           </button>
            

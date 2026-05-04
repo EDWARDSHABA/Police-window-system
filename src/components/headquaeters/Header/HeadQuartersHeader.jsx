@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import logo from "../../../assets/logo/logo.jpeg";
 import notificationIcon from "../../../assets/icons/notification.png";
@@ -6,6 +6,8 @@ import profileIcon from "../../../assets/icons/profile.png";
 
 export default function HeadquartersHeader() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const pathname = location.pathname;
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef();
 
@@ -18,6 +20,19 @@ export default function HeadquartersHeader() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const isActive = (section) => {
+    if (section === "dashboard") return pathname === "/headquarters";
+    if (section === "stations") {
+      return pathname === "/headquarters/police-stations" || pathname === "/headquarters/create-police-station" || pathname === "/police-stations";
+    }
+    if (section === "accounts") return pathname === "/manage-accounts" || pathname.startsWith("/manage-accounts/edit/") || pathname === "/headquarters/create-admin";
+    if (section === "about") return pathname === "/about";
+    return false;
+  };
+
+  const navClassName = (section) =>
+    `underline-offset-8 transition hover:underline ${isActive(section) ? "underline decoration-2" : ""}`;
 
   return (
     <header className="fixed top-0 left-0 w-full bg-yellow-700 text-white shadow-md z-50">
@@ -39,19 +54,19 @@ export default function HeadquartersHeader() {
 
         {/* CENTER: NAV */}
         <nav className="flex gap-10 text-sm font-medium mx-10 flex-1 justify-center">
-          <button onClick={() => navigate("/headquarters")} className="hover:underline">
+          <button onClick={() => navigate("/headquarters")} className={navClassName("dashboard")}>
             Dashboard
           </button>
 
-          <button onClick={() => navigate("/headquarters/police-stations")} className="hover:underline">
+          <button onClick={() => navigate("/headquarters/police-stations")} className={navClassName("stations")}>
             Stations
           </button>
 
-           <button onClick={() => navigate("/manage-accounts")} className="hover:underline">
+           <button onClick={() => navigate("/manage-accounts")} className={navClassName("accounts")}>
             Manage Accounts
           </button>
 
-          <button onClick={() => navigate("/about")} className="hover:underline">
+          <button onClick={() => navigate("/about")} className={navClassName("about")}>
             About Us
           </button>
         </nav>
