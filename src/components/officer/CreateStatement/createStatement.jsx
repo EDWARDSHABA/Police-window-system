@@ -53,7 +53,7 @@ export default function RulesPolicies() {
       <div className="max-w-4xl mx-auto px-4">
 
         {/* HEADER NOTE */}
-        <div className="bg-blue-300 mt-14 text-white px-6 py-3 rounded-lg shadow mb-6 text-center">
+        <div className="bg-blue-500 mt-15 text-white px-6 py-3 rounded-lg shadow mb-6 text-center">
           Ignorance of the rules is not an excuse for non-compliance.
         </div>
 
