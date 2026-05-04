@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import logo from "../../../assets/logo/logo.jpeg";
 import notificationIcon from "../../../assets/icons/notification.png";
 import profileIcon from "../../../assets/icons/profile.png";
@@ -7,6 +7,8 @@ import profileIcon from "../../../assets/icons/profile.png";
 export default function Header() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const pathname = location.pathname;
 
   const handleLogout = () => {
     setProfileMenuOpen(false);
@@ -30,6 +32,28 @@ export default function Header() {
     navigate("/officer-help");
   };
 
+  const isActive = (section) => {
+    if (section === "dashboard") return pathname === "/officer-dashboard";
+    if (section === "register") return pathname === "/register-case";
+    if (section === "update") return pathname === "/update-case" || pathname.startsWith("/update-case/");
+    if (section === "view") return pathname === "/view-cases" || pathname.startsWith("/view-case/");
+    if (section === "duties") {
+      return (
+        pathname === "/officer-duties" ||
+        pathname === "/duties" ||
+        pathname === "/duty-assignment" ||
+        pathname === "/duty-assignments"
+      );
+    }
+    if (section === "help") {
+      return pathname === "/officer-help" || pathname === "/help" || pathname === "/create-statement" || pathname === "/createStatement";
+    }
+    return false;
+  };
+
+  const navClassName = (section) =>
+    `underline-offset-8 transition hover:underline ${isActive(section) ? "underline decoration-2" : ""}`;
+
   return (
     <header className="fixed top-0 left-0 w-full bg-yellow-700 text-white shadow-md z-50">
 
@@ -52,27 +76,27 @@ export default function Header() {
         {/* NAVIGATION */}
         <nav className="hidden md:flex gap-6 text-sm font-medium">
 
-          <button type="button" onClick={() => navigate("/officer-dashboard")} className="hover:underline">
+          <button type="button" onClick={() => navigate("/officer-dashboard")} className={navClassName("dashboard")}>
             Dashboard
           </button>
 
-          <button type="button" onClick={() => navigate("/register-case")} className="hover:underline">
+          <button type="button" onClick={() => navigate("/register-case")} className={navClassName("register")}>
             Register Case
           </button>
 
-          <button type="button" onClick={handleUpdateCase} className="hover:underline">
+          <button type="button" onClick={handleUpdateCase} className={navClassName("update")}>
             Case Update
           </button>
 
-          <button type="button" onClick={() => navigate("/view-cases")} className="hover:underline">
+          <button type="button" onClick={() => navigate("/view-cases")} className={navClassName("view")}>
             View Cases
           </button>
 
-          <button type="button" onClick={() => navigate("/officer-duties")} className="hover:underline">
+          <button type="button" onClick={() => navigate("/officer-duties")} className={navClassName("duties")}>
             Duties
           </button>
 
-          <button type="button" onClick={handleHelp} className="hover:underline cursor-pointer">
+          <button type="button" onClick={handleHelp} className={`${navClassName("help")} cursor-pointer`}>
             Help
           </button>
 
