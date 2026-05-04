@@ -1,41 +1,31 @@
-import { Suspense, lazy } from "react";
+import { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
-const HomePage = lazy(() => import("./pages/home/homePage"));
-const SignInPage = lazy(() => import("./pages/authentication/signInPage"));
-
-// headquarters
-const HeadquartersPage = lazy(() => import("./pages/headquarters/dashboardPage"));
-const CreatePoliceStationAdminPage = lazy(() =>
-  import("./pages/headquarters/createPoliceStationAdminPage")
-);
-const PoliceStationPage = lazy(() => import("./pages/headquarters/createPoliceStationPage"));
-const PolicestationsPage = lazy(() => import("./pages/headquarters/policestationsPage"));
-const ManageAccountsPage = lazy(() => import("./pages/headquarters/manageAccountsPage"));
-const EditAccountPage = lazy(() => import("./pages/headquarters/editAccountPage"));
-
-// police station
-const PoliceStationDashboardPage = lazy(() => import("./pages/policestation/DashboardPage"));
-const ManageOfficersPage = lazy(() => import("./pages/policestation/manageOfficersPage"));
-const AssignDutiesPage = lazy(() => import("./pages/policestation/assignDutiesPage"));
-const ViewDutiesPage = lazy(() => import("./pages/policestation/viewDutiesPage"));
-const TrackCasesPage = lazy(() => import("./pages/policestation/trackCasesPage"));
-const CreateOfficer = lazy(() => import("./components/policestation/CreateOfficer/createOfficer"));
-const EditOfficer = lazy(() => import("./components/policestation/editOfficer/editOfficer"));
-
-// officer
-const OfficerDashboardPage = lazy(() => import("./pages/officer/dashboardPage"));
-const RegisterCasePage = lazy(() => import("./pages/officer/registerCasePage"));
-const UpdateCasePage = lazy(() => import("./pages/officer/updateCasePage"));
-const CreateStatementPage = lazy(() => import("./pages/officer/createStatementPage"));
-const ViewCasesPage = lazy(() => import("./pages/officer/viewCasesPage"));
-const CaseDetailsPage = lazy(() => import("./pages/officer/caseDetailsPage"));
-const DutiesPage = lazy(() => import("./pages/officer/dutiesPage"));
-
-// general
-const NotificationPage = lazy(() => import("./pages/notification/notificationPage"));
-const AboutUsPage = lazy(() => import("./pages/aboutus/aboutUsPage"));
-const ProfilePage = lazy(() => import("./pages/profile/profilePage"));
+import CreateOfficer from "./components/policestation/CreateOfficer/createOfficer";
+import EditOfficer from "./components/policestation/editOfficer/editOfficer";
+import AboutUsPage from "./pages/aboutus/aboutUsPage";
+import SignInPage from "./pages/authentication/signInPage";
+import HeadquartersPage from "./pages/headquarters/dashboardPage";
+import EditAccountPage from "./pages/headquarters/editAccountPage";
+import ManageAccountsPage from "./pages/headquarters/manageAccountsPage";
+import PolicestationsPage from "./pages/headquarters/policestationsPage";
+import CreatePoliceStationAdminPage from "./pages/headquarters/createPoliceStationAdminPage";
+import PoliceStationPage from "./pages/headquarters/createPoliceStationPage";
+import HomePage from "./pages/home/homePage";
+import NotificationPage from "./pages/notification/notificationPage";
+import DutiesPage from "./pages/officer/dutiesPage";
+import CaseDetailsPage from "./pages/officer/caseDetailsPage";
+import CreateStatementPage from "./pages/officer/createStatementPage";
+import OfficerDashboardPage from "./pages/officer/dashboardPage";
+import RegisterCasePage from "./pages/officer/registerCasePage";
+import UpdateCasePage from "./pages/officer/updateCasePage";
+import ViewCasesPage from "./pages/officer/viewCasesPage";
+import AssignDutiesPage from "./pages/policestation/assignDutiesPage";
+import PoliceStationDashboardPage from "./pages/policestation/DashboardPage";
+import ManageOfficersPage from "./pages/policestation/manageOfficersPage";
+import PoliceDutiesPage from "./pages/policestation/policeDutiesPage";
+import TrackCasesPage from "./pages/policestation/trackCasesPage";
+import ViewDutiesPage from "./pages/policestation/viewDutiesPage";
+import ProfilePage from "./pages/profile/profilePage";
 
 function LoadingScreen() {
   return (
@@ -68,7 +58,8 @@ function App() {
 
           <Route path="/dashboard" element={<PoliceStationDashboardPage />} />
           <Route path="/manage-officers" element={<ManageOfficersPage />} />
-          <Route path="/assign-duties" element={<AssignDutiesPage />} />
+          <Route path="/assign-duties" element={<PoliceDutiesPage />} />
+          <Route path="/assign-duties/new" element={<AssignDutiesPage />} />
           <Route path="/view-duties" element={<ViewDutiesPage />} />
           <Route path="/track-cases" element={<TrackCasesPage />} />
           <Route path="/create-officer" element={<CreateOfficer />} />

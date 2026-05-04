@@ -1,8 +1,8 @@
 import React from "react";
 import PoliceDuties from "../../components/policestation/policeDuties/policeDuties";
 
-function ViewDutiesPage() {
+function PoliceDutiesPage() {
   return <PoliceDuties />;
 }
 
-export default ViewDutiesPage;
+export default PoliceDutiesPage;
