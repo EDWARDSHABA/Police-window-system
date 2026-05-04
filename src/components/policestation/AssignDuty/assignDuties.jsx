@@ -145,7 +145,7 @@ export default function AssignDuties() {
       console.log("SERVER RESPONSE:", res.data);
 
       const selectedOfficerRecords = officers.filter((officer) =>
-        selected.has(officer._id)
+        selected.has(getOfficerKey(officer))
       );
 
       const createdDutyRecords = selectedOfficerRecords.map((officer) => ({
@@ -231,8 +231,8 @@ export default function AssignDuties() {
               <thead>
                 <tr className="border-b bg-gray-100">
                   <th className="p-2">ID</th>
-                  <th>Name</th>
-                  <th>
+                  <th className="p-2">Name</th>
+                  <th className="p-2">
                     <input
                       type="checkbox"
                       checked={allChecked}
@@ -303,6 +303,7 @@ export default function AssignDuties() {
             <option>Traffic</option>
             <option>Investigation</option>
             <option>Invigilation</option>
+            <option>At the station</option>
           </select>
 
           <input
