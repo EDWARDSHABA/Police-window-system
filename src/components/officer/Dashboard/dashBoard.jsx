@@ -64,9 +64,9 @@ export default function PoliceStationDashboard() {
   return (
     <div className="h-screen flex flex-col bg-gray-100">
       <Header />
-      <div className="bg-blue-300 mt-20 text-white px-6 py-3 rounded-lg shadow mb-6">
+      <div className="bg-blue-500 mt-20 text-white px-6 py-3 rounded-lg shadow mb-6">
         <div className="flex items-center gap-3">
-          CHINAMWALI POLICE STATION DASHBOARD
+          CHINAMWALI POLICE STATION
           <p className="text-sm text-gray-500">
             Station Code: {policeStation.code}
           </p>
