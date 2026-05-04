@@ -68,7 +68,37 @@ export default function ViewCases() {
 
       <Header />
 
-      <div className="flex-1 p-6 mt-16">
+      <div className="flex-1 p-6">
+        <div className="mb-6 rounded-lg bg-blue-500 px-6 py-3 text-white shadow">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-100">
+                Case Records
+              </p>
+              <h1 className="mt-1 text-xl font-bold">View Registered Cases</h1>
+              <p className="mt-1 max-w-2xl text-sm text-sky-50">
+                Review reported cases, track their status, and inspect assigned officers from one central table.
+              </p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="rounded-lg bg-white/10 px-4 py-2.5">
+                <p className="text-[11px] uppercase tracking-[0.18em] text-sky-100">Total Cases</p>
+                <p className="mt-1 text-base font-bold">{cases.length}</p>
+              </div>
+              <div className="rounded-lg bg-white/10 px-4 py-2.5">
+                <p className="text-[11px] uppercase tracking-[0.18em] text-sky-100">Visible Now</p>
+                <p className="mt-1 text-base font-bold">{filteredCases.length}</p>
+              </div>
+              <div className="rounded-lg bg-white/10 px-4 py-2.5">
+                <p className="text-[11px] uppercase tracking-[0.18em] text-sky-100">Open Cases</p>
+                <p className="mt-1 text-base font-bold">
+                  {cases.filter((item) => (item.status ?? "Under investigation") !== "Closed").length}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* FILTERS */}
         <div className="bg-white p-4 rounded shadow mb-6 flex gap-4">
@@ -90,16 +120,16 @@ export default function ViewCases() {
 
         {/* TABLE */}
         <div className="bg-white rounded shadow overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full table-fixed text-sm">
             <thead className="bg-gray-200">
               <tr>
-                <th className="p-3">ID</th>
-                <th className="p-3">TYPE</th>
-                <th className="p-3">STATUS</th>
-                <th className="p-3">NAME</th>
-                <th className="p-3">VIEW</th>
-                <th className="p-3">OFFICER</th>
-                <th className="p-3">ACTION</th>
+                <th className="px-4 py-3 text-left font-semibold">ID</th>
+                <th className="px-4 py-3 text-left font-semibold">TYPE</th>
+                <th className="px-4 py-3 text-left font-semibold">STATUS</th>
+                <th className="px-4 py-3 text-left font-semibold">NAME</th>
+                <th className="px-4 py-3 text-center font-semibold">VIEW</th>
+                <th className="px-4 py-3 text-left font-semibold">OFFICER</th>
+                <th className="px-4 py-3 text-center font-semibold">ACTION</th>
               </tr>
             </thead>
 
@@ -110,12 +140,12 @@ export default function ViewCases() {
                 return (
                   <tr key={item.id} className="border-b">
 
-                    <td className="p-3">{item.id}</td>
-                    <td className="p-3">{item.type}</td>
-                    <td className="p-3">{item.status}</td>
-                    <td className="p-3">{item.name}</td>
+                    <td className="px-4 py-3 text-left">{item.id}</td>
+                    <td className="px-4 py-3 text-left">{item.type}</td>
+                    <td className="px-4 py-3 text-left">{item.status}</td>
+                    <td className="px-4 py-3 text-left">{item.name}</td>
 
-                    <td className="p-3 text-center">
+                    <td className="px-4 py-3 text-center">
                       <button
                         onClick={() => setViewCase(item)}
                         className="text-blue-600 font-bold"
@@ -124,9 +154,9 @@ export default function ViewCases() {
                       </button>
                     </td>
 
-                    <td className="p-3">{item.officer}</td>
+                    <td className="px-4 py-3 text-left">{item.officer}</td>
 
-                    <td className="p-3">
+                    <td className="px-4 py-3 text-center">
                       <button
                         disabled={isClosed}
                         onClick={() => {

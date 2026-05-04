@@ -84,9 +84,7 @@ export default function Header() {
             Register Case
           </button>
 
-          <button type="button" onClick={handleUpdateCase} className={navClassName("update")}>
-            Case Update
-          </button>
+          
 
           <button type="button" onClick={() => navigate("/view-cases")} className={navClassName("view")}>
             View Cases
