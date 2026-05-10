@@ -247,11 +247,14 @@ export default function AssignDuties() {
                   <th className="p-2 text-center">ID</th>
                   <th className="p-2 text-center">Name</th>
                   <th className="p-2 text-center">
-                    <input
-                      type="checkbox"
-                      checked={allChecked}
-                      onChange={toggleAll}
-                    />
+                    <div className="inline-flex items-center justify-center gap-2">
+                      <span>Select officer</span>
+                      <input
+                        type="checkbox"
+                        checked={allChecked}
+                        onChange={toggleAll}
+                      />
+                    </div>
                   </th>
                 </tr>
               </thead>
