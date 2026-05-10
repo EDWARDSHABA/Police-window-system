@@ -235,17 +235,18 @@ export default function AssignDuties() {
   // UI
   // ==========================
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="min-h-screen w-full bg-gray-100">
       <StationHeader />
-      <div className="mt-10 bg-blue-500 text-white p-4 rounded mb-6">
-        Assign Duties for all officers
-      </div>
+      <main className="w-full px-4 pb-4 pt-10">
+        <div className="bg-blue-500 text-white p-4 rounded mb-6">
+          Assign Duties for all officers
+        </div>
 
-      <h2 className="text-lg font-bold mb-4">
-        Assign Duties
-      </h2>
+        <h2 className="text-lg font-bold mb-4">
+          Assign Duties
+        </h2>
 
-      <div className="flex gap-4">
+        <div className="flex gap-4">
 
         {/* LEFT */}
         <div className="flex-1">
@@ -421,7 +422,8 @@ export default function AssignDuties() {
             {loadingSubmit ? "Assigning..." : "Submit Duty"}
           </button>
         </div>
-      </div>
+        </div>
+      </main>
 
       <Footer />
     </div>
