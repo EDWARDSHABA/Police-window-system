@@ -53,9 +53,7 @@ export default function StationHeader({ pageTitle = "" }) {
             Duties
           </button>
 
-          <button onClick={() => navigate("/view-duties")} className={navClassName("view-duties")}>
-            View Duties
-          </button>
+          
 
           <button onClick={() => navigate("/track-cases")} className={navClassName("cases")}>
             Cases
