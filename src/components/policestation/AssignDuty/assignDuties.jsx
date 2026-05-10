@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import axios from "axios";
 import StationHeader from "../Header/PoliceStationHeader";
 import Footer from "../../officer/footer/footer";
-import { addAssignedDuties } from "../dutiesStorage";
+import { addAssignedDuties, getActiveDutyByOfficerId } from "../dutiesStorage";
 import { assignOfficerDuties } from "../../officer/Data/dutiesData";
 import { getStoredOfficers } from "../officersStorage";
 
@@ -14,8 +14,9 @@ export default function AssignDuties() {
   const [loadingOfficers, setLoadingOfficers] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
 
-  const [week] = useState("April 10 - April 17, 2026");
-  const [specifyTime, setSpecifyTime] = useState("");
+  const [week] = useState("Current week");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [shift, setShift] = useState("All Shifts");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState(new Set());
@@ -26,15 +27,11 @@ export default function AssignDuties() {
   const [success, setSuccess] = useState("");
 
   const SHIFTS = ["All Shifts", "Day", "Evening", "Night"];
-  const TIME_SLOTS = [
-    "00:00 - 04:00",
-    "04:00 - 08:00",
-    "08:00 - 12:00",
-    "12:00 - 16:00",
-    "16:00 - 20:00",
-    "20:00 - 24:00",
-  ];
   const getOfficerKey = (officer) => officer?._id ?? officer?.id ?? officer?.officerId;
+  const getOfficerName = (officer) =>
+    officer?.name ?? `${officer?.firstName ?? ""} ${officer?.lastName ?? ""}`.trim();
+  const getOfficerBadge = (officer) => officer?.officerId ?? officer?.id ?? getOfficerKey(officer);
+  const getDateKey = () => new Date().toISOString().slice(0, 10);
 
   // ==========================
   // FETCH OFFICERS FROM BACKEND
@@ -67,7 +64,11 @@ export default function AssignDuties() {
     const q = search.toLowerCase();
 
     return officers.filter((o) => {
-      const fullName = (o.name || `${o.firstName ?? ""} ${o.lastName ?? ""}`).toLowerCase();
+      if (getActiveDutyByOfficerId(getOfficerKey(o))) {
+        return false;
+      }
+
+      const fullName = getOfficerName(o).toLowerCase();
 
       const id = (o.officerId || o.id || "").toLowerCase();
 
@@ -79,6 +80,12 @@ export default function AssignDuties() {
   // SELECT TOGGLE
   // ==========================
   const toggleOfficer = (id) => {
+    if (getActiveDutyByOfficerId(id)) {
+      setError("This officer already has an active duty. Cancel it or wait until it expires.");
+      setSuccess("");
+      return;
+    }
+
     setSelected((prev) => {
       const next = new Set(prev);
       next.has(id) ? next.delete(id) : next.add(id);
@@ -95,7 +102,11 @@ export default function AssignDuties() {
 
   const toggleAll = (e) => {
     if (e.target.checked) {
-      setSelected(new Set(filtered.map(getOfficerKey).filter(Boolean)));
+      setSelected(
+        new Set(
+          filtered.map(getOfficerKey).filter(Boolean)
+        )
+      );
     } else {
       setSelected(new Set());
     }
@@ -117,12 +128,30 @@ export default function AssignDuties() {
       return setError("Please select duty type.");
     }
 
+    if (!startTime || !endTime) {
+      return setError("Please select the allocation start and end hour.");
+    }
+
     setError("");
     setLoadingSubmit(true);
 
     const selectedOfficers = officers.filter((officer) =>
       selected.has(getOfficerKey(officer))
     );
+    const busyOfficers = selectedOfficers.filter((officer) =>
+      getActiveDutyByOfficerId(getOfficerKey(officer))
+    );
+
+    if (busyOfficers.length > 0) {
+      setLoadingSubmit(false);
+      return setError(
+        `Cannot assign duty. Already active: ${busyOfficers.map(getOfficerName).join(", ")}.`
+      );
+    }
+
+    const allocationDate = getDateKey();
+    const specifyTime = `${startTime} - ${endTime}`;
+    const assignmentId = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
     assignOfficerDuties({
       officers: selectedOfficers,
@@ -130,17 +159,42 @@ export default function AssignDuties() {
       location,
       week,
       specifyTime,
+      startTime,
+      endTime,
+      allocationDate,
       shift,
       taskDescription,
+      assignmentId,
     });
+
+    const createdDutyRecords = selectedOfficers.map((officer) => ({
+      assignmentId,
+      id: getOfficerKey(officer),
+      officer: getOfficerName(officer),
+      location,
+      dutyType,
+      shift: specifyTime,
+      specifyTime,
+      startTime,
+      endTime,
+      allocationDate,
+      week,
+      taskDescription,
+      createdAt: new Date().toISOString(),
+    }));
+
+    addAssignedDuties(createdDutyRecords);
 
     try {
       const payload = {
-        officerIds: Array.from(selected), // 🔥 IMPORTANT FIX
+        officerIds: Array.from(selected),
         dutyType,
         location,
         week,
         specifyTime,
+        startTime,
+        endTime,
+        allocationDate,
         shift,
         taskDescription,
       };
@@ -152,36 +206,26 @@ export default function AssignDuties() {
 
       console.log("SERVER RESPONSE:", res.data);
 
-      const selectedOfficerRecords = officers.filter((officer) =>
-        selected.has(getOfficerKey(officer))
-      );
-
-      const createdDutyRecords = selectedOfficerRecords.map((officer) => ({
-        id: officer.officerId,
-        officer: `${officer.firstName} ${officer.lastName}`,
-        location,
-        dutyType,
-        shift: specifyTime || shift,
-        specifyTime,
-        week,
-        taskDescription,
-        createdAt: new Date().toISOString(),
-      }));
-
-      addAssignedDuties(createdDutyRecords);
-
       setSuccess("Duty assigned successfully & emails sent!");
       setSelected(new Set());
 
       setLocation("");
       setDutyType("");
       setTaskDescription("");
-      setSpecifyTime("");
+      setStartTime("");
+      setEndTime("");
       setShift("All Shifts");
     } catch (err) {
       console.error(err);
       setSuccess("Duty saved locally. Officers can now view it in their Duties page.");
       setError(err.response?.data?.message || "Backend unavailable; email was not sent.");
+      setSelected(new Set());
+      setLocation("");
+      setDutyType("");
+      setTaskDescription("");
+      setStartTime("");
+      setEndTime("");
+      setShift("All Shifts");
     } finally {
       setLoadingSubmit(false);
     }
@@ -225,18 +269,30 @@ export default function AssignDuties() {
               ))}
             </select>
 
-            <select
-              value={specifyTime}
-              onChange={(e) => setSpecifyTime(e.target.value)}
-              className="border p-1 text-sm"
-            >
-              <option value="">Allocation time</option>
-              {TIME_SLOTS.map((slot) => (
-                <option key={slot} value={slot}>
-                  {slot}
-                </option>
-              ))}
-            </select>
+            <div className="flex items-center gap-2 text-sm">
+              <label className="flex items-center gap-1 text-slate-700">
+                <span>Start time</span>
+                <input
+                  type="time"
+                  step="3600"
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  aria-label="Allocation start hour"
+                  className="border p-1 text-sm"
+                />
+              </label>
+              <label className="flex items-center gap-1 text-slate-700">
+                <span>End time</span>
+                <input
+                  type="time"
+                  step="3600"
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                  aria-label="Allocation end hour"
+                  className="border p-1 text-sm"
+                />
+              </label>
+            </div>
           </div>
 
           {/* TABLE */}
@@ -244,6 +300,7 @@ export default function AssignDuties() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b bg-gray-100">
+                  <th className="p-2 text-center">No.</th>
                   <th className="p-2 text-center">ID</th>
                   <th className="p-2 text-center">Name</th>
                   <th className="p-2 text-center">
@@ -262,41 +319,48 @@ export default function AssignDuties() {
               <tbody>
                 {loadingOfficers ? (
                   <tr>
-                    <td colSpan="3" className="p-3 text-center">
+                    <td colSpan="4" className="p-3 text-center">
                       Loading...
                     </td>
                   </tr>
                 ) : filtered.length === 0 ? (
                   <tr>
-                    <td colSpan="3" className="p-3 text-center">
+                    <td colSpan="4" className="p-3 text-center">
                       No officers found
                     </td>
                   </tr>
                 ) : (
-                  filtered.map((o) => (
-                    <tr
-                      key={getOfficerKey(o)}
-                      className="border-b cursor-pointer hover:bg-gray-50"
-                      onClick={() => toggleOfficer(getOfficerKey(o))}
-                    >
-                      <td className="p-2 text-center text-xs">
-                        {o.officerId ?? o.id}
-                      </td>
+                  filtered.map((o, index) => {
+                    const officerKey = getOfficerKey(o);
+                    return (
+                      <tr
+                        key={officerKey}
+                        className="border-b cursor-pointer hover:bg-gray-50"
+                        onClick={() => toggleOfficer(officerKey)}
+                      >
+                        <td className="p-2 text-center text-xs">
+                          {index + 1}
+                        </td>
 
-                      <td className="p-2 text-center">
-                        {o.name ?? `${o.firstName ?? ""} ${o.lastName ?? ""}`}
-                      </td>
+                        <td className="p-2 text-center text-xs">
+                          {getOfficerBadge(o)}
+                        </td>
 
-                      <td className="p-2 text-center">
-                        <input
-                          type="checkbox"
-                          checked={selected.has(getOfficerKey(o))}
-                          onChange={() => toggleOfficer(getOfficerKey(o))}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      </td>
-                    </tr>
-                  ))
+                        <td className="p-2 text-center">
+                          <span>{getOfficerName(o)}</span>
+                        </td>
+
+                        <td className="p-2 text-center">
+                          <input
+                            type="checkbox"
+                            checked={selected.has(officerKey)}
+                            onChange={() => toggleOfficer(officerKey)}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>
