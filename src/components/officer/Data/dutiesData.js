@@ -76,18 +76,23 @@ export function assignOfficerDuties({
   location,
   week,
   specifyTime,
+  startTime,
+  endTime,
+  allocationDate,
   shift,
   taskDescription,
+  assignmentId,
 }) {
   const existingDuties = getStoredOfficerDuties();
   const assignedAt = new Date().toISOString();
-  const startDate = "2026-04-10";
+  const startDate = allocationDate ?? "2026-04-10";
 
   const newDuties = officers.map((officer) => {
     const normalizedOfficer = normalizeOfficer(officer);
 
     return {
-      id: `${normalizedOfficer.id}-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      id: `${assignmentId ?? Date.now()}-${normalizedOfficer.id}`,
+      assignmentId: assignmentId ?? `${normalizedOfficer.id}-${Date.now()}`,
       officerId: normalizedOfficer.id,
       officerBadge: normalizedOfficer.officerId,
       officerName: normalizedOfficer.name,
@@ -96,6 +101,9 @@ export function assignOfficerDuties({
       week,
       startDate,
       time: specifyTime || shift || "Time not specified",
+      startTime: startTime ?? "",
+      endTime: endTime ?? "",
+      allocationDate: startDate,
       shift: shift || "All Shifts",
       taskDescription: taskDescription || "No task description provided.",
       assignedAt,
@@ -108,6 +116,17 @@ export function assignOfficerDuties({
 
 export function getDutiesForOfficer(officerId) {
   return getStoredOfficerDuties().filter((duty) => duty.officerId === officerId);
+}
+
+export function removeOfficerDutyAssignment(assignmentId, officerId) {
+  const nextDuties = getStoredOfficerDuties().filter((duty) => {
+    const matchesAssignment = assignmentId ? duty.assignmentId === assignmentId || !duty.assignmentId : true;
+    const matchesOfficer = officerId ? duty.officerId === officerId : true;
+    return !(matchesAssignment && matchesOfficer);
+  });
+
+  saveOfficerDuties(nextDuties);
+  return nextDuties;
 }
 
 export function getCalendarMonth(duties) {
