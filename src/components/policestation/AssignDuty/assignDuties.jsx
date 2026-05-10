@@ -26,6 +26,14 @@ export default function AssignDuties() {
   const [success, setSuccess] = useState("");
 
   const SHIFTS = ["All Shifts", "Day", "Evening", "Night"];
+  const TIME_SLOTS = [
+    "00:00 - 04:00",
+    "04:00 - 08:00",
+    "08:00 - 12:00",
+    "12:00 - 16:00",
+    "16:00 - 20:00",
+    "20:00 - 24:00",
+  ];
   const getOfficerKey = (officer) => officer?._id ?? officer?.id ?? officer?.officerId;
 
   // ==========================
@@ -217,12 +225,18 @@ export default function AssignDuties() {
               ))}
             </select>
 
-            <input
-              placeholder="Time (e.g 08:00 - 17:00)"
+            <select
               value={specifyTime}
               onChange={(e) => setSpecifyTime(e.target.value)}
               className="border p-1 text-sm"
-            />
+            >
+              <option value="">Allocation time</option>
+              {TIME_SLOTS.map((slot) => (
+                <option key={slot} value={slot}>
+                  {slot}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* TABLE */}
@@ -230,9 +244,9 @@ export default function AssignDuties() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b bg-gray-100">
-                  <th className="p-2">ID</th>
-                  <th className="p-2">Name</th>
-                  <th className="p-2">
+                  <th className="p-2 text-center">ID</th>
+                  <th className="p-2 text-center">Name</th>
+                  <th className="p-2 text-center">
                     <input
                       type="checkbox"
                       checked={allChecked}
@@ -262,15 +276,15 @@ export default function AssignDuties() {
                       className="border-b cursor-pointer hover:bg-gray-50"
                       onClick={() => toggleOfficer(getOfficerKey(o))}
                     >
-                      <td className="p-2 text-xs">
+                      <td className="p-2 text-center text-xs">
                         {o.officerId ?? o.id}
                       </td>
 
-                      <td className="p-2">
+                      <td className="p-2 text-center">
                         {o.name ?? `${o.firstName ?? ""} ${o.lastName ?? ""}`}
                       </td>
 
-                      <td>
+                      <td className="p-2 text-center">
                         <input
                           type="checkbox"
                           checked={selected.has(getOfficerKey(o))}
