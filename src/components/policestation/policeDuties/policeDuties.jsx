@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import StationHeader from "../Header/PoliceStationHeader";
 import Footer from "../../officer/footer/footer";
 import { getStoredDuties, saveDuties } from "../dutiesStorage";
+import { removeOfficerDutyAssignment } from "../../officer/Data/dutiesData";
 
 export default function PoliceDuties() {
   const navigate = useNavigate();
@@ -44,10 +45,17 @@ export default function PoliceDuties() {
     });
   }, [duties, search, selectedDutyType]);
 
-  const handleDelete = (rowKey) => {
+  const handleDelete = (dutyToCancel) => {
     setDuties((current) => {
-      const next = current.filter((row, index) => `${row.id}-${index}` !== rowKey);
+      const next = current.filter((row) => {
+        if (dutyToCancel.assignmentId) {
+          return row.assignmentId !== dutyToCancel.assignmentId || row.id !== dutyToCancel.id;
+        }
+
+        return row.createdAt !== dutyToCancel.createdAt || row.id !== dutyToCancel.id;
+      });
       saveDuties(next);
+      removeOfficerDutyAssignment(dutyToCancel.assignmentId, dutyToCancel.id);
       return next;
     });
   };
@@ -124,7 +132,7 @@ export default function PoliceDuties() {
                     </tr>
                   ) : (
                     filteredDuties.map((row, index) => {
-                      const rowKey = `${row.id}-${index}`;
+                      const rowKey = row.assignmentId ? `${row.assignmentId}-${row.id}` : `${row.id}-${index}`;
 
                       return (
                         <tr key={rowKey} className="border-b border-slate-100 last:border-b-0">
@@ -138,10 +146,10 @@ export default function PoliceDuties() {
                           <td className="px-4 py-2 align-top">
                             <button
                               type="button"
-                              onClick={() => handleDelete(rowKey)}
+                              onClick={() => handleDelete(row)}
                               className="text-[12px] text-slate-700 transition hover:text-red-600"
                             >
-                              Delete
+                              Cancel
                             </button>
                           </td>
                         </tr>

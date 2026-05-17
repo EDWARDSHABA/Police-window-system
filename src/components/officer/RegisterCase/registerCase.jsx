@@ -191,7 +191,7 @@ export default function RegisterCase() {
       <OfficerHeader />
 
       <main className="mx-auto w-full max-w-7xl px-4 pb-12 pt-24 sm:px-6 lg:px-8">
-        <div className="mb-6 rounded-2xl bg-gradient-to-r from-sky-600 via-sky-500 to-cyan-500 px-6 py-5 text-white shadow-sm">
+        <div className="mb-6 rounded-lg bg-blue-500 px-6 py-5 text-white shadow">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-100">

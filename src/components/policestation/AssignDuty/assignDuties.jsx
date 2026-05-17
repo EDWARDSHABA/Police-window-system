@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import axios from "axios";
 import StationHeader from "../Header/PoliceStationHeader";
 import Footer from "../../officer/footer/footer";
-import { addAssignedDuties } from "../dutiesStorage";
+import { addAssignedDuties, getActiveDutyByOfficerId } from "../dutiesStorage";
 import { assignOfficerDuties } from "../../officer/Data/dutiesData";
 import { getStoredOfficers } from "../officersStorage";
 
@@ -33,6 +33,10 @@ export default function AssignDuties() {
     "20:00 - 24:00",
   ];
   const getOfficerKey = (officer) => officer?._id ?? officer?.id ?? officer?.officerId;
+  const getOfficerName = (officer) =>
+    officer?.name ?? `${officer?.firstName ?? ""} ${officer?.lastName ?? ""}`.trim();
+  const getOfficerBadge = (officer) => officer?.officerId ?? officer?.id ?? getOfficerKey(officer);
+  const getDateKey = () => new Date().toISOString().slice(0, 10);
 
   // ==========================
   // FETCH OFFICERS FROM BACKEND
@@ -65,7 +69,11 @@ export default function AssignDuties() {
     const q = search.toLowerCase();
 
     return officers.filter((o) => {
-      const fullName = (o.name || `${o.firstName ?? ""} ${o.lastName ?? ""}`).toLowerCase();
+      if (getActiveDutyByOfficerId(getOfficerKey(o))) {
+        return false;
+      }
+
+      const fullName = getOfficerName(o).toLowerCase();
 
       const id = (o.officerId || o.id || "").toLowerCase();
 
@@ -77,6 +85,12 @@ export default function AssignDuties() {
   // SELECT TOGGLE
   // ==========================
   const toggleOfficer = (id) => {
+    if (getActiveDutyByOfficerId(id)) {
+      setError("This officer already has an active duty. Cancel it or wait until it expires.");
+      setSuccess("");
+      return;
+    }
+
     setSelected((prev) => {
       const next = new Set(prev);
       next.has(id) ? next.delete(id) : next.add(id);
@@ -93,7 +107,11 @@ export default function AssignDuties() {
 
   const toggleAll = (e) => {
     if (e.target.checked) {
-      setSelected(new Set(filtered.map(getOfficerKey).filter(Boolean)));
+      setSelected(
+        new Set(
+          filtered.map(getOfficerKey).filter(Boolean)
+        )
+      );
     } else {
       setSelected(new Set());
     }
@@ -115,12 +133,30 @@ export default function AssignDuties() {
       return setError("Please select duty type.");
     }
 
+    if (!startTime || !endTime) {
+      return setError("Please select the allocation start and end hour.");
+    }
+
     setError("");
     setLoadingSubmit(true);
 
     const selectedOfficers = officers.filter((officer) =>
       selected.has(getOfficerKey(officer))
     );
+    const busyOfficers = selectedOfficers.filter((officer) =>
+      getActiveDutyByOfficerId(getOfficerKey(officer))
+    );
+
+    if (busyOfficers.length > 0) {
+      setLoadingSubmit(false);
+      return setError(
+        `Cannot assign duty. Already active: ${busyOfficers.map(getOfficerName).join(", ")}.`
+      );
+    }
+
+    const allocationDate = getDateKey();
+    const specifyTime = `${startTime} - ${endTime}`;
+    const assignmentId = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
     assignOfficerDuties({
       officers: selectedOfficers,
@@ -129,7 +165,26 @@ export default function AssignDuties() {
       week,
       specifyTime,
       taskDescription,
+      assignmentId,
     });
+
+    const createdDutyRecords = selectedOfficers.map((officer) => ({
+      assignmentId,
+      id: getOfficerKey(officer),
+      officer: getOfficerName(officer),
+      location,
+      dutyType,
+      shift: specifyTime,
+      specifyTime,
+      startTime,
+      endTime,
+      allocationDate,
+      week,
+      taskDescription,
+      createdAt: new Date().toISOString(),
+    }));
+
+    addAssignedDuties(createdDutyRecords);
 
     try {
       const payload = {
@@ -177,6 +232,13 @@ export default function AssignDuties() {
       console.error(err);
       setSuccess("Duty saved locally. Officers can now view it in their Duties page.");
       setError(err.response?.data?.message || "Backend unavailable; email was not sent.");
+      setSelected(new Set());
+      setLocation("");
+      setDutyType("");
+      setTaskDescription("");
+      setStartTime("");
+      setEndTime("");
+      setShift("All Shifts");
     } finally {
       setLoadingSubmit(false);
     }
@@ -186,17 +248,18 @@ export default function AssignDuties() {
   // UI
   // ==========================
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="min-h-screen w-full bg-gray-100">
       <StationHeader />
-      <div className="mt-10 bg-blue-500 text-white p-4 rounded mb-6">
-        Assign Duties for all officers
-      </div>
+      <main className="w-full px-4 pb-4 pt-10">
+        <div className="bg-blue-500 text-white p-4 rounded mb-6">
+          Assign Duties for all officers
+        </div>
 
-      <h2 className="text-lg font-bold mb-4">
-        Assign Duties
-      </h2>
+        <h2 className="text-lg font-bold mb-4">
+          Assign Duties
+        </h2>
 
-      <div className="flex gap-4">
+        <div className="flex gap-4">
 
         {/* LEFT */}
         <div className="flex-1">
@@ -229,6 +292,7 @@ export default function AssignDuties() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b bg-gray-100">
+                  <th className="p-2 text-center">No.</th>
                   <th className="p-2 text-center">ID</th>
                   <th className="p-2 text-center">Name</th>
                   <th className="p-2 text-center">
@@ -247,41 +311,48 @@ export default function AssignDuties() {
               <tbody>
                 {loadingOfficers ? (
                   <tr>
-                    <td colSpan="3" className="p-3 text-center">
+                    <td colSpan="4" className="p-3 text-center">
                       Loading...
                     </td>
                   </tr>
                 ) : filtered.length === 0 ? (
                   <tr>
-                    <td colSpan="3" className="p-3 text-center">
+                    <td colSpan="4" className="p-3 text-center">
                       No officers found
                     </td>
                   </tr>
                 ) : (
-                  filtered.map((o) => (
-                    <tr
-                      key={getOfficerKey(o)}
-                      className="border-b cursor-pointer hover:bg-gray-50"
-                      onClick={() => toggleOfficer(getOfficerKey(o))}
-                    >
-                      <td className="p-2 text-center text-xs">
-                        {o.officerId ?? o.id}
-                      </td>
+                  filtered.map((o, index) => {
+                    const officerKey = getOfficerKey(o);
+                    return (
+                      <tr
+                        key={officerKey}
+                        className="border-b cursor-pointer hover:bg-gray-50"
+                        onClick={() => toggleOfficer(officerKey)}
+                      >
+                        <td className="p-2 text-center text-xs">
+                          {index + 1}
+                        </td>
 
-                      <td className="p-2 text-center">
-                        {o.name ?? `${o.firstName ?? ""} ${o.lastName ?? ""}`}
-                      </td>
+                        <td className="p-2 text-center text-xs">
+                          {getOfficerBadge(o)}
+                        </td>
 
-                      <td className="p-2 text-center">
-                        <input
-                          type="checkbox"
-                          checked={selected.has(getOfficerKey(o))}
-                          onChange={() => toggleOfficer(getOfficerKey(o))}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      </td>
-                    </tr>
-                  ))
+                        <td className="p-2 text-center">
+                          <span>{getOfficerName(o)}</span>
+                        </td>
+
+                        <td className="p-2 text-center">
+                          <input
+                            type="checkbox"
+                            checked={selected.has(officerKey)}
+                            onChange={() => toggleOfficer(officerKey)}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>
@@ -342,7 +413,8 @@ export default function AssignDuties() {
             {loadingSubmit ? "Assigning..." : "Submit Duty"}
           </button>
         </div>
-      </div>
+        </div>
+      </main>
 
       <Footer />
     </div>

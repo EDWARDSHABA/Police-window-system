@@ -35,6 +35,15 @@ export default function Duties() {
 
   return (
     <div className="mx-auto w-full max-w-7xl pb-16 text-slate-950">
+      <div className="mb-6 mt-15 rounded-lg bg-blue-500 px-6 py-3 text-white shadow">
+        <div className="flex items-center gap-3">
+          My Assigned Duties
+          <p className="text-sm text-sky-100">
+            View duty assignments, shift dates, and calendar allocations.
+          </p>
+        </div>
+      </div>
+
       <div className="mb-4 flex items-center gap-3 border-b border-sky-300 pb-2">
         <button
           type="button"
