@@ -14,10 +14,8 @@ export default function AssignDuties() {
   const [loadingOfficers, setLoadingOfficers] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
 
-  const [week] = useState("Current week");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [shift, setShift] = useState("All Shifts");
+  const [week] = useState("April 10 - April 17, 2026");
+  const [specifyTime, setSpecifyTime] = useState("");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState(new Set());
   const [location, setLocation] = useState("");
@@ -26,7 +24,14 @@ export default function AssignDuties() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const SHIFTS = ["All Shifts", "Day", "Evening", "Night"];
+  const TIME_SLOTS = [
+    "00:00 - 04:00",
+    "04:00 - 08:00",
+    "08:00 - 12:00",
+    "12:00 - 16:00",
+    "16:00 - 20:00",
+    "20:00 - 24:00",
+  ];
   const getOfficerKey = (officer) => officer?._id ?? officer?.id ?? officer?.officerId;
   const getOfficerName = (officer) =>
     officer?.name ?? `${officer?.firstName ?? ""} ${officer?.lastName ?? ""}`.trim();
@@ -159,10 +164,6 @@ export default function AssignDuties() {
       location,
       week,
       specifyTime,
-      startTime,
-      endTime,
-      allocationDate,
-      shift,
       taskDescription,
       assignmentId,
     });
@@ -192,10 +193,6 @@ export default function AssignDuties() {
         location,
         week,
         specifyTime,
-        startTime,
-        endTime,
-        allocationDate,
-        shift,
         taskDescription,
       };
 
@@ -206,15 +203,31 @@ export default function AssignDuties() {
 
       console.log("SERVER RESPONSE:", res.data);
 
+      const selectedOfficerRecords = officers.filter((officer) =>
+        selected.has(getOfficerKey(officer))
+      );
+
+      const createdDutyRecords = selectedOfficerRecords.map((officer) => ({
+        id: officer.officerId,
+        officer: `${officer.firstName} ${officer.lastName}`,
+        location,
+        dutyType,
+        time: specifyTime || "Unscheduled",
+        specifyTime,
+        week,
+        taskDescription,
+        createdAt: new Date().toISOString(),
+      }));
+
+      addAssignedDuties(createdDutyRecords);
+
       setSuccess("Duty assigned successfully & emails sent!");
       setSelected(new Set());
 
       setLocation("");
       setDutyType("");
       setTaskDescription("");
-      setStartTime("");
-      setEndTime("");
-      setShift("All Shifts");
+      setSpecifyTime("");
     } catch (err) {
       console.error(err);
       setSuccess("Duty saved locally. Officers can now view it in their Duties page.");
@@ -261,39 +274,17 @@ export default function AssignDuties() {
             />
 
             <select
-              value={shift}
-              onChange={(e) => setShift(e.target.value)}
+              value={specifyTime}
+              onChange={(e) => setSpecifyTime(e.target.value)}
               className="border p-1 text-sm"
             >
-              {SHIFTS.map((s) => (
-                <option key={s}>{s}</option>
+              <option value="">Allocation time</option>
+              {TIME_SLOTS.map((slot) => (
+                <option key={slot} value={slot}>
+                  {slot}
+                </option>
               ))}
             </select>
-
-            <div className="flex items-center gap-2 text-sm">
-              <label className="flex items-center gap-1 text-slate-700">
-                <span>Start time</span>
-                <input
-                  type="time"
-                  step="3600"
-                  value={startTime}
-                  onChange={(e) => setStartTime(e.target.value)}
-                  aria-label="Allocation start hour"
-                  className="border p-1 text-sm"
-                />
-              </label>
-              <label className="flex items-center gap-1 text-slate-700">
-                <span>End time</span>
-                <input
-                  type="time"
-                  step="3600"
-                  value={endTime}
-                  onChange={(e) => setEndTime(e.target.value)}
-                  aria-label="Allocation end hour"
-                  className="border p-1 text-sm"
-                />
-              </label>
-            </div>
           </div>
 
           {/* TABLE */}
