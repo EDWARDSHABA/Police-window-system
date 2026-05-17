@@ -16,7 +16,6 @@ export default function AssignDuties() {
 
   const [week] = useState("April 10 - April 17, 2026");
   const [specifyTime, setSpecifyTime] = useState("");
-  const [shift, setShift] = useState("All Shifts");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState(new Set());
   const [location, setLocation] = useState("");
@@ -25,7 +24,6 @@ export default function AssignDuties() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const SHIFTS = ["All Shifts", "Day", "Evening", "Night"];
   const TIME_SLOTS = [
     "00:00 - 04:00",
     "04:00 - 08:00",
@@ -130,18 +128,16 @@ export default function AssignDuties() {
       location,
       week,
       specifyTime,
-      shift,
       taskDescription,
     });
 
     try {
       const payload = {
-        officerIds: Array.from(selected), // 🔥 IMPORTANT FIX
+        officerIds: Array.from(selected),
         dutyType,
         location,
         week,
         specifyTime,
-        shift,
         taskDescription,
       };
 
@@ -161,7 +157,7 @@ export default function AssignDuties() {
         officer: `${officer.firstName} ${officer.lastName}`,
         location,
         dutyType,
-        shift: specifyTime || shift,
+        time: specifyTime || "Unscheduled",
         specifyTime,
         week,
         taskDescription,
@@ -177,7 +173,6 @@ export default function AssignDuties() {
       setDutyType("");
       setTaskDescription("");
       setSpecifyTime("");
-      setShift("All Shifts");
     } catch (err) {
       console.error(err);
       setSuccess("Duty saved locally. Officers can now view it in their Duties page.");
@@ -214,16 +209,6 @@ export default function AssignDuties() {
               onChange={(e) => setSearch(e.target.value)}
               className="border p-1 text-sm"
             />
-
-            <select
-              value={shift}
-              onChange={(e) => setShift(e.target.value)}
-              className="border p-1 text-sm"
-            >
-              {SHIFTS.map((s) => (
-                <option key={s}>{s}</option>
-              ))}
-            </select>
 
             <select
               value={specifyTime}
